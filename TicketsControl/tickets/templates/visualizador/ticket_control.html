@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12" id="div0">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6" id="div1">
+                {% if tipo %}
+                    <iframe class="d-block w-100"  id="videoFrame" src="{{ link }}" frameborder="0"
+                        allow="accelerometer; mute; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                        width="100%"
+                        height="660px">
+                    </iframe>
+                
+                {% else %}
+                <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in image_response %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="data:image/png;base64,{{ image }}" class="d-block w-100" alt="...">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true" hidden></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true" hidden></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6" id="div2">
+                <table id="record-table" class="table table-striped table-fixed-height" onchange="audio();">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>
+                                <h1 class="mt-2 text-center fw-bold">TICKET</h1>
+                            </th>
+                            <th>
+                                <h1 class="mt-2 text-center fw-bold">VENTANILLA</h1>
+                            </th>
+                            <th>
+                                <h1 class="mt-2 text-center fw-bold">AREA</h1>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records|slice:":5" %}
+                        <tr>
+                            <td class="text-center">
+                                <h1 class="display-4 mt-3 mb-3 fw-bold">{{ record.codigoCaso }}</h1>
+                            </td>
+                            <td class="text-center">
+                                <h1 class="display-4 mt-3 mb-3 fw-bold">&nbsp&nbsp{{ record.numeroVentanilla }}&nbsp&nbsp</h1>
+                            </td>
+                            <td class="text-center uppercase-column">
+                                <h1 class="display-4 mt-3 mb-3 fw-bold">{{ record.departamento }}</h1>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12" style="background-color: #000000; ">
+                <h1 id="movingH1" class="display-3 mt-4"
+                style="color: #FED141;">{{ noticia }}</h1>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<style>
+    #div0 {
+        width: 100%;
+    }
+
+    #div1 {
+        width: 48%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #div2 {
+        width: 52%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+
+    .uppercase-column {
+        text-transform: uppercase;
+    }
+
+    @keyframes moveRightToLeft {
+        0% {
+            transform: translateX(100%);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    #movingH1 {
+        animation: moveRightToLeft 15s linear infinite;
+    }
+
+</style>
+<script>
+    const recordTable = document.getElementById('record-table');
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/tickets_updates/');
+
+    socket.onmessage = function (event) {
+        const message = event.data;
+        if (message === 'update') {
+            // Actualiza la tabla de registros
+            fetchRecords();
+
+        }
+    };
+
+    function fetchRecords() {
+        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
+                recordTable.innerHTML = newTable.innerHTML;
+            });
+    }
+
+    setInterval(fetchRecords, 1000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
+</script>
+{% endblock %}

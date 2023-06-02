@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row ">
+        <div class="col-md-12 mx-auto ">
+            <div class="card border-0 shadow rounded-3 my-4 mx-auto">
+                <div class="card-body p-4 p-sm-5">
+                    <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold">Atencion</h5>
+                    <h5 id="id_agente" style="display: none;">{{ agente }}</h5>
+                    <main class="form-signin ">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-floating">
+                                    <div class="input-group input-group-lg" style="align-items: center;">
+                                        <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
+                                        <select style="width: 100px; height: 50px;" class="form-select form-select-sm"
+                                            aria-label=".form-select-sm example" id="status_select" name="status_select"
+                                            onchange="estados()">
+                                            <option value="Activo" selected>Activo</option>
+                                            <option value="Disponible">Disponible</option>
+                                            <option value="Ocupado" disabled>Ocupado</option>
+                                            <option value="Inactivo">Inactivo</option>
+                                            <option value="Desconectado">Desconectado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {% if 'Registro' in cola %}
+                                <div class="form-floating mt-2">
+                                    <div class="input-group input-group-lg" style="align-items: center;">
+                                        <h5 class="fw-light fw-bold">Cola de Atencion:&nbsp;&nbsp;</h5>
+                                        <select style="width: 200px; height: 50px; font-size: 18px;"
+                                            class="form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
+                                            name="cola_select" onchange="cola()">
+                                            <option value="{{ cola }}" selected>{{ cola }}</option>
+                                            <option value="Registro/Tesis">Registro/Tesis</option>
+                                            <option value="Registro/Convalidacion">Registro/Convalidacion</option>
+                                            <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
+                                            <option value="Registro/Suficiencia">Registro/Suficiencias</option>
+                                            <option value="Registro/Graduaciones">Registro/Graduaciones</option>
+                                            <option value="Registro">Registro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-6 mb-5 mt-3 border border-primary rounded"
+                                style="display: flex; align-items: center; justify-content: center;">
+                                <div class="form-floating mb-5 mt-5">
+                                    <h1 id="txtNumero" class="display-1">N/C</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-6 mb-3 d-flex justify-content-between">
+                                <div class="form-floating">
+                                    <div class="input-group input-group-lg">
+                                        <button class="btn btn-lg btn-primary btn-login fw-bold" type="button"
+                                            id="btnSiguiente" onclick="numeroSiguiente()">Siguiente
+                                            Cliente</button>
+                                    </div>
+                                </div>
+                                <div class="form-floating">
+                                    <div class="input-group input-group-lg">
+                                        <button id="btnTransferir" type="button" class="btn btn-danger dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Transferir Cliente
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Admisiones')">Admisiones</a></li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro')">Registro</a></li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Cajas')">Cajas</a></li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro/Tesis')">Registro/Tesis</a></li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro/Convalidacion')">Registro/Convalidacion</a>
+                                            </li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro/Retiros')">Registro/Retiros-Congelacion</a>
+                                            </li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro/Suficiencia')">Registro/Suficiencia</a>
+                                            </li>
+                                            <li><a class="dropdown-item" style="cursor: pointer;"
+                                                    onclick="transferencia('Registro/Graduaciones')">Registro/Graduaciones</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-6">
+                                <div class="form-floating d-flex justify-content-end mt-4">
+                                    <a class="btn btn-lg btn-primary btn-login fw-bold" type="button"
+                                        id="btnSalir" href="{% url 'home' %}">Salir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        estados();
+    };
+
+    function cola() {
+        var cola = document.getElementById("cola_select").value;
+        var agente = document.getElementById("id_agente").textContent;
+        console.log(agente)
+        var url = "/cambiar-cola/?agente=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(agente) + "&cola=" + encodeURIComponent(cola), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+            }
+        };
+        request.send();
+
+    }
+
+    function estados() {
+        var estadoactual = document.getElementById("status_select").value;
+
+        var numero = document.getElementById("txtNumero");
+        var url = "/estados-reporte/?estado=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(estadoactual), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                estadosbtn();
+            }
+        };
+        request.send();
+
+    }
+
+    function estadosbtn(){
+        var estadoactual = document.getElementById("status_select").value;
+        console.log(estadoactual);
+        var boton = document.getElementById("btnSiguiente");
+        var boton2 = document.getElementById("btnTransferir");
+        var boton3 = document.getElementById("btnSalir");
+        var numero = document.getElementById("txtNumero");
+        var cola = document.getElementById("cola_select");
+
+        if (estadoactual == 'Activo' || estadoactual == 'Inactivo'){
+            boton.disabled = true; 
+            boton2.disabled = true; 
+            boton3.classList.add("disabled");
+            numero.innerHTML = 'N/C';
+            cola.disabled = false;
+        }
+        else if (estadoactual == 'Desconectado'){
+            boton.disabled = true; 
+            boton2.disabled = true; 
+            boton3.classList.remove("disabled");
+            numero.innerHTML = 'N/C'; 
+            cola.disabled = true;
+        }
+        else if (estadoactual == 'Disponible'){
+            boton.disabled = false; 
+            boton2.disabled = false; 
+            boton3.classList.add("disabled");
+            numero.innerHTML = 'N/C'; 
+            cola.disabled = true;
+        }
+        else if (estadoactual == 'Ocupado'){
+            boton.disabled = false; 
+            boton2.disabled = false; 
+            boton3.classList.add("disabled");
+            cola.disabled = true;
+        }
+    }
+
+    function numeroSiguiente() {
+        var numero = document.getElementById("txtNumero");
+        var estadoactual = document.getElementById("status_select");
+        if (estadoactual.value == "Disponible" || estadoactual.value == "Ocupado") {
+            var url = "/numero-agente/";
+            var request = new XMLHttpRequest();
+            request.open('GET', url, true);
+            request.onload = function () {
+                if (request.status === 200) {
+                    var data = JSON.parse(request.responseText);
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            numero.innerHTML = data[key];
+                            if (data[key] === "N/C") {
+                                estadoactual.selectedIndex = 1;
+                                estados();
+                            }
+                            else {
+                                estadoactual.selectedIndex = 2;
+                                estados();
+                            }
+                        }
+                    }
+
+                }
+            };
+            request.send();
+        }
+    }
+
+    function transferencia(departamento) {
+        var estadoactual = document.getElementById("status_select");
+        var numero = document.getElementById("txtNumero");
+        var url = "/transferencia/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(departamento), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                estadoactual.selectedIndex = 1;
+                numero.innerHTML = "N/C";
+                estados();
+            }
+        };
+        request.send();
+    }
+</script>
+{% endblock %}

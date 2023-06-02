@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+<div class="row mt-5">
+    <div class="col-md-10 mx-auto mt-2 mb-5">
+        <div class="card border-0 shadow-lg rounded-3 my-5 mx-auto">
+            <div class="card-body p-4 p-sm-5">
+                <h1 class="card-title text-center mb-5 fw-light fs-8 fw-bold">Departamentos de Atencion</h1>
+                <h3 class="card-title text-center mb-5 fw-light fs-3">Seleccione el Departamento al que desea dirigirse.</h3>
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_admision()"><p style="font-size: 30px;" class="mt-3 mb-3">Admisiones</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button type="submit"
+                                        class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                        id="loading-indicator"  data-bs-toggle="modal"
+                                        data-bs-target="#modal_registro"><p style="font-size: 30px;" class="mt-3 mb-3">Registro</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_cajas()"><p style="font-size: 30px;" class="mt-3 mb-3">Cajas</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_cursolibre()"><p style="font-size: 30px;" class="mt-3 mb-3">Cursos Libres</p></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Model de Cambio de data -->
+{% block modal_registro%}
+<div class="modal fade" id="modal_registro" tabindex="-1" aria-labelledby="modal_registroTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="modal-title" id="modal_registroTitle">
+                            Areas de Registro
+                        </h1>
+                    </div>
+                    <div class="col-12">
+                        <p style="font-size: 25px;">
+                            Seleccione el Area de Registro al que desea dirigirse.
+                        </p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="icon-close2"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_registro()"><p style="font-size: 30px;" class="mt-3 mb-3">Registro</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button type="submit"
+                                        class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                        type="button" id="loading-indicator" onclick="crear_ticket_registro_tesis()"><p style="font-size: 30px;" class="mt-3 mb-3">Tesis</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_registro_convalidacion()"><p style="font-size: 30px;" class="mt-3 mb-3">Convalidaciones</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_registro_retiros()"><p style="font-size: 30px;" class="mt-3 mb-3">Retiros y Congelaciones</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_registro_suficiencia()"><p style="font-size: 30px;" class="mt-3 mb-3">Suficiencas</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <div class="input-group input-group-lg">
+                                    <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    type="button" id="loading-indicator" onclick="crear_ticket_registro_graduacion()"><p style="font-size: 30px;" class="mt-3 mb-3">Graduaciones</p></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_registro %}
+
+<style>
+    body {
+        overflow-y: hidden;
+    }
+    .coloreable {
+        background-color: rgb(0, 79, 80);
+    }
+</style>
+
+<script>
+    function crear_ticket_admision() {
+        var url = "/crear-ticket-admision/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_cajas() {
+        var url = "/crear-ticket-cajas/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_cursolibre() {
+        var url = "/crear-ticket-cursolibre/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();s
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_registro() {
+        var url = "/crear-ticket-registro/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_registro_tesis() {
+        var url = "/crear-ticket-registro-tesis/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_registro_convalidacion() {
+        var url = "/crear-ticket-registro-convalidacion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_registro_retiros() {
+        var url = "/crear-ticket-registro-retiros/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+    function crear_ticket_registro_suficiencia() {
+        var url = "/crear-ticket-registro-suficiencia/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_graduacion() {
+        var url = "/crear-ticket-registro-graduacion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+    
+</script>
+{% endblock %}

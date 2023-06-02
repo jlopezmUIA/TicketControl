@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9 col-md-7 col-lg-5 mx-auto mt-3">
+            <div class="card border-0 shadow rounded-3 my-5 mx-auto">
+                <div class="card-body p-sm-5">
+                    <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold"> Registro Agente </h5>
+                    <main class="form-signin">
+                        <form method="POST" action="{% url 'inicio_atencion' %}">
+                            {% csrf_token %}
+                            <div class="form-floating mb-3 ">
+                                <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select"
+                                    name="departamento" required onchange="cargarAgentes()">
+                                    <option value="Admisiones">Admisiones</option>
+                                    <option value="Registro">Registro</option>
+                                    <option value="Cursos Libres">Cursos Libres</option>
+                                    <option value="Cajas">Cajas</option>
+                                </select>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select id="agente_select" class="form-select" name="agente_select"
+                                    data-placeholder="Seleccion Agente">
+                                    <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-floating mb-3 ">
+                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="form-select"
+                                    name="ventanilla" required>
+                                    <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione
+                                        Ventanilla</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="11">12</option>
+                                    <option value="11">13</option>
+                                    <option value="11">14</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="d-grid mb-2">
+                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    id="loading-indicator"> Iniciar Atencion</button>
+
+                                <div id="loading-indicator" class="hidden">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <div class="links-container">
+                                    <div class="left-link">
+                                        <a href="{% url 'home' %}">Atras</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        cargarAgentes();
+    };
+    function cargarAgentes() {
+        var select = document.getElementById("departamento").value;
+        var select2 = document.getElementById("agente_select");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+</script>
+{% endblock %}

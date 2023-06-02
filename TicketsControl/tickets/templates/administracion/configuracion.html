@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand">
+            <img src="../../static/img/Imagen1.png" alt="" width="70" height="40" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_side' %}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'colas_atencion' %}">Colas de Atencion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'estados_agente' %}">Estados de Agentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'casos_agente' %}">Casos de Agentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tickets_agente' %}">Tickets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'datos_agente' %}">Agentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'configuracion' %}">Configuracion de
+                        Visualizador</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <a class="btn btn-outline-danger" href="{% url 'logout' %}" type="button">Cerrar Sesion</a>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="card border-0 shadow rounded-3 mt-2 mx-auto">
+        <div class="card-body p-sm-5 ">
+            <h1 class="card-title text-center fw-light fw-bold"> Configuracion del Visualizador </h1>
+            <div class="row mt-3">
+                <form class="mt-4" method="POST" action="{% url 'cambiar_link_text' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="basic-url" class="form-label">
+                            <h3>Ingrese URL de Youtube</h3>
+                        </label>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text" id="basic-addon3">https://www.youtube.com/</span>
+                            <input type="text" value="{{ records.link }}" name="link" class="form-control" id="basic-url"
+                                aria-describedby="basic-addon3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="basic-url" class="form-label">
+                            <h3>Ingrese Texto del Pie de Pagina</h3>
+                        </label>
+                        <div class="input-group mb-4">
+                            <input type="text" value="{{ records.text }}" name="text" class="form-control" id="text"
+                                aria-describedby="basic-addon3">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo" id="playlist" {% if records.tipo == "playlist" %}checked{% endif %}>
+                            <label class="form-check-label" for="flexRadioDefault2">
+                                Playlist Youtube
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo" id="imgs" {% if records.tipo == "imgs" %}checked{% endif %}>
+                            <label class="form-check-label" for="flexRadioDefault1">
+                                Imagenes Tipo Carousel
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-grid mb-2 justify-content-center align-items-center">
+                        <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                            type="submit"> Guardar Configuracion General</button>
+                    </div>
+                </form>
+                <br>
+                <form class="mt-4" method="POST" action="{% url 'cambiar_imagen' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <div class="">
+                            <label for="floatingFile" class="mb-2">
+                                <i class="fa fa-upload" aria-hidden="true"></i>
+                                <h3>Imagen Nueva</h3>
+                            </label>
+                            <input class="form-control custom-file-input" style="opacity: 0.65" type="file"
+                                id="floatingFile" name="imagen1" accept-language="es" />
+                        </div>
+                    </div>
+                    <div class="form-group mt-4">
+                        <label for="floatingFile">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            <h5>Imagen que desea cambiar:</h5>
+                        </label>
+                        <select style="width: 100%; height: 50px; font-size: 18px; font-weight: bold;"
+                            class="form-select form-select-sm" aria-label=".form-select-sm example" id="imagen"
+                            name="imagen_select">
+                            <option value="imagen1">{{ records.imagen1 }}</option>
+                            <option value="imagen2">{{ records.imagen2 }}</option>
+                            <option value="imagen3">{{ records.imagen3 }}</option>
+                            <option value="imagen4">{{ records.imagen4 }}</option>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="d-grid mb-2 justify-content-center align-items-center">
+                        <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                            id="loading-indicator"> Guardar Configuracion de Imagen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<style>
+    .input-group-append {
+        cursor: pointer;
+    }
+</style>
+<script>
+
+    // Obtener los elementos de radio button
+    const radioButtons = document.querySelectorAll('input[name="tipo"]');
+
+    // Agregar el evento change a cada radio button
+    radioButtons.forEach(radioButton => {
+        radioButton.addEventListener('change', () => {
+            if (radioButton.checked) {
+                // El radio button está activo
+                var url = "/cambiar-visual/?estado=";
+                var request = new XMLHttpRequest();
+                request.open('GET', url + encodeURIComponent(`${radioButton.id}`), true);
+                request.onload = function () {
+                    if (request.status === 200) {
+                        var data = JSON.parse(request.responseText);
+                    }
+                };
+                request.send();
+            }
+        });
+    });
+</script>
+{% endblock %}
