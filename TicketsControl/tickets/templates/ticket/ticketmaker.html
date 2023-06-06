@@ -3,8 +3,8 @@
 {% block content %}
 <div class="container">
 <div class="row mt-5">
-    <div class="col-md-10 mx-auto mt-2 mb-5">
-        <div class="card border-0 shadow-lg rounded-3 my-5 mx-auto">
+    <div class="col-12 col-lg-12 col-md-12 col-sm-12 mx-auto mt-5 mb-5">
+        <div class="card border-0 cardCol rounded-3 my-5 mx-auto">
             <div class="card-body p-4 p-sm-5">
                 <h1 class="card-title text-center mb-5 fw-light fs-8 fw-bold">Departamentos de Atencion</h1>
                 <h3 class="card-title text-center mb-5 fw-light fs-3">Seleccione el Departamento al que desea dirigirse.</h3>
@@ -135,15 +135,6 @@
     </div>
 </div>
 {% endblock modal_registro %}
-
-<style>
-    body {
-        overflow-y: hidden;
-    }
-    .coloreable {
-        background-color: rgb(0, 79, 80);
-    }
-</style>
 
 <script>
     function crear_ticket_admision() {

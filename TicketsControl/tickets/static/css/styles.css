@@ -1,0 +1,89 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.context{
+    width: 100%;
+}
+
+#div1 {
+    width: 47%;
+    padding: 0;
+}
+
+#div2 {
+    width: 53%;
+    padding: 0;
+}
+
+#videoFrame{
+    width: 100%;
+    height: 736px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 11%;
+}
+.dataTable {
+    border-collapse: collapse !important;
+    border: none !important;
+  }
+footer{
+    background-color: black;
+}
+.uppercase-column {
+    text-transform: uppercase;
+}
+
+@keyframes moveRightToLeft {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+#movingH1 {
+    animation: moveRightToLeft 15s linear infinite;
+    color: #FED141;
+}
+
+.fullscreen {
+    #div1 {
+        width: 49%;
+    }
+    #div2 {
+        width: 51%;
+    }
+    #videoFrame{
+        width: 100%;
+        height: 797px;
+    }
+    .footer {
+        height: 11.7%;
+    }
+}
+
+.coloreable {
+    background-color: rgb(0, 79, 80);
+}
+
+.input-group-append {
+    cursor: pointer;
+}
+
+.cardCol {
+    width: 100%;
+    box-shadow: -1px 15px 30px -10px black;
+}
+  
+.dataTables_length {
+    margin-bottom: 10px;
+}

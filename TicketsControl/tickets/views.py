@@ -1,30 +1,19 @@
 import base64
-import io
 import json
-import os
 from django.contrib.auth.decorators import login_required
-from google.cloud import texttospeech
-from tempfile import TemporaryFile
-from winsound import PlaySound
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.contrib.auth.models import User
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.views import LoginView, LogoutView
-import requests
 from django.views.generic.edit import FormView
 from tickets.models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 import threading
-from queue import Queue
-import pyttsx3
 from .impresion import imprimir
-from pydub.playback import play
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_agenteAtencion, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_ticketcontrol, update_tiempos_agente
+from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_tiempos_agente
 
 def home(request):
     if 'fechaactual' in request.session:
@@ -50,7 +39,8 @@ def home(request):
             request.session['estadoactual'] = save.id_estado
 
     request.session.flush() 
-
+    request.session['estadoR'] = False
+    request.session['listaR'] = []
     return render(request, 'home.html')
 
 class Logueo(FormView):
@@ -85,7 +75,7 @@ class RegistroAdmin(FormView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('admin_side')
+        return redirect('login')
 
     def get(self, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -166,12 +156,11 @@ def cambiar_visual(request):
 def cambiar_link_text(request):
     link = request.POST.get("link")
     text = request.POST.get("text")
-
-    link = link.split('=')
-
-    linkformat = "http://www.youtube.com/embed?listType=playlist&list=" + link[2] + "&mute=1&autoplay=1"
-
-    save = save_configuration(request, 1,'link', linkformat)
+    visual = visualizador.objects.first()
+    if visual.link != link:
+        link = link.split('=')
+        linkformat = "http://www.youtube.com/embed?listType=playlist&list=" + link[2] + "&mute=1&autoplay=1"
+        save = save_configuration(request, 1,'link', linkformat)
     save = save_configuration(request, 1,'text', text)
 
     return redirect(request.META.get('HTTP_REFERER'))
@@ -278,7 +267,7 @@ def ticket_maker(request):
 def crear_ticket_admision(request):
     dato = obtener_ultimo_dato_admisiones()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -301,7 +290,7 @@ def crear_ticket_admision(request):
 def crear_ticket_cajas(request):
     dato = obtener_ultimo_dato_cajas()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -324,7 +313,7 @@ def crear_ticket_cajas(request):
 def crear_ticket_cursolibre(request):
     dato = obtener_ultimo_dato_cursoslibres()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -347,7 +336,7 @@ def crear_ticket_cursolibre(request):
 def crear_ticket_registro(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -370,7 +359,7 @@ def crear_ticket_registro(request):
 def crear_ticket_registro_tesis(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -393,7 +382,7 @@ def crear_ticket_registro_tesis(request):
 def crear_ticket_registro_convalidacion(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -416,7 +405,7 @@ def crear_ticket_registro_convalidacion(request):
 def crear_ticket_registro_retiros(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -439,7 +428,7 @@ def crear_ticket_registro_retiros(request):
 def crear_ticket_registro_suficiencia(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -462,7 +451,7 @@ def crear_ticket_registro_suficiencia(request):
 def crear_ticket_registro_graduacion(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
-    numero_siguiente = str(int(codigo[1]) + 1).zfill(4)
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
 
     data_admisiones = {
@@ -548,48 +537,47 @@ def numero_agente(request):
 
     if cola == "Admisiones":
         numero = obtener_primero_dato_admisiones()
-        if "0000" in numero:
+        if "000" in numero.codigo:
             data = {'codigo': 'N/C'}
         else:
-            data = {'codigo': numero}
-            marcar_admision(numero)
+            data = {'codigo': numero.codigo}
+            marcar_admision(numero.pk)
             caso = True
     elif "Registro" in cola:
         numero = obtener_primero_dato_registro(cola)
-        if "0000" in numero:
+        if "000" in numero.codigo:
             data = {'codigo': 'N/C'}
         else:
-            data = {'codigo': numero}
-            marcar_registro(numero)
+            data = {'codigo': numero.codigo}
+            marcar_registro(numero.pk)
             caso = True
     elif cola == "Cajas":
         numero = obtener_primero_dato_cajas()
-        if "0000" in numero:
+        if "000" in numero.codigo:
             data = {'codigo': 'N/C'}
         else:
-            data = {'codigo': numero}
-            marcar_cajas(numero)
+            data = {'codigo': numero.codigo}
+            marcar_cajas(numero.pk)
             caso = True
     elif cola == "Cursos Libres":
         numero = obtener_primero_dato_cursoslibres()
-        if "0000" in numero:
+        if "000" in numero.codigo:
             data = {'codigo': 'N/C'}
         else:
-            data = {'codigo': numero}
-            marcar_cursoslibres(numero)
+            data = {'codigo': numero.codigo}
+            marcar_cursoslibres(numero.pk)
             caso = True
 
     if caso:
         data_caso = {
             'agente': request.session.get('id_agente'),
-            'codigoCaso': numero,
+            'codigoCaso': numero.codigo,
             'fecha': str(fecha_actual),
             'tiempoInicio': str(hora_actual_str),
             'tiempoFinal': None
         }
-
         data_ticket = {
-            'codigoCaso': numero,
+            'codigoCaso': numero.codigo,
             'numeroVentanilla': ventanilla,
             'departamento': departamento,
             'fecha': str(fecha_actual)
@@ -604,7 +592,7 @@ def numero_agente(request):
             idtiempo = save_tiempos_agente(request, data_caso)
             request.session['idtiempo'] = idtiempo.id_tiemposagente
 
-        request.session['cliente'] = numero
+        request.session['cliente'] = numero.codigo
 
         save_ticket = save_ticketcontrol(request, data_ticket)
 
@@ -724,33 +712,39 @@ def ticketcontrol(request):
             for _ in range(cantidad_sobrepasada):
                 registro = ticketControl.objects.all()[cantregistro]
                 if registro.departamento == 'Adm':
-                    departamento = 'admisiones'
+                    departamento = 'Admisiones'
                 elif registro.departamento == 'Reg':
-                    departamento = 'registro'
+                    departamento = 'Registro'
                 elif registro.departamento == 'Cja':
-                    departamento = 'cajas'
+                    departamento = 'Cajas'
                 elif registro.departamento == 'C.L.':
-                    departamento = 'cursos libres'
-                texto = registro.codigoCaso + ", dirigirse a la Ventanilla numero," + registro.numeroVentanilla+", del departamento de "+departamento
+                    departamento = 'Cursos Libres'
+                codigo = str(registro.codigoCaso).split('-')
+                numero = int(codigo[1].lstrip("0"))
+                texto = codigo[0]+"-"+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento
+                request.session['listaR'].append(texto)
                 # Crear hilo y esperar a que el hilo anterior termine
                 if previous_thread:
                     previous_thread.join()
                 
-                t = threading.Thread(target=reproducir_texto, args=(texto,))
+                t = threading.Thread(target=reproductor, args=(request,))
                 t.start()
                 cantregistro += 1
                 request.session['reproduccion'] = cantregistro
-
+                request.session['estadoR'] = True
                 # Actualizar el hilo anterior
                 previous_thread = t
         else:
-            pass
+            reproductor(request)
+            mi_lista = request.session.get('listaR', [])
+            mi_lista.clear()
+            request.session['listaR'] = mi_lista
     else:
         recordscant = ticketControl.objects.count()
         request.session['cantrecords'] = recordscant
         request.session['reproduccion'] = recordscant
     registro = visualizador.objects.first() 
-    records = ticketControl.objects.all().order_by('-id_ticketcontrol')[:5]
+    records = ticketControl.objects.all().order_by('-id_ticketcontrol')[:6]
     noticia = registro.text
     tipovisual = registro.tipo_visor
 
@@ -764,12 +758,22 @@ def ticketcontrol(request):
         link = registro.link
         return render(request, 'visualizador/ticket_control.html', {'records': records, 'noticia': noticia, 'tipo': tipovisual, 'link': link})
 
-def reproducir_texto(texto):
-    engine = pyttsx3.init()
-    velocidad_actual = engine.getProperty('rate')
-    engine.setProperty('rate', velocidad_actual - 60)
-    engine.say(texto)
-    engine.runAndWait()
+def reproductor(request):
+    dic = {}
+    list = request.session.get('listaR', [])
+    status = request.session.get('estadoR')
+    if status:
+        dic = {
+            'estado': True,
+            'list': list
+        }
+    else:
+        dic = {
+            'estado': False,
+            'list': list
+        }
+
+    return JsonResponse(dic, safe=False)
 
 def cambiar_cola(request):
     cola = request.GET.get("cola")

@@ -1,0 +1,67 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand">
+            <img src="../../static/img/Imagen1.png" alt="" width="70" height="40" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_side' %}" aria-current="page">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'colas_atencion' %}">Colas de Atencion</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'estados_agente' %}">Estados de Agentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'casos_agente' %}">Casos de Agentes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tickets_agente' %}">Tickets</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="agentesDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" href="{% url 'datos_agente' %}">Agentes</a>
+                    <ul class="dropdown-menu" aria-labelledby="agentesDropdown">
+                        <li><a class="dropdown-item" href="{% url 'datos_agente' %}">Ver Agentes</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                data-bs-target="#modal_nuevoagente">Añadir agentes</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'configuracion' %}">Configuracion de Visualizador</a>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <a class="btn btn-outline-danger" href="{% url 'logout' %}" type="button">Cerrar Sesion</a>
+            </form>
+        </div>
+    </div>
+</nav>
+<script>
+    const activeLink = localStorage.getItem('activeLink');
+    if (activeLink) {
+        const link = document.querySelector(`.navbar-nav .nav-link[href="${activeLink}"]`);
+        if (link) {
+            link.classList.add('active');
+            link.parentNode.classList.add('active');
+        }
+    }
+    const links = document.querySelectorAll('.navbar-nav .nav-link');
+    links.forEach(link => {
+        link.addEventListener('click', function(event) {
+            links.forEach(link => {
+                link.classList.remove('active');
+                link.parentNode.classList.remove('active');
+            });
+            this.classList.add('active');
+            this.parentNode.classList.add('active');
+            localStorage.setItem('activeLink', this.getAttribute('href'));
+        });
+    });
+</script>

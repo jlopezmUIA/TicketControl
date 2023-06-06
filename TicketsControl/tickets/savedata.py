@@ -9,7 +9,7 @@ def save_configuration(request, visualizador_id, campo, nuevo_valor):
     setattr(visor, campo, nuevo_valor)
     visor.save()
     return True
-    
+ 
 def update_configuration(request, visualizador_id, campo, nuevo_valor, nombre_archivo):
     visor = get_object_or_404(visualizador, pk=visualizador_id)
     valor_actual = getattr(visor, campo)
@@ -120,40 +120,40 @@ def save_registro(request, data):
     else:
         return False
 
-def marcar_admision(codigo):
+def marcar_admision(id):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        admision_obj = admisiones.objects.get(codigo=codigo, fecha=fecha_actual)
+        admision_obj = admisiones.objects.get(pk=id, fecha=fecha_actual)
         admision_obj.atendido = True
         admision_obj.save()
         return True
     except admisiones.DoesNotExist:
         return False
     
-def marcar_cajas(codigo):
+def marcar_cajas(id):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        cajas_obj = cajas.objects.get(codigo=codigo, fecha=fecha_actual)
+        cajas_obj = cajas.objects.get(pk=id, fecha=fecha_actual)
         cajas_obj.atendido = True
         cajas_obj.save()
         return True
     except cajas.DoesNotExist:
         return False
     
-def marcar_cursoslibres(codigo):
+def marcar_cursoslibres(id):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        cursoslibres_obj = cursoslibres.objects.get(codigo=codigo, fecha=fecha_actual)
+        cursoslibres_obj = cursoslibres.objects.get(pk=id, fecha=fecha_actual)
         cursoslibres_obj.atendido = True
         cursoslibres_obj.save()
         return True
     except cursoslibres.DoesNotExist:
         return False
     
-def marcar_registro(codigo):
+def marcar_registro(id):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        registro_obj = registro.objects.get(codigo=codigo, fecha=fecha_actual)
+        registro_obj = registro.objects.get(pk=id, fecha=fecha_actual)
         registro_obj.atendido = True
         registro_obj.save()
         return True
@@ -261,7 +261,11 @@ def obtener_ultimo_dato_admisiones():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = admisiones.objects.filter(fecha=fecha_actual).latest('id_admision')
-        return ultimo_dato.codigo
+        pr = ultimo_dato.codigo.split('-')
+        if pr[1] == "999":
+            return "PR-000"
+        else:
+            return ultimo_dato.codigo
     except admisiones.DoesNotExist:
         return "PR-000"
 
@@ -269,57 +273,73 @@ def obtener_ultimo_dato_cajas():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = cajas.objects.filter(fecha=fecha_actual).latest('id_cajas')
-        return ultimo_dato.codigo
+        pr = ultimo_dato.codigo.split('-')
+        if pr[1] == "999":
+            return "PR-000"
+        else:
+            return ultimo_dato.codigo
     except cajas.DoesNotExist:
-        return "PR-0000"
+        return "PR-000"
 
 def obtener_ultimo_dato_cursoslibres():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = cursoslibres.objects.filter(fecha=fecha_actual).latest('id_cursolibres')
-        return ultimo_dato.codigo
+        pr = ultimo_dato.codigo.split('-')
+        if pr[1] == "999":
+            return "PR-000"
+        else:
+            return ultimo_dato.codigo
     except cursoslibres.DoesNotExist:
-        return "PR-0000"
+        return "PR-000"
 
 def obtener_ultimo_dato_registro():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = registro.objects.filter(fecha=fecha_actual).latest('id_registro')
-        return ultimo_dato.codigo
+        pr = ultimo_dato.codigo.split('-')
+        if pr[1] == "999":
+            return "PR-000"
+        else:
+            return ultimo_dato.codigo
     except registro.DoesNotExist:
-        return "PR-0000"
+        return "PR-000"
     
 def obtener_primero_dato_admisiones():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = admisiones.objects.filter(atendido=False, fecha=fecha_actual).earliest('codigo')
-        return ultimo_dato.codigo
+        ultimo_dato = admisiones.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_admision')
+        return ultimo_dato
     except admisiones.DoesNotExist:
-        return "0000"
+        dato = admisiones(codigo = '000')
+        return dato
 
 def obtener_primero_dato_cajas():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = cajas.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_cajas')
-        return ultimo_dato.codigo
+        return ultimo_dato
     except cajas.DoesNotExist:
-        return "0000"
+        dato = cajas(codigo = '000')
+        return dato
 
 def obtener_primero_dato_cursoslibres():
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = cursoslibres.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_cursolibres')
-        return ultimo_dato.codigo
+        return ultimo_dato
     except cursoslibres.DoesNotExist:
-        return "0000"
+        dato = cursoslibres(codigo = '000')
+        return dato
 
 def obtener_primero_dato_registro(cola):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         ultimo_dato = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola).earliest('id_registro')
-        return ultimo_dato.codigo
+        return ultimo_dato
     except registro.DoesNotExist:
-        return "0000"
+        dato = registro(codigo = '000')
+        return dato
  
 def obtener_caso(id):
     fecha_actual = date.today().strftime('%Y-%m-%d')

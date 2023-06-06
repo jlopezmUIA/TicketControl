@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
-
+{% block nav_header %}
+    
+{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row ">
-        <div class="col-md-12 mx-auto ">
-            <div class="card border-0 shadow rounded-3 my-4 mx-auto">
+<div class="p-2">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12 mx-auto ">
+            <div class="card border-0 cardCol rounded-3 my-4 mx-auto">
                 <div class="card-body p-4 p-sm-5">
                     <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold">Atencion</h5>
                     <h5 id="id_agente" style="display: none;">{{ agente }}</h5>
                     <main class="form-signin ">
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
                                 <div class="form-floating">
                                     <div class="input-group input-group-lg" style="align-items: center;">
                                         <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
@@ -30,8 +32,8 @@
                                     <div class="input-group input-group-lg" style="align-items: center;">
                                         <h5 class="fw-light fw-bold">Cola de Atencion:&nbsp;&nbsp;</h5>
                                         <select style="width: 200px; height: 50px; font-size: 18px;"
-                                            class="form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
-                                            name="cola_select" onchange="cola()">
+                                            class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                            id="cola_select" name="cola_select" onchange="cola()">
                                             <option value="{{ cola }}" selected>{{ cola }}</option>
                                             <option value="Registro/Tesis">Registro/Tesis</option>
                                             <option value="Registro/Convalidacion">Registro/Convalidacion</option>
@@ -46,7 +48,7 @@
                             </div>
                         </div>
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-6 mb-5 mt-3 border border-primary rounded"
+                            <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-5 mt-3 border border-primary rounded"
                                 style="display: flex; align-items: center; justify-content: center;">
                                 <div class="form-floating mb-5 mt-5">
                                     <h1 id="txtNumero" class="display-1">N/C</h1>
@@ -54,56 +56,54 @@
                             </div>
                         </div>
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-6 mb-3 d-flex justify-content-between">
-                                <div class="form-floating">
-                                    <div class="input-group input-group-lg">
-                                        <button class="btn btn-lg btn-primary btn-login fw-bold" type="button"
-                                            id="btnSiguiente" onclick="numeroSiguiente()">Siguiente
+                            <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                                <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                                    <div class="col-md-6 justify-content-center">
+                                        <button class="btn btn-md btn-primary btn-login fw-bold mb-2 d-flex"
+                                            type="button" id="btnSiguiente" onclick="numeroSiguiente()">Siguiente
                                             Cliente</button>
                                     </div>
-                                </div>
-                                <div class="form-floating">
-                                    <div class="input-group input-group-lg">
-                                        <button id="btnTransferir" type="button" class="btn btn-danger dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            Transferir Cliente
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Admisiones')">Admisiones</a></li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro')">Registro</a></li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Cajas')">Cajas</a></li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro/Tesis')">Registro/Tesis</a></li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro/Convalidacion')">Registro/Convalidacion</a>
-                                            </li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro/Retiros')">Registro/Retiros-Congelacion</a>
-                                            </li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro/Suficiencia')">Registro/Suficiencia</a>
-                                            </li>
-                                            <li><a class="dropdown-item" style="cursor: pointer;"
-                                                    onclick="transferencia('Registro/Graduaciones')">Registro/Graduaciones</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+
+                                    <button id="btnTransferir" type="button"
+                                        class="btn btn-md btn-danger dropdown-toggle mb-2" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        Transferir Cliente
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Admisiones')">Admisiones</a></li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro')">Registro</a></li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Cajas')">Cajas</a></li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro/Tesis')">Registro/Tesis</a></li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro/Convalidacion')">Registro/Convalidacion</a>
+                                        </li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro/Retiros')">Registro/Retiros-Congelacion</a>
+                                        </li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro/Suficiencia')">Registro/Suficiencia</a>
+                                        </li>
+                                        <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('Registro/Graduaciones')">Registro/Graduaciones</a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                         <div class="row d-flex justify-content-center">
-                            <div class="col-md-6">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
                                 <div class="form-floating d-flex justify-content-end mt-4">
-                                    <a class="btn btn-lg btn-primary btn-login fw-bold" type="button"
-                                        id="btnSalir" href="{% url 'home' %}">Salir</a>
+                                    <a class="btn btn-md btn-primary btn-login fw-bold" type="button" id="btnSalir"
+                                        href="{% url 'home' %}">Salir</a>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +151,7 @@
 
     }
 
-    function estadosbtn(){
+    function estadosbtn() {
         var estadoactual = document.getElementById("status_select").value;
         console.log(estadoactual);
         var boton = document.getElementById("btnSiguiente");
@@ -160,30 +160,30 @@
         var numero = document.getElementById("txtNumero");
         var cola = document.getElementById("cola_select");
 
-        if (estadoactual == 'Activo' || estadoactual == 'Inactivo'){
-            boton.disabled = true; 
-            boton2.disabled = true; 
+        if (estadoactual == 'Activo' || estadoactual == 'Inactivo') {
+            boton.disabled = true;
+            boton2.disabled = true;
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
             cola.disabled = false;
         }
-        else if (estadoactual == 'Desconectado'){
-            boton.disabled = true; 
-            boton2.disabled = true; 
+        else if (estadoactual == 'Desconectado') {
+            boton.disabled = true;
+            boton2.disabled = true;
             boton3.classList.remove("disabled");
-            numero.innerHTML = 'N/C'; 
+            numero.innerHTML = 'N/C';
             cola.disabled = true;
         }
-        else if (estadoactual == 'Disponible'){
-            boton.disabled = false; 
-            boton2.disabled = false; 
+        else if (estadoactual == 'Disponible') {
+            boton.disabled = false;
+            boton2.disabled = false;
             boton3.classList.add("disabled");
-            numero.innerHTML = 'N/C'; 
+            numero.innerHTML = 'N/C';
             cola.disabled = true;
         }
-        else if (estadoactual == 'Ocupado'){
-            boton.disabled = false; 
-            boton2.disabled = false; 
+        else if (estadoactual == 'Ocupado') {
+            boton.disabled = false;
+            boton2.disabled = false;
             boton3.classList.add("disabled");
             cola.disabled = true;
         }

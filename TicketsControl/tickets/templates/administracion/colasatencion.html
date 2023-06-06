@@ -1,114 +1,89 @@
 {% extends 'base.html' %}
-
+{% block nav_header %}
+    {% include 'componentes/navbarheader.html' %}
+{% endblock %}
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand">
-            <img src="../../static/img/Imagen1.png" alt="" width="70" height="40" class="d-inline-block align-text-top">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin_side' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'colas_atencion' %}"  aria-current="page">Colas de Atencion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'estados_agente' %}">Estados de Agentes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'casos_agente' %}">Casos de Agentes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tickets_agente' %}">Tickets</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'datos_agente' %}">Agentes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'configuracion' %}">Configuracion de Visualizador</a>
-                </li>
-            </ul>
-            <form class="d-flex">
-                <a class="btn btn-outline-danger" href="{% url 'logout' %}" type="button">Cerrar Sesion</a>
-            </form>
-        </div>
-    </div>
-</nav>
-
-<div class="container">
-    <div class="row mt-5">
-        <div class="form-floating mb-3 col">
-            <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select"
-                name="departamento" required onchange="cargarAgentes()">
-                <option value="Admisiones">Admisiones</option>
-                <option value="Registro">Registro</option>
-                <option value="Cursos Libres">Cursos Libres</option>
-                <option value="Cajas">Cajas</option>
-            </select>
-        </div>
-        <div class="form-floating mb-3 col">
-            <select id="agente_select" class="form-select" name="agente_select"
-                data-placeholder="Seleccion Agente">
-                <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
-            </select>
-        </div>
-    </div>
-    <div class="row mt-5">
-        <table id="record-table" style="height: 200px;" class="table table-striped table-hover table-fixed-height">
-            <thead class="table-dark">
-                <tr>
-                    <th>
-                        <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
-                    </th>
-                    <th>
-                        <h5 class="mt-2 text-center fw-bold">NUMERO DE VENTANILLA</h5>
-                    </th>
-                    <th>
-                        <h5 class="mt-2 text-center fw-bold">COLA DE ATENCION</h5>
-                    </th>
-                    <th>
-                        <h5 class="mt-2 text-center fw-bold">ESTADO DE ATENCION</h5>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in records %}
-                <tr>
-                    <td class="text-center align-middle">
-                        <h5 id="id_agente">{{ record.agente_id }}</h5>
-                    </td>
-                    <td class="text-center align-middle">
-                        <h5 class="">{{ record.numeroVentanilla }}</h5>
-                    </td>
-                    <td class="text-center align-middle">
-                        <select style="width: 200px; height: 50px; font-size: 18px; font-weight: bold;"
-                            class="form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
-                            name="cola_select" onchange="cola()">
-                            <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}</option>
-                            <option value="Registro">Registro</option>
-                            <option value="Registro/Tesis">Registro/Tesis</option>
-                            <option value="Registro/Convalidacion">Registro/Convalidacion</option>
-                            <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
-                            <option value="Registro/Suficiencia">Registro/Suficiencias</option>
-                            <option value="Registro/Graduaciones">Registro/Graduaciones</option>
+<div class="p-2 mt-5">
+    <div class="row p-2 mt-5">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol">
+            <h5 class="card-title p-2 text-center fw-bold">Cola de Atención</h5>
+            <div class="row p-2">
+                <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
+                    <div class="form-floating mb-3 col">
+                        <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select"
+                            name="departamento" required onchange="cargarAgentes()">
                             <option value="Admisiones">Admisiones</option>
+                            <option value="Registro">Registro</option>
                             <option value="Cursos Libres">Cursos Libres</option>
                             <option value="Cajas">Cajas</option>
                         </select>
-                    </td>
-                    <td class="text-center align-middle">
-                        <h5>{{ record.estadoAtencion }}</h5>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
+                    <div class="form-floating mb-3 col">
+                        <select id="agente_select" class="form-select" name="agente_select"
+                            data-placeholder="Seleccion Agente">
+                            <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                    <div class="card-body table-responsive px-md-4 px-2 pt-3">
+                        <div class="table-responsive-sm">
+                            <table id="record-table" style="height: 200px;" class="table table-striped table-hover table-fixed-height">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>
+                                            <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
+                                        </th>
+                                        <th>
+                                            <h5 class="mt-2 text-center fw-bold">NUMERO DE VENTANILLA</h5>
+                                        </th>
+                                        <th>
+                                            <h5 class="mt-2 text-center fw-bold">COLA DE ATENCION</h5>
+                                        </th>
+                                        <th>
+                                            <h5 class="mt-2 text-center fw-bold">ESTADO DE ATENCION</h5>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in records %}
+                                    <tr>
+                                        <td class="text-center align-middle">
+                                            <h5 id="id_agente">{{ record.agente_id }}</h5>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <h5 class="">{{ record.numeroVentanilla }}</h5>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <select style="width: 200px; height: 50px; font-size: 18px; font-weight: bold;"
+                                                class="form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
+                                                name="cola_select" onchange="cola()">
+                                                <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}</option>
+                                                <option value="Registro">Registro</option>
+                                                <option value="Registro/Tesis">Registro/Tesis</option>
+                                                <option value="Registro/Convalidacion">Registro/Convalidacion</option>
+                                                <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
+                                                <option value="Registro/Suficiencia">Registro/Suficiencias</option>
+                                                <option value="Registro/Graduaciones">Registro/Graduaciones</option>
+                                                <option value="Admisiones">Admisiones</option>
+                                                <option value="Cursos Libres">Cursos Libres</option>
+                                                <option value="Cajas">Cajas</option>
+                                            </select>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <h5>{{ record.estadoAtencion }}</h5>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -158,17 +133,7 @@
     }
 
     const recordTable = document.getElementById('record-table');
-    const socket = new WebSocket('ws://' + window.location.host + '/ws/tickets_control/');
-
-    socket.onmessage = function (event) {
-        const message = event.data;
-        if (message === 'update') {
-            // Actualiza la tabla de registros
-            fetchRecords();
-
-        }
-    };
-
+    
     function fetchRecords() {
         fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())

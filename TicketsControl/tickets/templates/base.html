@@ -1,28 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Usuario</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     {% load bootstrap5 %}
     {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    {% load static %}
-    {% comment %} CSS{% endcomment %}
-    {% load static %}
-
+    <link rel='stylesheet' href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <link rel='stylesheet' href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/dataTables.jqueryui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    {% bootstrap_javascript %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         history.pushState(null, null, location.href);
@@ -30,12 +24,23 @@
             history.go(1);
         };
     </script>
+    {% block voz %}
+
+    {% endblock voz %}
 </head>
 
-<body class="overflow-x-hidden">
-    <div>
+<body>
+    {% block nav_header %}
+
+    {% endblock %}
+    <div class="context">
+        {% block context %}
+
+        {% endblock context %}
+    </div>
+    <div class="container">
         {% block content %}
-        
+
         {% endblock content %}
     </div>
     {% comment %} JS {% endcomment %}
@@ -44,10 +49,8 @@
     {% endblock %}
 </body>
 
-<footer>
-    {% block footer %}
-        
-    {% endblock footer %}
-</footer>
+{% block footer %}
+
+{% endblock footer %}
 
 </html>
