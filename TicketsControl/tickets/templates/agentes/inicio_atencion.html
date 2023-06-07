@@ -96,7 +96,7 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <a class="btn btn-md btn-primary btn-login fw-bold" type="button" id="btnSalir"
-                                href="{% url 'registro_agente' %}">Salir</a>
+                                href="{% url 'registro_agente' %}" onclick="initializeWebChannel();">Salir</a>
                         </div>
                     </div>
                 </div>
@@ -225,6 +225,16 @@
             }
         };
         request.send();
+    }
+    function initializeWebChannel() {
+        if (typeof QWebChannel !== 'undefined') {
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                var resizeObj = channel.objects.resizeObj;
+                if (resizeObj) {
+                    resizeObj.restore_resize_window(800, 700);
+                }
+            });
+        }
     }
 </script>
 {% endblock %}
