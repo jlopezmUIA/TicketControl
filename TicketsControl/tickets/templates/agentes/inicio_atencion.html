@@ -1,115 +1,106 @@
 {% extends 'base.html' %}
 {% block nav_header %}
-    
+
 {% endblock %}
 {% block content %}
 <div class="p-2">
     <div class="row">
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 mx-auto ">
-            <div class="card border-0 cardCol rounded-3 my-4 mx-auto">
-                <div class="card-body p-4 p-sm-5">
-                    <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold">Atencion</h5>
-                    <h5 id="id_agente" style="display: none;">{{ agente }}</h5>
-                    <main class="form-signin ">
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
-                                <div class="form-floating">
-                                    <div class="input-group input-group-lg" style="align-items: center;">
-                                        <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
-                                        <select style="width: 100px; height: 50px;" class="form-select form-select-sm"
-                                            aria-label=".form-select-sm example" id="status_select" name="status_select"
-                                            onchange="estados()">
-                                            <option value="Activo" selected>Activo</option>
-                                            <option value="Disponible">Disponible</option>
-                                            <option value="Ocupado" disabled>Ocupado</option>
-                                            <option value="Inactivo">Inactivo</option>
-                                            <option value="Desconectado">Desconectado</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                {% if 'Registro' in cola %}
-                                <div class="form-floating mt-2">
-                                    <div class="input-group input-group-lg" style="align-items: center;">
-                                        <h5 class="fw-light fw-bold">Cola de Atencion:&nbsp;&nbsp;</h5>
-                                        <select style="width: 200px; height: 50px; font-size: 18px;"
-                                            class="form-select form-select-sm" aria-label=".form-select-sm example"
-                                            id="cola_select" name="cola_select" onchange="cola()">
-                                            <option value="{{ cola }}" selected>{{ cola }}</option>
-                                            <option value="Registro/Tesis">Registro/Tesis</option>
-                                            <option value="Registro/Convalidacion">Registro/Convalidacion</option>
-                                            <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
-                                            <option value="Registro/Suficiencia">Registro/Suficiencias</option>
-                                            <option value="Registro/Graduaciones">Registro/Graduaciones</option>
-                                            <option value="Registro">Registro</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                {% endif %}
+            <h5 id="id_agente" style="display: none;">{{ agente }}</h5>
+            <main class="form-signin ">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
+                        <div class="form-floating">
+                            <div class="input-group input-group-lg" style="align-items: center;">
+                                <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
+                                <select style="width: 100px; height: 50px;" class="form-select form-select-sm"
+                                    aria-label=".form-select-sm example" id="status_select" name="status_select"
+                                    onchange="estados()">
+                                    <option value="Activo" selected>Activo</option>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="Ocupado" disabled>Ocupado</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                    <option value="Desconectado">Desconectado</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-5 mt-3 border border-primary rounded"
-                                style="display: flex; align-items: center; justify-content: center;">
-                                <div class="form-floating mb-5 mt-5">
-                                    <h1 id="txtNumero" class="display-1">N/C</h1>
-                                </div>
+                        {% if 'Registro' in cola %}
+                        <div class="form-floating mt-2">
+                            <div class="input-group input-group-lg" style="align-items: center;">
+                                <h5 class="fw-light fw-bold">Cola de Atencion:&nbsp;&nbsp;</h5>
+                                <select style="width: 200px; height: 50px; font-size: 18px;"
+                                    class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                    id="cola_select" name="cola_select" onchange="cola()">
+                                    <option value="{{ cola }}" selected>{{ cola }}</option>
+                                    <option value="Registro/Tesis">Registro/Tesis</option>
+                                    <option value="Registro/Convalidacion">Registro/Convalidacion</option>
+                                    <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
+                                    <option value="Registro/Suficiencia">Registro/Suficiencias</option>
+                                    <option value="Registro/Graduaciones">Registro/Graduaciones</option>
+                                    <option value="Registro">Registro</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-12 col-md-8 col-lg-6">
-                                <div class="d-flex justify-content-center flex-wrap mx-auto ">
-                                    <div class="col-md-6 justify-content-center">
-                                        <button class="btn btn-md btn-primary btn-login fw-bold mb-2 d-flex"
-                                            type="button" id="btnSiguiente" onclick="numeroSiguiente()">Siguiente
-                                            Cliente</button>
-                                    </div>
-
-                                    <button id="btnTransferir" type="button"
-                                        class="btn btn-md btn-danger dropdown-toggle mb-2" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        Transferir Cliente
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Admisiones')">Admisiones</a></li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro')">Registro</a></li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Cajas')">Cajas</a></li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
-                                        <li>
-                                            <hr class="dropdown-divider">
-                                        </li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro/Tesis')">Registro/Tesis</a></li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro/Convalidacion')">Registro/Convalidacion</a>
-                                        </li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro/Retiros')">Registro/Retiros-Congelacion</a>
-                                        </li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro/Suficiencia')">Registro/Suficiencia</a>
-                                        </li>
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('Registro/Graduaciones')">Registro/Graduaciones</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
-                                <div class="form-floating d-flex justify-content-end mt-4">
-                                    <a class="btn btn-md btn-primary btn-login fw-bold" type="button" id="btnSalir"
-                                        href="{% url 'home' %}">Salir</a>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-5 mt-3 border border-primary rounded"
+                        style="display: flex; align-items: center; justify-content: center;">
+                        <div class="form-floating mb-5 mt-5">
+                            <h1 id="txtNumero" class="display-1">N/C</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                        <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                            <div class="col-md-6 justify-content-center">
+                                <button class="btn btn-md btn-primary btn-login fw-bold mb-2 d-flex" type="button"
+                                    id="btnSiguiente" onclick="numeroSiguiente()">Siguiente</button>
+                            </div>
+
+                            <button id="btnTransferir" type="button" class="btn btn-md btn-danger dropdown-toggle mb-2"
+                                data-bs-toggle="dropdown" aria-expanded="false">Transferir</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Admisiones')">Admisiones</a></li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro')">Registro</a></li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Cajas')">Cajas</a></li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro/Tesis')">Registro/Tesis</a></li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro/Convalidacion')">Registro/Convalidacion</a>
+                                </li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro/Retiros')">Registro/Retiros-Congelacion</a>
+                                </li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro/Suficiencia')">Registro/Suficiencia</a>
+                                </li>
+                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                        onclick="transferencia('Registro/Graduaciones')">Registro/Graduaciones</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                        <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                            <a class="btn btn-md btn-primary btn-login fw-bold" type="button" id="btnSalir"
+                                href="{% url 'home' %}">Salir</a>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 </div>
