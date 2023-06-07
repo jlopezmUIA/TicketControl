@@ -698,6 +698,7 @@ def transferencia(request):
 
 previous_thread = None
 def ticketcontrol(request):
+    fecha_actual = date.today().strftime('%Y-%m-%d')
     if 'cantrecords' in request.session:
         global previous_thread
         recordscant = ticketControl.objects.count()
@@ -744,7 +745,7 @@ def ticketcontrol(request):
         request.session['cantrecords'] = recordscant
         request.session['reproduccion'] = recordscant
     registro = visualizador.objects.first() 
-    records = ticketControl.objects.all().order_by('-id_ticketcontrol')[:6]
+    records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:6]
     noticia = registro.text
     tipovisual = registro.tipo_visor
 
