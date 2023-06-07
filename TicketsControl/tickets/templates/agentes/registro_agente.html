@@ -50,7 +50,7 @@
                             <br>
                             <div class="d-grid mb-2">
                                 <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                    id="loading-indicator"> Iniciar Atencion</button>
+                                    id="loading-indicator" onclick="initializeWebChannel()"> Iniciar Atencion</button>
 
                                 <div id="loading-indicator" class="hidden">
                                     <div class="spinner"></div>
@@ -96,6 +96,17 @@
             }
         };
         request.send();
+    }
+
+    function initializeWebChannel() {
+        if (typeof QWebChannel !== 'undefined') {
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                var resizeObj = channel.objects.resizeObj;
+                if (resizeObj) {
+                    resizeObj.resize_window(300, 300);
+                }
+            });
+        }
     }
 </script>
 {% endblock %}
