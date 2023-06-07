@@ -16,28 +16,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_tiempos_agente
 
 def home(request):
-    if 'fechaactual' in request.session:
-        estado = request.GET.get("estado")
-        # Convertir la fecha a una cadena de texto en formato YYYY-MM-DD
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        hora_actual = datetime.now()
-        hora_actual_str = hora_actual.strftime('%H:%M:%S')
-        request.session['fechaactual'] = fecha_actual
-        save = update_estados_agente(
-            request, request.session.get('estadoactual'), hora_actual_str)
-        if save:
-            data_estados_agente = {
-                # Objeto de la instancia relacionada del modelo agentes
-                'agente': request.session.get('id_agente'),
-                'estado': estado,
-                'fecha': str(fecha_actual),
-                'tiempoInicio': str(hora_actual_str),
-                'tiempoFinal': None  # Fecha en formato YYYY-MM-DD
-            }
-        save = save_estados_agente(request, data_estados_agente)
-        if save is not None:
-            request.session['estadoactual'] = save.id_estado
-
     request.session.flush() 
     request.session['estadoR'] = False
     request.session['listaR'] = []
@@ -207,6 +185,29 @@ def eliminaragente(request):
     return redirect(request.META.get('HTTP_REFERER'))
 
 def registroAgente(request):
+    if 'fechaactual' in request.session:
+        estado = request.GET.get("estado")
+        # Convertir la fecha a una cadena de texto en formato YYYY-MM-DD
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        hora_actual = datetime.now()
+        hora_actual_str = hora_actual.strftime('%H:%M:%S')
+        request.session['fechaactual'] = fecha_actual
+        save = update_estados_agente(
+            request, request.session.get('estadoactual'), hora_actual_str)
+        if save:
+            data_estados_agente = {
+                # Objeto de la instancia relacionada del modelo agentes
+                'agente': request.session.get('id_agente'),
+                'estado': estado,
+                'fecha': str(fecha_actual),
+                'tiempoInicio': str(hora_actual_str),
+                'tiempoFinal': None  # Fecha en formato YYYY-MM-DD
+            }
+        save = save_estados_agente(request, data_estados_agente)
+        if save is not None:
+            request.session['estadoactual'] = save.id_estado
+
+    request.session.flush() 
     return render(request, 'agentes/registro_agente.html')
 
 def obtener_agentes(request):
