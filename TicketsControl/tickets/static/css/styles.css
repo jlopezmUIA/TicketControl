@@ -51,7 +51,7 @@ footer{
 }
 
 #movingH1 {
-    animation: moveRightToLeft 15s linear infinite;
+    animation: moveRightToLeft 25s linear infinite;
     color: #FED141;
 }
 

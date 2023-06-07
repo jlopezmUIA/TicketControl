@@ -62,7 +62,7 @@
                                 <h1 class="display-4 mt-3 mb-3 fw-bold">&nbsp&nbsp{{ record.numeroVentanilla }}&nbsp&nbsp</h1>
                             </td>
                             <td class="text-center uppercase-column">
-                                <h1 class="display-4 mt-3 mb-3 fw-bold">{{ record.departamento }}</h1>
+                                <h1 class="display-4 mt-3 mb-3 fw-bold">&nbsp{{ record.departamento }}&nbsp</h1>
                             </td>
                         </tr>
                         {% endfor %}
@@ -122,12 +122,15 @@
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
                 if (data.list.length !== 0){
-                    if (data.list.length > 1){
+                    if (data.list.length >= 1){
                         for (let i = 0; i < data.list.length; i++) {
-                            playlist.push(data.list[i]);
-                            console.log("dato entrante:"+data.list[i])
+                            const datoEntrante = data.list[i];
+                            if (!playlist.includes(datoEntrante)) {
+                              playlist.push(datoEntrante);
+                              console.log("dato entrante: " + datoEntrante);
+                            }
                         }
-                    }else{
+                    }else {
                         playlist.push(data.list[0]);
                         console.log('datos repetido');
                     }
@@ -143,20 +146,21 @@
         };
         request.send();
     }
-    
+    var indiceActual = 0;
     function reproducirLista() {
         var textoActual = ""
-        if (playlist.length === 0) {
+        if (indiceActual >= playlist.length) {
             playlist = [];
-            console.log("Lista eliminada.")
+            indiceActual = 0;
+            console.log("Lista eliminada.");
             return;
         }
         
-        textoActual = playlist[0];
-        playlist.shift();
+        var textoActual = playlist[indiceActual];
         responsiveVoice.speak(textoActual, 'Spanish Female', {
             onend: function() {
-                reproducirLista();
+              indiceActual++;
+              reproducirLista();
             }
         });
     }
