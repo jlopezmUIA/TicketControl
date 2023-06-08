@@ -35,6 +35,7 @@
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                     <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
+                            <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                             <table id="record-table" style="height: 200px;"
                                 class="table table-striped table-hover table-fixed-height">
                                 <thead class="table-dark">
@@ -242,5 +243,46 @@
             }
         });
     });
+
+    function exportToExcel() {
+        // Obtener la tabla por su ID
+        const table = document.getElementById('record-table');
+      
+        // Crear un objeto de libro de Excel
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Datos');
+      
+        // Recorrer las filas y celdas de la tabla
+        const rows = table.querySelectorAll('tr');
+        rows.forEach((row, rowIndex) => {
+          const cells = row.querySelectorAll('td, th');
+          cells.forEach((cell, cellIndex) => {
+            // Obtener el contenido de la celda
+            const cellData = cell.innerText;
+            // Agregar el contenido a la hoja de Excel
+            worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
+          });
+        });
+      
+        // Crear un archivo Excel
+        workbook.xlsx.writeBuffer().then((buffer) => {
+          // Convertir el buffer a un blob
+          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      
+          // Crear un objeto URL para el blob
+          const url = URL.createObjectURL(blob);
+      
+          // Crear un enlace de descarga
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'tabla_estados.xlsx';
+      
+          // Simular un clic en el enlace de descarga
+          link.click();
+      
+          // Liberar el objeto URL
+          URL.revokeObjectURL(url);
+        });
+    }
 </script>
 {% endblock %}

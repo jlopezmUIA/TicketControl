@@ -47,8 +47,8 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-5 mt-3 border border-primary rounded"
                         style="display: flex; align-items: center; justify-content: center;">
-                        <div class="form-floating mb-5 mt-5">
-                            <h1 id="txtNumero" class="display-1">N/C</h1>
+                        <div class="form-floating mb-3 mt-3">
+                            <h1 id="txtNumero" class="display-3">N/C</h1>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                                         onclick="transferencia('Admisiones')">Admisiones</a></li>
                                 <li><a class="dropdown-item" style="cursor: pointer;"
                                         onclick="transferencia('Registro')">Registro</a></li>
-                                <li><a class="dropdown-item" style="cursor: pointer;"
+                                <li><a class="dropdown-item disabled" style="cursor: pointer;"
                                         onclick="transferencia('Cajas')">Cajas</a></li>
                                 <li><a class="dropdown-item" style="cursor: pointer;"
                                         onclick="transferencia('Cursos Libres')">Cursos Libres</a></li>
@@ -226,6 +226,21 @@
         };
         request.send();
     }
+
+    const colaSelect = document.getElementById('cola_select');
+
+    function fetchCola() {
+    fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => response.text())
+        .then(data => {
+        const parser = new DOMParser();
+        const newSelect = parser.parseFromString(data, 'text/html').getElementById('cola_select');
+        colaSelect.innerHTML = newSelect.innerHTML;
+        });
+    }
+
+    setInterval(fetchCola, 10000);
+
     function initializeWebChannel() {
         if (typeof QWebChannel !== 'undefined') {
             new QWebChannel(qt.webChannelTransport, function (channel) {
@@ -236,5 +251,6 @@
             });
         }
     }
+    
 </script>
 {% endblock %}

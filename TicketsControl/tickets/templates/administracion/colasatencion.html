@@ -129,7 +129,6 @@
             }
         };
         request.send();
-
     }
 
     const recordTable = document.getElementById('record-table');
@@ -144,7 +143,7 @@
             });
     }
 
-    setInterval(fetchRecords, 10000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
+    setInterval(fetchRecords, 120000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
 
 
     // Obtener la referencia al select del agente
