@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark pt-4 pb-3" style="background-color: #1d1d1b;">
     <div class="container-fluid">
-        <a class="navbar-brand">
-            <img src="../../static/img/Imagen1.png" alt="" width="70" height="40" class="d-inline-block align-text-top">
+        <a class="navbar-brand px-5">
+            <img src="../../static/img/Imagen1.png" alt="" width="95" height="55" class="d-inline-block align-text-top">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -10,39 +10,69 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin_side' %}" aria-current="page">Inicio</a>
+                    <a class="nav-link" href="{% url 'admin_side' %}" aria-current="page">INICIO</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'colas_atencion' %}">Colas de Atencion</a>
+                    <a class="nav-link" href="{% url 'colas_atencion' %}">COLAS DE ACCIÓN</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'estados_agente' %}">Estados de Agentes</a>
+                    <a class="nav-link" href="{% url 'estados_agente' %}">ESTADOS DE AGENTES</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'casos_agente' %}">Casos de Agentes</a>
+                    <a class="nav-link" href="{% url 'casos_agente' %}">CASOS DE AGENTES</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tickets_agente' %}">Tickets</a>
+                    <a class="nav-link" href="{% url 'tickets_agente' %}">TICKETS</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="agentesDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" href="{% url 'datos_agente' %}">Agentes</a>
+                        aria-expanded="false" href="{% url 'datos_agente' %}">AGENTES</a>
                     <ul class="dropdown-menu" aria-labelledby="agentesDropdown">
                         <li><a class="dropdown-item" href="{% url 'datos_agente' %}">Ver Agentes</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                data-bs-target="#modal_nuevoagente">Añadir agentes</a></li>
+                                data-bs-target="#modal_nuevoagente">Añadir Agentes</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'configuracion' %}">Configuracion de Visualizador</a>
+                    <a class="nav-link" href="{% url 'configuracion' %}">CONFIGURACIÓN DE VISUALIZADOR</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <a class="btn btn-outline-danger" href="{% url 'logout' %}" type="button">Cerrar Sesion</a>
+            <form class="d-flex" style="padding-right: 30px;">
+                <a class="btn" href="{% url 'logout' %}" type="button">CERRAR SESIÓN</a>
             </form>
         </div>
     </div>
 </nav>
+<style>
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgb(255, 255, 255);
+    }
+    .btn{
+        border-radius: 50px;
+        background-color: #ffd142;
+        color: #1d1d1b;
+        font-weight: bold;
+        border-color: #ffd142;
+    }
+    .btn:hover {
+        background-color: #1d1d1b;
+        color: #ffd142;
+        border-color: #1d1d1b;
+    }
+
+    .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .show>.nav-link {
+        color: #ffd142;
+    }
+
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+</style>
 <script>
     const activeLink = localStorage.getItem('activeLink');
     if (activeLink) {

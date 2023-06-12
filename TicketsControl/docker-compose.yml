@@ -3,7 +3,10 @@ version: "3"
 services:
   db:
     image: postgres
+    ports:
+      - "5432:5432"
     environment:
+      - DATABASE_HOST=127.0.0.1
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -14,5 +17,15 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+    depends_on:
+      - db
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@uia.ac.cr"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
     depends_on:
       - db

@@ -38,23 +38,23 @@
                 {% endif %}
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-6" id="div2">
-                <table id="record-table" class="table table-striped table-fixed-height" onchange="audio();">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>
-                                <h1 class="mt-2 text-center fw-bold">TICKET</h1>
+                <table id="record-table" class="table" onchange="audio();">
+                    <thead>
+                        <tr class="colorcolumna">
+                            <th style="height: 0px; align-items: center;">
+                                <h1 class="textC text-center fw-bold">TICKET</h1>
                             </th>
-                            <th>
-                                <h1 class="mt-2 text-center fw-bold">VENTANILLA</h1>
+                            <th style="height: 0px; align-items: center;">
+                                <h1 class="textC text-center fw-bold">VENTANILLA</h1>
                             </th>
-                            <th>
-                                <h1 class="mt-2 text-center fw-bold">AREA</h1>
+                            <th style="height: 0px; align-items: center;">
+                                <h1 class="textC text-center fw-bold">ÁREA</h1>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for record in records|slice:":6" %}
-                        <tr>
+                        <tr class="colorfilas">
                             <td class="text-center">
                                 <h1 class="display-4 mt-3 mb-3 fw-bold">{{ record.codigoCaso }}</h1>
                             </td>
@@ -77,6 +77,30 @@
     body {
         overflow-y: hidden;
         overflow-x: hidden;
+    }
+    #div2{
+        padding-top: 45px;
+        padding-left: 30px;
+        padding-right: 45px;
+    }
+    table {
+        border-collapse: separate;
+        width: 100%;
+        border-spacing: 0 2px;
+    }
+    th{
+        padding: 0px;
+    }
+    .colorfilas{
+        background-color: white;
+    }
+    .colorcolumna{
+        background-color: black;
+        color: white;
+    }
+    .textC{
+        padding: 0%;
+        margin: 0%;
     }
 </style>
 <script>

@@ -1,0 +1,296 @@
+@font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-SemiLight.eot');
+    src: local('../fonts/Abrade/Abrade Semi Light'), local('Abrade-SemiLight'),
+      url('../fonts/Abrade/Abrade-SemiLight.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-SemiLight.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-SemiLight.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-SemiLight.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraLight.eot');
+    src: local('../fonts/Abrade/Abrade Extra Light'), local('Abrade-ExtraLight'),
+      url('../fonts/Abrade/Abrade-ExtraLight.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraLight.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraLight.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Black.eot');
+    src: local('../fonts/Abrade/Abrade Black'), local('Abrade-Black'),
+      url('../fonts/Abrade/Abrade-Black.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Black.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Black.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-BoldItalic.eot');
+    src: local('../fonts/Abrade/Abrade Bold Italic'), local('Abrade-BoldItalic'),
+      url('../fonts/Abrade/Abrade-BoldItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-BoldItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-BoldItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Medium.eot');
+    src: local('../fonts/Abrade/Abrade Medium'), local('Abrade-Medium'),
+      url('../fonts/Abrade/Abrade-Medium.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Medium.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Medium.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Regular.eot');
+    src: local('../fonts/Abrade/Abrade Regular'), local('Abrade-Regular'),
+      url('../fonts/Abrade/Abrade-Regular.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Regular.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Regular.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ThinItalic.eot');
+    src: local('../fonts/Abrade/Abrade Thin Italic'), local('Abrade-ThinItalic'),
+      url('../fonts/Abrade/Abrade-ThinItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ThinItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ThinItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-BlackItalic.eot');
+    src: local('../fonts/Abrade/Abrade Black Italic'), local('Abrade-BlackItalic'),
+      url('../fonts/Abrade/Abrade-BlackItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-BlackItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-BlackItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Light.eot');
+    src: local('../fonts/Abrade/Abrade Light'), local('Abrade-Light'),
+      url('../fonts/Abrade/Abrade-Light.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Light.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Light.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Thin.eot');
+    src: local('../fonts/Abrade/Abrade Thin'), local('Abrade-Thin'),
+      url('../fonts/Abrade/Abrade-Thin.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Thin.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Thin.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Bold.eot');
+    src: local('../fonts/Abrade/Abrade Bold'), local('Abrade-Bold'),
+      url('../fonts/Abrade/Abrade-Bold.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Bold.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Bold.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-SemiBoldItalic.eot');
+    src: local('../fonts/Abrade/Abrade Semi Bold Italic'), local('Abrade-SemiBoldItalic'),
+      url('../fonts/Abrade/Abrade-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-SemiBoldItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-SemiBoldItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraThin.eot');
+    src: local('../fonts/Abrade/Abrade Extra Thin'), local('Abrade-ExtraThin'),
+      url('../fonts/Abrade/Abrade-ExtraThin.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraThin.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraThin.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraThin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-SemiLightItalic.eot');
+    src: local('../fonts/Abrade/Abrade Semi Light Italic'), local('Abrade-SemiLightItalic'),
+      url('../fonts/Abrade/Abrade-SemiLightItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-SemiLightItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-SemiLightItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-SemiLightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraLightItalic.eot');
+    src: local('../fonts/Abrade/Abrade Extra Light Italic'), local('Abrade-ExtraLightItalic'),
+      url('../fonts/Abrade/Abrade-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraLightItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraLightItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraBoldItalic.eot');
+    src: local('../fonts/Abrade/Abrade Extra Bold Italic'), local('Abrade-ExtraBoldItalic'),
+      url('../fonts/Abrade/Abrade-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraBoldItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraBoldItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-LightItalic.eot');
+    src: local('../fonts/Abrade/Abrade Light Italic'), local('Abrade-LightItalic'),
+      url('../fonts/Abrade/Abrade-LightItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-LightItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-LightItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-MediumItalic.eot');
+    src: local('../fonts/Abrade/Abrade Medium Italic'), local('Abrade-MediumItalic'),
+      url('../fonts/Abrade/Abrade-MediumItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-MediumItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-MediumItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraBold.eot');
+    src: local('../fonts/Abrade/Abrade Extra Bold'), local('Abrade-ExtraBold'),
+      url('../fonts/Abrade/Abrade-ExtraBold.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraBold.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraBold.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraBlackItalic.eot');
+    src: local('../fonts/Abrade/Abrade Extra Black Italic'), local('Abrade-ExtraBlackItalic'),
+      url('../fonts/Abrade/Abrade-ExtraBlackItalic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraBlackItalic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraBlackItalic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraBlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-SemiBold.eot');
+    src: local('../fonts/Abrade/Abrade Semi Bold'), local('Abrade-SemiBold'),
+      url('../fonts/Abrade/Abrade-SemiBold.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-SemiBold.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-SemiBold.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ExtraBlack.eot');
+    src: local('../fonts/Abrade/Abrade Extra Black'), local('Abrade-ExtraBlack'),
+      url('../fonts/Abrade/Abrade-ExtraBlack.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ExtraBlack.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ExtraBlack.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ExtraBlack.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-Italic.eot');
+    src: local('../fonts/Abrade/Abrade Italic'), local('Abrade-Italic'),
+      url('../fonts/Abrade/Abrade-Italic.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-Italic.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-Italic.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+  }
+  
+  @font-face {
+    font-family: 'Abrade';
+    src: url('../fonts/Abrade/Abrade-ItalicExtraThin.eot');
+    src: local('../fonts/Abrade/Abrade Italic Extra Thin'), local('Abrade-ItalicExtraThin'),
+      url('../fonts/Abrade/Abrade-ItalicExtraThin.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Abrade/Abrade-ItalicExtraThin.woff2') format('woff2'),
+      url('../fonts/Abrade/Abrade-ItalicExtraThin.woff') format('woff'),
+      url('../fonts/Abrade/Abrade-ItalicExtraThin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+  }
+  
+  
+  body {
+    font-family: 'Abrade', sans-serif !important;
+    background: #dee2e6;
+    background: -webkit-linear-gradient(to right, #dee2e6, #dee2e6);
+    background: linear-gradient(to right, #dee2e6, #dee2e6);
+    min-height: 100vh;
+  }

@@ -5,12 +5,12 @@
 {% block content %}
 <div class="p-2 mt-5">
     <div class="row p-2 mt-5">
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol">
-            <h5 class="card-title p-2 text-center fw-bold">Cola de Atención</h5>
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo p-2 fw-bold">Cola de Atención</h5>
             <div class="row p-2">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
-                    <div class="form-floating mb-3 col">
-                        <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select"
+                    <div class="mb-3 col">
+                        <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"
                             name="departamento" required onchange="cargarAgentes()">
                             <option value="Admisiones">Admisiones</option>
                             <option value="Registro">Registro</option>
@@ -20,8 +20,8 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
-                    <div class="form-floating mb-3 col">
-                        <select id="agente_select" class="form-select" name="agente_select"
+                    <div class="mb-3 col">
+                        <select id="agente_select" class="roundedInput form-select" name="agente_select"
                             data-placeholder="Seleccion Agente">
                             <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
                         </select>
@@ -30,7 +30,7 @@
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                     <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
-                            <table id="record-table" style="height: 200px;" class="table table-striped table-hover table-fixed-height">
+                            <table id="record-table" style="height: 200px;" class="table table-hover table-fixed-height">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>
@@ -39,7 +39,7 @@
                                         <th>
                                             <h5 class="mt-2 text-center fw-bold">NUMERO DE VENTANILLA</h5>
                                         </th>
-                                        <th>
+                                        <th style="width: 300px">
                                             <h5 class="mt-2 text-center fw-bold">COLA DE ATENCION</h5>
                                         </th>
                                         <th>
@@ -49,7 +49,7 @@
                                 </thead>
                                 <tbody>
                                     {% for record in records %}
-                                    <tr>
+                                    <tr class="colorfilas">
                                         <td class="text-center align-middle">
                                             <h5 id="id_agente">{{ record.agente_id }}</h5>
                                         </td>
@@ -57,8 +57,8 @@
                                             <h5 class="">{{ record.numeroVentanilla }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <select style="width: 200px; height: 50px; font-size: 18px; font-weight: bold;"
-                                                class="form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
+                                            <select style="width: 300px; height: 50px; font-size: 18px; font-weight: bold;"
+                                                class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
                                                 name="cola_select" onchange="cola()">
                                                 <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}</option>
                                                 <option value="Registro">Registro</option>
@@ -86,6 +86,38 @@
         </div>
     </div>
 </div>
+<style>
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 22px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+    }
+    .titulo{
+        text-align: end;
+        font-size: 40px;
+    }
+    table {
+        border-collapse: separate;
+        width: 100%;
+        border-spacing: 0 4px;
+    }
+    .colorfilas{
+        background-color: white;
+    }
+    td:first-child,
+    th:first-child {
+        border-radius: 50px 0 0 50px;
+    }
+
+    td:last-child,
+    th:last-child {
+        border-radius: 0 50px 50px 0;
+    }
+</style>
 <script>
     window.onload = function () {
         cargarAgentes();

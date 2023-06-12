@@ -1,12 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block nav_login %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="btn navbar-brand" href="{% url 'login' %}">
+            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">ADMINISTRACIÓN
+        </a>
+    </div>
+</nav>
 
+<style>
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="p-2">
   <div class="row mt-5">
     <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5 mb-5">
-      <div class="card border-0 rounded-3 my-5 mx-auto cardCol">
-        <div class="card-body p-4 p-sm-5">
-          <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold"> Sistema Tickets de Atencion al Cliente </h5>
+      <div class="border-0 rounded-3 my-5 mx-auto">
+        <div class=" p-4 p-sm-5">
+          <h5 class="titulo mb-5">SISTEMA DE TICKET DE ATENCIÓN AL CLIENTE</h5>
           {% if form.errors %}
           <div class="alert alert-danger" role="alert">
             {% for field, errors in form.errors.items %}
@@ -20,36 +39,67 @@
           {% endif %}
           <main class="form-signin">
             <div class="form-floating mb-3 ">
-              <div class="input-group mb-3 input-group-lg">
-                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold" id="loading-indicator"
-                  href="{% url 'ticket_maker' %}"> Iniciar Ticket Maker</a>
+              <div class="mb-3">
+                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
+                  href="{% url 'ticket_maker' %}">INICIAR TICKETS</a>
               </div>
             </div>
             <div class="form-floating mb-3">
-              <div class="input-group mb-3 input-group-lg">
-                <a type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold" id="loading-indicator"
-                  href="{% url 'ticket_control' %}"> Iniciar Visualizador</a>
+              <div class="mb-3">
+                <a type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
+                  href="{% url 'ticket_control' %}"> INICIAR VIZUALIZADOR</a>
               </div>
 
             </div>
             <div class="form-floating mb-3 ">
-              <div class="input-group mb-3 input-group-lg">
-                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold" id="loading-indicator"
-                  href="{% url 'registro_agente' %}"> Iniciar Agente</a>
+              <div class="mb-3">
+                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
+                  href="{% url 'registro_agente' %}"> INICIAR AGENTE</a>
               </div>
             </div>
             <br>
-            <div class="d-grid">
-              <div class="links-container">
-                <div class="left-link">
-                  <a href="{% url 'login' %}">Administracion</a>
-                </div>
-              </div>
-            </div>
           </main>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .titulo{
+    font-size: 28px;
+    font-family: 'Abrade';
+    font-weight: 800;
+    padding-bottom: 10px;
+    text-align: center;
+    color: #ffd142;
+  }
+  body{
+    background-image: url('{% static "img/Fondo1.png" %}');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  .card{
+    background-color: #f3f4f5;
+  }
+  .btnStyle {
+    background-color: #1d1d1b;
+    color: #ffd142;
+    border-radius: 50px;
+    border-color: #1d1d1b;
+    font-size: 25px;
+  }
+  .btnStyle:hover {
+    background-color: #ffd142;
+    color: #1d1d1b;
+    border-color: #ffd142;
+  }
+  .btn:focus,
+  .btn:active{
+    outline: none !important;
+    box-shadow: none !important;
+  }
+</style>
 {% endblock %}

@@ -85,7 +85,7 @@ DATABASES = {
         'USER': 'odoo',
         'PASSWORD': '1502',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': 5432,
     }
 }
 

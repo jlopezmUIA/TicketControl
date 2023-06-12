@@ -1,0 +1,288 @@
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-SemiLight.eot');
+    src: local('Abrade Semi Light'), local('Abrade-SemiLight'),
+        url('Abrade-SemiLight.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-SemiLight.woff2') format('woff2'),
+        url('Abrade-SemiLight.woff') format('woff'),
+        url('Abrade-SemiLight.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraLight.eot');
+    src: local('Abrade Extra Light'), local('Abrade-ExtraLight'),
+        url('Abrade-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraLight.woff2') format('woff2'),
+        url('Abrade-ExtraLight.woff') format('woff'),
+        url('Abrade-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Black.eot');
+    src: local('Abrade Black'), local('Abrade-Black'),
+        url('Abrade-Black.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Black.woff2') format('woff2'),
+        url('Abrade-Black.woff') format('woff'),
+        url('Abrade-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-BoldItalic.eot');
+    src: local('Abrade Bold Italic'), local('Abrade-BoldItalic'),
+        url('Abrade-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-BoldItalic.woff2') format('woff2'),
+        url('Abrade-BoldItalic.woff') format('woff'),
+        url('Abrade-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Medium.eot');
+    src: local('Abrade Medium'), local('Abrade-Medium'),
+        url('Abrade-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Medium.woff2') format('woff2'),
+        url('Abrade-Medium.woff') format('woff'),
+        url('Abrade-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Regular.eot');
+    src: local('Abrade Regular'), local('Abrade-Regular'),
+        url('Abrade-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Regular.woff2') format('woff2'),
+        url('Abrade-Regular.woff') format('woff'),
+        url('Abrade-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ThinItalic.eot');
+    src: local('Abrade Thin Italic'), local('Abrade-ThinItalic'),
+        url('Abrade-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ThinItalic.woff2') format('woff2'),
+        url('Abrade-ThinItalic.woff') format('woff'),
+        url('Abrade-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-BlackItalic.eot');
+    src: local('Abrade Black Italic'), local('Abrade-BlackItalic'),
+        url('Abrade-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-BlackItalic.woff2') format('woff2'),
+        url('Abrade-BlackItalic.woff') format('woff'),
+        url('Abrade-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Light.eot');
+    src: local('Abrade Light'), local('Abrade-Light'),
+        url('Abrade-Light.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Light.woff2') format('woff2'),
+        url('Abrade-Light.woff') format('woff'),
+        url('Abrade-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Thin.eot');
+    src: local('Abrade Thin'), local('Abrade-Thin'),
+        url('Abrade-Thin.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Thin.woff2') format('woff2'),
+        url('Abrade-Thin.woff') format('woff'),
+        url('Abrade-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Bold.eot');
+    src: local('Abrade Bold'), local('Abrade-Bold'),
+        url('Abrade-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Bold.woff2') format('woff2'),
+        url('Abrade-Bold.woff') format('woff'),
+        url('Abrade-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-SemiBoldItalic.eot');
+    src: local('Abrade Semi Bold Italic'), local('Abrade-SemiBoldItalic'),
+        url('Abrade-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-SemiBoldItalic.woff2') format('woff2'),
+        url('Abrade-SemiBoldItalic.woff') format('woff'),
+        url('Abrade-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraThin.eot');
+    src: local('Abrade Extra Thin'), local('Abrade-ExtraThin'),
+        url('Abrade-ExtraThin.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraThin.woff2') format('woff2'),
+        url('Abrade-ExtraThin.woff') format('woff'),
+        url('Abrade-ExtraThin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-SemiLightItalic.eot');
+    src: local('Abrade Semi Light Italic'), local('Abrade-SemiLightItalic'),
+        url('Abrade-SemiLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-SemiLightItalic.woff2') format('woff2'),
+        url('Abrade-SemiLightItalic.woff') format('woff'),
+        url('Abrade-SemiLightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraLightItalic.eot');
+    src: local('Abrade Extra Light Italic'), local('Abrade-ExtraLightItalic'),
+        url('Abrade-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraLightItalic.woff2') format('woff2'),
+        url('Abrade-ExtraLightItalic.woff') format('woff'),
+        url('Abrade-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraBoldItalic.eot');
+    src: local('Abrade Extra Bold Italic'), local('Abrade-ExtraBoldItalic'),
+        url('Abrade-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraBoldItalic.woff2') format('woff2'),
+        url('Abrade-ExtraBoldItalic.woff') format('woff'),
+        url('Abrade-ExtraBoldItalic.ttf') format('truetype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-LightItalic.eot');
+    src: local('Abrade Light Italic'), local('Abrade-LightItalic'),
+        url('Abrade-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-LightItalic.woff2') format('woff2'),
+        url('Abrade-LightItalic.woff') format('woff'),
+        url('Abrade-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-MediumItalic.eot');
+    src: local('Abrade Medium Italic'), local('Abrade-MediumItalic'),
+        url('Abrade-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-MediumItalic.woff2') format('woff2'),
+        url('Abrade-MediumItalic.woff') format('woff'),
+        url('Abrade-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraBold.eot');
+    src: local('Abrade Extra Bold'), local('Abrade-ExtraBold'),
+        url('Abrade-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraBold.woff2') format('woff2'),
+        url('Abrade-ExtraBold.woff') format('woff'),
+        url('Abrade-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraBlackItalic.eot');
+    src: local('Abrade Extra Black Italic'), local('Abrade-ExtraBlackItalic'),
+        url('Abrade-ExtraBlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraBlackItalic.woff2') format('woff2'),
+        url('Abrade-ExtraBlackItalic.woff') format('woff'),
+        url('Abrade-ExtraBlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-SemiBold.eot');
+    src: local('Abrade Semi Bold'), local('Abrade-SemiBold'),
+        url('Abrade-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-SemiBold.woff2') format('woff2'),
+        url('Abrade-SemiBold.woff') format('woff'),
+        url('Abrade-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ExtraBlack.eot');
+    src: local('Abrade Extra Black'), local('Abrade-ExtraBlack'),
+        url('Abrade-ExtraBlack.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ExtraBlack.woff2') format('woff2'),
+        url('Abrade-ExtraBlack.woff') format('woff'),
+        url('Abrade-ExtraBlack.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-Italic.eot');
+    src: local('Abrade Italic'), local('Abrade-Italic'),
+        url('Abrade-Italic.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-Italic.woff2') format('woff2'),
+        url('Abrade-Italic.woff') format('woff'),
+        url('Abrade-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Abrade';
+    src: url('Abrade-ItalicExtraThin.eot');
+    src: local('Abrade Italic Extra Thin'), local('Abrade-ItalicExtraThin'),
+        url('Abrade-ItalicExtraThin.eot?#iefix') format('embedded-opentype'),
+        url('Abrade-ItalicExtraThin.woff2') format('woff2'),
+        url('Abrade-ItalicExtraThin.woff') format('woff'),
+        url('Abrade-ItalicExtraThin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+}
+

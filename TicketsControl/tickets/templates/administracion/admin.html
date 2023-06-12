@@ -5,11 +5,11 @@
 {% block content %}
 <div class="p-2">
     <div class="row p-2">
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol mb-4">
-            <div class="card-body table-responsive px-md-4 px-2 pt-3">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
+            <div class=" table-responsive px-md-4 px-2 pt-3">
                 <div class="table-responsive-sm">
                     <table id="record-table" style="height: 200px;"
-                        class="table table-striped table-hover table-fixed-height">
+                        class="table table-hover table-fixed-height">
                         <thead class="table-dark">
                             <tr>
                                 <th>
@@ -18,7 +18,7 @@
                                 <th>
                                     <h5 class="mt-2 text-center fw-bold">NUMERO DE VENTANILLA</h5>
                                 </th>
-                                <th>
+                                <th style="width: 300px;">
                                     <h5 class="mt-2 text-center fw-bold">COLA DE ATENCION</h5>
                                 </th>
                                 <th>
@@ -28,7 +28,7 @@
                         </thead>
                         <tbody>
                             {% for record in records %}
-                            <tr>
+                            <tr class="colorfilas">
                                 <td class="text-center align-middle">
                                     <h5 id="id_agente">{{ record.agente_id }}</h5>
                                 </td>
@@ -36,8 +36,8 @@
                                     <h5 class="">{{ record.numeroVentanilla }}</h5>
                                 </td>
                                 <td class="text-center align-middle">
-                                    <select style="width: 200px; height: 50px; font-size: 18px; font-weight: bold;"
-                                        class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                    <select style="  width: 300px; height: 50px; font-size: 18px; font-weight: bold;"
+                                        class="form-select form-select-sm roundedInput" aria-label=".form-select-sm example"
                                         id="cola_select" name="cola_select" onchange="cola()">
                                         <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}
                                         </option>
@@ -62,11 +62,11 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol mb-4">
-            <div class="card-body table-responsive px-md-4 px-2 pt-3">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
+            <div class=" table-responsive px-md-4 px-2 pt-3">
                 <div class="table-responsive-sm">
                     <table id="record-table2" style="height: 200px;"
-                        class="table table-striped table-hover table-fixed-height">
+                        class="table table-hover table-fixed-height">
                         <thead class="table-dark">
                             <tr>
                                 <th>
@@ -85,7 +85,7 @@
                         </thead>
                         <tbody>
                             {% for caso in casos %}
-                            <tr>
+                            <tr class="colorfilas">
                                 <td class="text-center align-middle">
                                     <h5 id="id_agente">{{ caso.agente_id }}</h5>
                                 </td>
@@ -105,15 +105,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol mb-4">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
             <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                <div class="card-body table-responsive px-md-4 px-2 pt-3">
+                <div class=" table-responsive px-md-4 px-2 pt-3">
                     <div class="row">
                         <div class="col-12 col-sm-10 col-md-12 col-lg-6">
                             <div class="table-responsive-sm">
                                 <h4 class="text-center">Admisiones Clientes</h4>
                                 <table id="record-table3" style="height: 200px;"
-                                    class="table table-striped table-hover table-fixed-height">
+                                    class="table  table-hover table-fixed-height">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>
@@ -132,7 +132,7 @@
                                     </thead>
                                     <tbody>
                                         {% for admi in admin %}
-                                        <tr>
+                                        <tr class="colorfilas">
                                             <td class="text-center align-middle">
                                                 <h5 id="id_agente">{{ admi.codigo }}</h5>
                                             </td>
@@ -156,7 +156,7 @@
                             <div class="table-responsive-sm">
                                 <h4 class="text-center">Registro Clientes</h4>
                                 <table id="record-table4" style="height: 200px;"
-                                    class="table table-striped table-hover table-fixed-height">
+                                    class="table  table-hover table-fixed-height">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>
@@ -175,7 +175,7 @@
                                     </thead>
                                     <tbody>
                                         {% for regi in registro %}
-                                        <tr>
+                                        <tr class="colorfilas">
                                             <td class="text-center align-middle">
                                                 <h5 id="id_agente">{{ regi.codigo }}</h5>
                                             </td>
@@ -198,15 +198,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto card cardCol mb-4">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
             <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                <div class="card-body table-responsive px-md-4 px-2 pt-3">
+                <div class=" table-responsive px-md-4 px-2 pt-3">
                     <div class="row">
                         <div class="col-12 col-sm-10 col-md-12 col-lg-6">
                             <div class="table-responsive-sm">
                                 <h4 class="text-center">Cajas Clientes</h4>
                                 <table id="record-table5" style="height: 200px;"
-                                    class="table table-striped table-hover table-fixed-height">
+                                    class="table  table-hover table-fixed-height">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>
@@ -225,7 +225,7 @@
                                     </thead>
                                     <tbody>
                                         {% for caja in cajas %}
-                                        <tr>
+                                        <tr class="colorfilas">
                                             <td class="text-center align-middle">
                                                 <h5 id="id_agente">{{ caja.codigo }}</h5>
                                             </td>
@@ -248,7 +248,7 @@
                             <div class="table-responsive-sm">
                                 <h4 class="text-center">C.L. Clientes</h4>
                                 <table id="record-table6" style="height: 200px;"
-                                    class="table table-striped table-hover table-fixed-height">
+                                    class="table  table-hover table-fixed-height">
                                     <thead class="table-dark">
                                         <tr>
                                             <th>
@@ -267,7 +267,7 @@
                                     </thead>
                                     <tbody>
                                         {% for curso in cursos %}
-                                        <tr>
+                                        <tr class="colorfilas">
                                             <td class="text-center align-middle">
                                                 <h5 id="id_agente">{{ curso.codigo }}</h5>
                                             </td>
@@ -292,7 +292,32 @@
         </div>
     </div>
 </div>
+<style>
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 20px;
+        padding: 10px;
+        padding-left: 30px;
+    }
+    table {
+        border-collapse: separate;
+        width: 100%;
+        border-spacing: 0 4px;
+    }
+    .colorfilas{
+        background-color: white;
+    }
+    td:first-child,
+    th:first-child {
+        border-radius: 50px 0 0 50px;
+    }
 
+    td:last-child,
+    th:last-child {
+        border-radius: 0 50px 50px 0;
+    }
+</style>
 <script>
     function cola() {
         var cola = document.getElementById("cola_select").value;

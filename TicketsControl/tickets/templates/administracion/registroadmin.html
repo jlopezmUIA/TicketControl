@@ -1,12 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block nav_login %}
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="btn navbar-brand" href="{% url 'login' %}">
+            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">INICIO SESIÓN
+        </a>
+    </div>
+</nav>
 
+<style>
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="p-2">
-    <div class="row mt-5">
-        <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5 mb-5">
-            <div class="card border-0 cardCol rounded-3 my-5 mx-auto">
-                <div class="card-body p-4 p-sm-5">
-                    <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold"> Registro Administrativo </h5>
+    <div class="row mt-3">
+        <div class="col-10 col-sm-12 col-md-12 col-lg-5 mx-auto mt-5 mb-5">
+            <div class="my-5 mx-auto">
+                <div class="p-4 p-sm-5">
+                    <h5 class="text-center titulo" style="color: #ffd142;">REGISTRO<p>ADMINISTRATIVO</p></h5>
                     {% if form.errors %}
                     <div class="alert alert-danger" role="alert">
                         {% for field, errors in form.errors.items %}
@@ -18,43 +37,34 @@
                         {% endfor %}
                     </div>
                     {% endif %}
-                    <main class="form-signin">
+                    <main>
                         <form method="POST">
                             {% csrf_token %}
-                            <div class="form-floating mb-3">
-                                <div class="input-group mb-3 input-group-lg">
+                            <div class="mb-3">
+                                <div class="mb-3">
+                                    <h5 style="color: white; padding-left: 25px;">Identificación</h5>
                                     <input type="text" class="form-control" id="floatingInput"
-                                        placeholder="Identificación" name="username" required>
+                                        placeholder="Ingrese su ID" name="username" required>
                                 </div>
-
                             </div>
-                            <div class="form-floating mb-3 ">
-                                <div class="input-group mb-3 input-group-lg">
-                                    <input type="password" class="form-control " id="floatingPassword"
+                            <div class="mb-3 ">
+                                <div class="mb-3">
+                                    <h5 style="color: white; padding-left: 25px;">Contraseña</h5>
+                                    <input type="password" class="form-control " id="floatingInput2"
                                         placeholder="Contraseña" name="password1" required>
                                 </div>
                             </div>
-                            <div class="form-floating mb-3 ">
-                                <div class="input-group mb-3 input-group-lg">
-                                    <input type="password" class="form-control " id="floatingPassword"
+                            <div class="mb-3">
+                                <div class="mb-3">
+                                    <h5 style="color: white; padding-left: 25px;">Repetir Contraseña</h5>
+                                    <input type="password" class="form-control " id="floatingInput3"
                                         placeholder="Repetir Contraseña" name="password2" required>
                                 </div>
                             </div>
                             <br>
                             <div class="d-grid mb-2">
-                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                <button type="submit" class="btnStyle w-100 btn btn-lg btn-primary btn-login fw-bold"
                                     id="loading-indicator"> Registrar</button>
-
-                                <div id="loading-indicator" class="hidden">
-                                    <div class="spinner"></div>
-                                </div>
-                            </div>
-                            <div class="d-grid">
-                                <div class="links-container">
-                                    <div class="left-link">
-                                        <a href="{% url 'login' %}">Atras</a>
-                                    </div>
-                                </div>
                             </div>
                         </form>
                     </main>
@@ -63,4 +73,86 @@
         </div>
     </div>
 </div>
+<style>
+    .titulo{
+        font-size: 28px;
+        font-family: 'Abrade';
+        font-weight: 800;
+        padding-bottom: 10px;
+    }
+    body{
+        background-image: url('{% static "img/Fondo3.png" %}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+    #floatingInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 20px;
+        padding: 10px;
+        background-image: url('{% static "img/lock.png" %}');
+        background-position: 30px center;
+        background-repeat: no-repeat;
+        background-size: 44px 35px;
+        padding-left: 85px;
+    }
+    #floatingInput:focus, #floatingInput2:focus, #floatingInput3:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    #floatingInput2 {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 20px;
+        padding: 10px;
+        background-image: url('{% static "img/lock2.png" %}');
+        background-position: 30px center;
+        background-repeat: no-repeat;
+        background-size: 40px 40px;
+        padding-left: 85px;
+    }
+    #floatingInput3 {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 20px;
+        padding: 10px;
+        background-image: url('{% static "img/lock2.png" %}');
+        background-position: 30px center;
+        background-repeat: no-repeat;
+        background-size: 40px 40px;
+        padding-left: 85px;
+    }
+    
+    .btnStyle {
+        background-color: #1D1D1B;
+        color: #ffd142;
+        border-radius: 50px;
+        border-color: #1D1D1B;
+        font-size: 25px;
+    }
+    .btnStyle:hover {
+        background-color: #ffd142;
+        color: #1D1D1B;
+        border-color: #ffd142;
+    }
+</style>
 {% endblock %}
+{% block footer %}
+<footer class="footerLogin d-flex">
+    <img src="{% static 'img/Imagen1.png' %}" alt="">
+</footer>
+
+<style>
+    .footerLogin{
+        position: fixed;
+        bottom: 25px;
+        width: 95%;
+        height: 9%;
+        background-color: transparent;
+        justify-content: end;
+    }
+</style>
+{% endblock footer %}

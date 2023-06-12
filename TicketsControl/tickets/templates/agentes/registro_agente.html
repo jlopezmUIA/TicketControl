@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 <div class="p-2">
     <div class="row">
         <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5">
             <div class="card border-0 cardCol rounded-3 mx-auto">
                 <div class="card-body p-sm-5">
-                    <h5 class="card-title text-center mb-5 fw-light fs-5 fw-bold"> Registro Agente </h5>
+                    <h5 class="card-title text-center mb-5 fw-light fs-3 fw-bold">REGISTRO DE AGENTE</h5>
                     <main class="form-signin">
                         <form method="POST" action="{% url 'inicio_atencion' %}">
                             {% csrf_token %}
-                            <div class="form-floating mb-3 ">
-                                <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select"
+                            <div class="mb-4">
+                                <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select roundedInput align-center"
                                     name="departamento" required onchange="cargarAgentes()">
                                     <option value="Admisiones">Admisiones</option>
                                     <option value="Registro">Registro</option>
@@ -19,15 +20,15 @@
                                     <option value="Cajas" disabled>Cajas</option>
                                 </select>
                             </div>
-                            <div class="form-floating mb-3">
-                                <select id="agente_select" class="form-select" name="agente_select"
-                                    data-placeholder="Seleccion Agente">
+                            <div class="mb-4">
+                                <select id="agente_select" class="form-select roundedInput align-center" name="agente_select"
+                                    data-placeholder="Seleccion Agente" required>
                                     <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente
                                     </option>
                                 </select>
                             </div>
-                            <div class="form-floating mb-3 ">
-                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="form-select"
+                            <div class="mb-2">
+                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="form-select roundedInput align-center"
                                     name="ventanilla" required>
                                     <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione
                                         Ventanilla</option>
@@ -48,13 +49,16 @@
                                 </select>
                             </div>
                             <br>
-                            <div class="d-grid mb-2">
-                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                    id="loading-indicator" onclick="initializeWebChannel()"> Iniciar Atencion</button>
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle"
+                                    id="loading-indicator" onclick="initializeWebChannel()">INICIAR ATENCIÓN</button>
 
                                 <div id="loading-indicator" class="hidden">
                                     <div class="spinner"></div>
                                 </div>
+                            </div>
+                            <div class="d-grid mb-2 imgClass">
+                                <img class="" src="{% static 'img/uia_logo.png' %}" alt="UIA" style="width: 120px; height: 70px;">
                             </div>
                         </form>
                     </main>
@@ -63,6 +67,37 @@
         </div>
     </div>
 </div>
+
+<style>
+    .imgClass{
+        justify-content: center;
+    }
+    .card{
+        background-color: #f3f4f5;
+    }
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 22px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+    }
+    
+    .btnStyle {
+        background-color: #ffd142;
+        color: #1d1d1b;
+        border-radius: 50px;
+        border-color: #ffd142;
+        font-size: 25px;
+    }
+    .btnStyle:hover {
+        background-color: #1d1d1b;
+        color: #ffd142;
+        border-color: #1d1d1b;
+    }
+</style>
 <script>
     window.onload = function () {
         cargarAgentes();

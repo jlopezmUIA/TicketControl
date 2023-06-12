@@ -13,6 +13,7 @@ def imprimir(codigo, departamento):
 
     printer = Network(printer_ip)
     img_path = os.path.join(settings.STATIC_ROOT,'img', 'logo.png')
+    font_round = 'Arial'
 
     printer.set(align='center')
     printer.image(img_path, impl="bitImageColumn")
@@ -22,7 +23,7 @@ def imprimir(codigo, departamento):
     printer.text("Bienvenido")
     printer.text("\n\n")
 
-    printer.set(align='center', width=5, height=5)
+    printer.set(align='center', font=font_round, width=5, height=5)
     printer.text(""+codigo+"\n\n")
 
     printer.set(align='center', width=1, height=1)

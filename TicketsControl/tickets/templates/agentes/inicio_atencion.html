@@ -9,11 +9,11 @@
             <h5 id="id_agente" style="display: none;">{{ agente }}</h5>
             <main class="form-signin ">
                 <div class="row d-flex justify-content-center">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-3">
-                        <div class="form-floating">
-                            <div class="input-group input-group-lg" style="align-items: center;">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-2">
+                        <div class="">
+                            <div class="" style="align-items: center;">
                                 <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
-                                <select style="width: 100px; height: 50px;" class="form-select form-select-sm"
+                                <select style="width: 135px; height: 35px;" class="roundedInput form-select form-select-sm"
                                     aria-label=".form-select-sm example" id="status_select" name="status_select"
                                     onchange="estados()">
                                     <option value="Activo" selected>Activo</option>
@@ -25,11 +25,11 @@
                             </div>
                         </div>
                         {% if 'Registro' in cola %}
-                        <div class="form-floating mt-2">
-                            <div class="input-group input-group-lg" style="align-items: center;">
+                        <div class="mt-2">
+                            <div class="" style="align-items: center;">
                                 <h5 class="fw-light fw-bold">Cola:&nbsp;&nbsp;</h5>
-                                <select style="width: 200px; height: 50px; font-size: 18px;"
-                                    class="form-select form-select-sm" aria-label=".form-select-sm example"
+                                <select style="width: 135px; height: 35px;"
+                                    class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example"
                                     id="cola_select" name="cola_select" onchange="cola()">
                                     <option value="{{ cola }}" selected>{{ cola }}</option>
                                     <option value="Registro/Tesis">Registro/Tesis</option>
@@ -45,8 +45,8 @@
                     </div>
                 </div>
                 <div class="row d-flex justify-content-center">
-                    <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-5 mt-3 border border-primary rounded"
-                        style="display: flex; align-items: center; justify-content: center;">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6 mb-4 mt-3 border border-dark rounded"
+                        style="display: flex; align-items: center; justify-content: center; border-color: black;">
                         <div class="form-floating mb-3 mt-3">
                             <h1 id="txtNumero" class="display-3">N/C</h1>
                         </div>
@@ -56,11 +56,11 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <div class="col-md-6 justify-content-center">
-                                <button class="btn btn-md btn-primary btn-login fw-bold mb-2 d-flex" type="button"
+                                <button class="btnStyle1 btn btn-md btn-login fw-bold mb-2 d-flex" type="button"
                                     id="btnSiguiente" onclick="numeroSiguiente()">Siguiente</button>
                             </div>
 
-                            <button id="btnTransferir" type="button" class="btn btn-md btn-danger dropdown-toggle mb-2"
+                            <button id="btnTransferir" type="button" class="fw-bold btnStyle2 btn btn-md dropdown-toggle mb-2"
                                 data-bs-toggle="dropdown" aria-expanded="false">Transferir</button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" style="cursor: pointer;"
@@ -95,7 +95,7 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
-                            <a class="btn btn-md btn-primary btn-login fw-bold" type="button" id="btnSalir"
+                            <a class="btnStyle3 btn btn-md btn-login fw-bold" type="button" id="btnSalir"
                                 href="{% url 'registro_agente' %}" onclick="initializeWebChannel();">Salir</a>
                         </div>
                     </div>
@@ -104,6 +104,46 @@
         </div>
     </div>
 </div>
+<style>
+    .roundedInput {
+        border-radius: 40px;
+        text-align: justify;
+        font-size: 15px;
+        font-family: 'Abrade';
+        font-weight: 600;
+    }
+    .btnStyle1{
+        background-color: #1d1d1b;
+        color: #ffd142;
+        border-radius: 50px;
+        border-color: #1d1d1b;
+        font-size: 15px;
+    }
+    .btnStyle2{
+        background-color: #1d1d1b;
+        color: #ffd142;
+        border-radius: 50px;
+        border-color: #1d1d1b;
+        font-size: 15px;
+    }
+    .btnStyle3{
+        background-color: #960000;
+        color: white;
+        border-radius: 50px;
+        border-color: #960000;
+        font-size: 15px;
+    }
+    .btnStyle1:hover {
+        background-color: #ffd142;
+        color: #1d1d1b;
+        border-color: #ffd142;
+    }
+    .btnStyle2:hover {
+        background-color: #ffd142;
+        color: #1d1d1b;
+        border-color: #ffd142;
+    }
+</style>
 <script>
     window.onload = function () {
         estados();

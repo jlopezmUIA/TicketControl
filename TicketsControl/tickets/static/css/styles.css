@@ -9,13 +9,12 @@ body {
 }
 
 #div1 {
-    width: 47%;
+    width: 51%;
     padding: 0;
 }
 
 #div2 {
-    width: 53%;
-    padding: 0;
+    width: 49%;
 }
 
 #videoFrame{
@@ -27,14 +26,14 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 11%;
+    height: 7%;
 }
 .dataTable {
     border-collapse: collapse !important;
     border: none !important;
-  }
+}
 footer{
-    background-color: black;
+    background-color: #1d1d1b;
 }
 .uppercase-column {
     text-transform: uppercase;
@@ -52,22 +51,24 @@ footer{
 
 #movingH1 {
     animation: moveRightToLeft 25s linear infinite;
-    color: #FED141;
+    color: #ffffff;
+    font-family: 'Abrade';
+    font-weight: 500;
 }
 
 .fullscreen {
     #div1 {
-        width: 49%;
+        width: 51%;
     }
     #div2 {
-        width: 51%;
+        width: 49%;
     }
     #videoFrame{
         width: 100%;
         height: 797px;
     }
     .footer {
-        height: 11.7%;
+        height: 8%;
     }
 }
 
@@ -82,6 +83,7 @@ footer{
 .cardCol {
     width: 100%;
     box-shadow: -1px 15px 30px -10px black;
+    background-color: #f3f4f5;
 }
   
 .dataTables_length {
