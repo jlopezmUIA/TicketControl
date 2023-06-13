@@ -102,6 +102,10 @@
         padding: 0%;
         margin: 0%;
     }
+
+    .highlight-row {
+        background-color: #ffd142;
+    }
 </style>
 <script>
     var playlist  = new Array();
@@ -129,13 +133,13 @@
 
     function fetchRecords() {
         fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-                listareproduccion();
-            });
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
+            recordTable.innerHTML = newTable.innerHTML;
+            listareproduccion();
+        });
     }
 
     function listareproduccion() {
@@ -166,6 +170,12 @@
                         reproducirLista();
                     }
                 }
+                var table = document.getElementById('record-table');
+                var rows = table.getElementsByTagName('tr');
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i].classList.remove('highlight-row');
+                }
+                rows[1].classList.add('highlight-row');
             }
         };
         request.send();

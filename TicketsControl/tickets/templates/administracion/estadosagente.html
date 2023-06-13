@@ -1,13 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block nav_header %}
-{% include 'componentes/navbarheader.html' %}
+    {% include 'componentes/navbarheader.html' %}
 {% endblock %}
+{% block background %}
+
+<div class="fondoFigura">
+    <div class="imgFondo"></div>
+</div>
+
+<style>
+    .fondoFigura {
+        width: 100%;
+    }
+    .imgFondo{
+        background: url('{% static "img/Fondo7.jpg" %}') no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 500px;
+        clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+    }
+</style>
+
+{% endblock background %}
 {% block content %}
-<div class="p-2 mt-4">
-    <div class="row p-2">
+<div class="">
+    <div class="row">
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
-            <h5 class=" p-2 titulo">Estado de agentes</h5>
-            <div class="row p-2">
+            <h5 class="titulo">ESTADO DE AGENTES</h5>
+            <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class="mb-3 col">
                         <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"

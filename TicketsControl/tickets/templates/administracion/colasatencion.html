@@ -1,13 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block nav_header %}
     {% include 'componentes/navbarheader.html' %}
 {% endblock %}
+{% block background %}
+
+<div class="fondoFigura">
+    <div class="imgFondo"></div>
+</div>
+
+<style>
+    .fondoFigura {
+        width: 100%;
+    }
+    .imgFondo{
+        background: url('{% static "img/Fondo5.jpg" %}') no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 500px;
+        clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+    }
+</style>
+
+{% endblock background %}
 {% block content %}
-<div class="p-2 mt-5">
-    <div class="row p-2 mt-5">
+<div class="">
+    <div class="row">
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
-            <h5 class="titulo p-2 fw-bold">Cola de Atención</h5>
-            <div class="row p-2">
+            <h5 class="titulo">COLA DE ATENCIÓN</h5>
+            <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
                     <div class="mb-3 col">
                         <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"
@@ -61,12 +84,15 @@
                                                 class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
                                                 name="cola_select" onchange="cola()">
                                                 <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}</option>
-                                                <option value="Registro">Registro</option>
+                                                <option value="Registro/Documentos">Registro/Documentos</option>
                                                 <option value="Registro/Tesis">Registro/Tesis</option>
                                                 <option value="Registro/Convalidacion">Registro/Convalidacion</option>
-                                                <option value="Registro/Retiro">Registro/Retiro-Congelar</option>
+                                                <option value="Registro/Retiros">Registro/Retiro-Congelar</option>
                                                 <option value="Registro/Suficiencia">Registro/Suficiencias</option>
                                                 <option value="Registro/Graduaciones">Registro/Graduaciones</option>
+                                                <option value="Registro/Taller">Registro/Taller</option>
+                                                <option value="Registro/Apelaciones">Registro/Apelaciones</option>
+                                                <option value="Registro/Retenciones">Registro/Retenciones</option>
                                                 <option value="Admisiones">Admisiones</option>
                                                 <option value="Cursos Libres">Cursos Libres</option>
                                                 <option value="Cajas">Cajas</option>
@@ -99,6 +125,7 @@
     .titulo{
         text-align: end;
         font-size: 40px;
+        font-weight: 900;
     }
     table {
         border-collapse: separate;

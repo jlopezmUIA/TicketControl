@@ -33,6 +33,9 @@ from .views import (
     crear_ticket_registro_retiros,
     crear_ticket_registro_suficiencia,
     crear_ticket_registro_graduacion,
+    crear_ticket_registro_taller,
+    crear_ticket_registro_retencion,
+    crear_ticket_registro_apelacion,
     Logueo,
     RegistroAdmin,
 )
@@ -76,5 +79,7 @@ urlpatterns = [
     path('crear-ticket-registro-retiros/', crear_ticket_registro_retiros, name='crear_ticket_registro_retiros'),
     path('crear-ticket-registro-suficiencia/', crear_ticket_registro_suficiencia, name='crear_ticket_registro_suficiencia'),
     path('crear-ticket-registro-graduacion/', crear_ticket_registro_graduacion, name='crear_ticket_registro_graduacion'),
-
+    path('crear-ticket-registro-taller/', crear_ticket_registro_taller, name='crear_ticket_registro_taller'),
+    path('crear-ticket-registro-apelacion/', crear_ticket_registro_apelacion, name='crear_ticket_registro_apelacion'),
+    path('crear-ticket-registro-retencion/', crear_ticket_registro_retencion, name='crear_ticket_registro_retencion'),
 ]

@@ -1,12 +1,35 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block nav_header %}
     {% include 'componentes/navbarheader.html' %}
 {% endblock %}
+{% block background %}
+
+<div class="fondoFigura">
+    <div class="imgFondo"></div>
+</div>
+
+<style>
+    .fondoFigura {
+        width: 100%;
+    }
+    .imgFondo{
+        background: url('{% static "img/Fondo6.png" %}') no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 500px;
+        clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+    }
+</style>
+
+{% endblock background %}
 {% block content %}
-<div class="p-2 mt-4">
-    <div class="row p-2">
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
-            <h5 class=" p-2 titulo">Agentes</h5>
+<div class="">
+    <div class="row">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo">CONTROL DE AGENTES</h5>
             <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
@@ -121,57 +144,7 @@
 </div>
 
 <!-- Model de Cambio de foto -->
-{% block modal_nuevoagente%}
-<div class="modal fade" id="modal_nuevoagente" tabindex="-1" aria-labelledby="modal_nuevoagenteTitle"
-    style="display: none" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content rounded-4">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal_nuevoagenteTitle">
-                    CREACION DE NUEVO AGENTE
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><span class="icon-close2"></span></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'nuevo_agente' %}">
-                    {% csrf_token %}
-                    <div class="row ">
-                        <div class=" mb-3">
-                            <div class="mb-3">
-                                <input type="text" class="roundedInput form-control" id="floatingInput" placeholder="Nombre de Agente"
-                                    name="name" required>
-                            </div>
 
-                        </div>
-                        <div class="mb-3 ">
-                            <div class="mb-3">
-                                <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select" name="departamento"
-                                    required>
-                                    <option value="Admisiones">Admisiones</option>
-                                    <option value="Registro">Registro</option>
-                                    <option value="Cursos Libres">Cursos Libres</option>
-                                    <option value="Cajas">Cajas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="d-grid mb-2">
-                            <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                id="loading-indicator"> Registrar Agente</button>
-
-                            <div id="loading-indicator" class="hidden">
-                                <div class="spinner"></div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock modal_nuevoagente %}
 
 <style>
     .roundedInput {

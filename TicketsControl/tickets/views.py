@@ -342,14 +342,14 @@ def crear_ticket_registro(request):
 
     data_admisiones = {
         'codigo': 'RG-'+numero_siguiente,
-        'departamento': 'Registro',
+        'departamento': 'Registro/Documentos',
         'fecha': fecha_actual,
         'atentido': False
     }
     save_registro(request, data_admisiones)
     codigo = 'RG-'+numero_siguiente
 
-    departamento = 'RG, REG = Registro'
+    departamento = 'RG, REG = Registro - Documentos'
     imprimir(codigo, departamento)
     dic = {
         'success': True
@@ -388,7 +388,7 @@ def crear_ticket_registro_convalidacion(request):
 
     data_admisiones = {
         'codigo': 'RGC-'+numero_siguiente,
-        'departamento': 'Registro/Convalidacion',
+        'departamento': 'Registro - Convalidacion',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -465,6 +465,75 @@ def crear_ticket_registro_graduacion(request):
     codigo = 'RGG-'+numero_siguiente
 
     departamento = 'RGG, REG = Registro - Graduaciones'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_taller(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RTT-'+numero_siguiente,
+        'departamento': 'Registro/Taller',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RTT-'+numero_siguiente
+
+    departamento = 'RTT, REG = Registro - Taller'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_apelacion(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RGA-'+numero_siguiente,
+        'departamento': 'Registro/Apelaciones',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RGA-'+numero_siguiente
+
+    departamento = 'RGA, REG = Registro - Apelaciones'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_retencion(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Registro/Retenciones',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Retenciones'
     imprimir(codigo, departamento)
     dic = {
         'success': True
@@ -620,10 +689,10 @@ def transferencia(request):
         }
         save_admisiones(request, data_admisiones)
 
-    elif departamento == 'Registro':
+    elif departamento == 'Registro/Documentos':
         data_admisiones = {
             'codigo': cliente,
-            'departamento': 'Registro'
+            'departamento': 'Registro/Documentos'
         }
         save_registro(request, data_admisiones)
 
@@ -659,6 +728,27 @@ def transferencia(request):
         data_admisiones = {
             'codigo': cliente,
             'departamento': 'Registro/Graduaciones'
+        }
+        save_registro(request, data_admisiones)
+
+    elif departamento == 'Registro/Taller':
+        data_admisiones = {
+            'codigo': cliente,
+            'departamento': 'Registro/Taller'
+        }
+        save_registro(request, data_admisiones)
+    
+    elif departamento == 'Registro/Apelaciones':
+        data_admisiones = {
+            'codigo': cliente,
+            'departamento': 'Registro/Apelaciones'
+        }
+        save_registro(request, data_admisiones)
+
+    elif departamento == 'Registro/Retenciones':
+        data_admisiones = {
+            'codigo': cliente,
+            'departamento': 'Registro/Retenciones'
         }
         save_registro(request, data_admisiones)
 
