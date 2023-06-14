@@ -1,0 +1,500 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 rounded-3 my-5 mx-auto">
+                <div class="card-body pt-5">
+                    <h1 class="card-title text-center mb-3 titulo">DEPARTAMENTOS DE ATENCIÓN</h1>
+                    <h4 class="text-center mb-4 titulo2">Seleccione el Departamento al que desea dirigirse</h4>
+                    <main class="form-signin">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="">
+                                    <div>
+                                        <form method="post" action="{% url 'digital_crear_ticket_admision' %}">
+                                            {% csrf_token %}
+                                            <button class=" btnStyle btn btn-lg fw-bold pt-2 pb-2" type="submit"
+                                                id="loading-indicator">
+                                                <p style="font-size: 25px;" class="mt-3 mb-3">Admisiones</p>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="">
+                                    <div>
+                                        <button type="submit" class=" btnStyle btn btn-lg fw-bold pt-2 pb-2"
+                                            id="registrobtn" data-bs-toggle="modal" data-bs-target="#modal_registro">
+                                            <p style="font-size: 25px;" class="mt-3 mb-3">Registro</p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3" style="display: none;">
+                                <div class="form-floating">
+                                    <div>
+                                        <button class="btnStyle btn btn-lg fw-bold pt-2 pb-2" disabled
+                                            type="button" id="loading-indicator">
+                                            <p style="font-size: 25px;" class="mt-3 mb-3">Cajas</p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <div class="form-floating">
+                                    <div>
+                                        <form method="post" action="{% url 'digital_crear_ticket_cursolibre' %}">
+                                            {% csrf_token %}
+                                            <button class="btnStyle btn btn-lg fw-bold pt-2 pb-2" type="submit"
+                                                id="loading-indicator">
+                                                <p style="font-size: 25px;" class="mt-3 mb-3">Cursos Libres</p>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2" style="justify-content: center;">
+                            <img id="imagen" src="{% static 'img/uia_logo.png' %}" alt="">
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Model de Cambio de data -->
+{% block modal_registro%}
+<div class="modal fade" id="modal_registro" tabindex="-1" aria-labelledby="modal_registroTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 class="modal-title" style="text-align: center; font-weight: 900;"
+                                id="modal_registroTitle">REGISTRO</h1>
+                            <p class="titulo2" style="text-align: center; ">Seleccione el trámite que desea realizar</p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3" type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Documentos</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_tesis' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 "
+                                            type="button" id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Tésis</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_retiros' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-1 pb-1" type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-3 mb-3">Retiros y Congelamientos</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_suficiencia' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Suficienca</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post"
+                                        action="{% url 'digital_crear_ticket_registro_convalidacion' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Convalidación</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_graduacion' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Graduaciones</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_taller' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Taller</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_apelacion' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Apelaciones</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating">
+                                <div>
+                                    <form method="post" action="{% url 'digital_crear_ticket_registro_retencion' %}">
+                                        {% csrf_token %}
+                                        <button class=" btnStyle btn btn-lg fw-bold pt-3 pb-3 " type="submit"
+                                            id="loading-indicator">
+                                            <p  class="mt-1 mb-1">Retenciones</p>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2" style="justify-content: center;">
+                        <img id="imagen" src="{% static 'img/uia_logo.png' %}" alt="">
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_registro %}
+
+<style>
+    p{
+        font-size: 20px;
+    }
+    #imagen{
+        width: 170px; 
+        height: 85px;
+    }
+    .modal-dialog.custom-modal-xl {
+        max-width: 95%;
+        /* Puedes ajustar el porcentaje según tus necesidades */
+    }
+
+    .titulo {
+        font-weight: 900;
+        font-size: 20px;
+    }
+
+    .titulo2 {
+        font-weight: 900;
+        font-size: 16px;
+        color: #878787;
+    }
+
+    body {
+        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+
+    .card-body {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    body {
+        background-image: url('{% static "img/Fondo2.png" %}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+
+    .btnStyle {
+        background-color: #1D1D1B;
+        color: white;
+        border-radius: 30px;
+        border-color: #1D1D1B;
+        width: 100%;
+    }
+
+    .btnStyle:hover {
+        background-color: #1D1D1B;
+        color: #ffd142;
+        border-color: #1D1D1B;
+    }
+
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    @media (min-width: 320px) and (max-height: 896px) {
+        #imagen{
+            width: 130px; 
+            height: 55px;
+        }
+        .btnStyle {
+            width: 100%;
+        }
+        p{
+            font-size: 17px;
+        }
+    }
+
+    @media only screen and (min-width: 320px) and (max-width: 560px) {
+        #imagen{
+            width: 130px; 
+            height: 55px;
+        }
+        .btnStyle {
+            width: 100%;
+        }
+        p{
+            font-size: 12px;
+        }
+    }
+
+    @media (min-width: 150px) and (max-width: 200px) {
+        #imagen{
+            width: 130px; 
+            height: 55px;
+        }
+        .btnStyle {
+            width: 100%;
+        }
+        p{
+            font-size: 12px;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        var registro = document.getElementById("registrobtn");
+        // Escucha el evento "shown.bs.modal" para el modal de registro
+        $('#modal_registro').on('shown.bs.modal', function () {
+            // Espera 15 segundos y luego cierra el modal
+            setTimeout(function () {
+                $('#modal_registro').modal('hide');
+                registro.style.color = "white";
+            }, 15000);
+        });
+    });
+
+    function crear_ticket_admision() {
+        var url = "/digital-crear-ticket-admision/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_cajas() {
+        var url = "/digital-crear-ticket-cajas/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_cursolibre() {
+        var url = "/digital-crear-ticket-cursolibre/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload(); s
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro() {
+        var url = "/digital-crear-ticket-registro/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_tesis() {
+        var url = "/digital-crear-ticket-registro-tesis/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_convalidacion() {
+        var url = "/digital-crear-ticket-registro-convalidacion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_retiros() {
+        var url = "/digital-crear-ticket-registro-retiros/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_suficiencia() {
+        var url = "/digital-crear-ticket-registro-suficiencia/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_graduacion() {
+        var url = "/digital-crear-ticket-registro-graduacion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_taller() {
+        var url = "/digital-crear-ticket-registro-taller/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_apelacion() {
+        var url = "/digital-crear-ticket-registro-apelacion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_registro_retencion() {
+        var url = "/digital-crear-ticket-registro-retencion/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+</script>
+{% endblock %}
