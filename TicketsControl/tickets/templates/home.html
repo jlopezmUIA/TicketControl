@@ -3,9 +3,12 @@
 {% block nav_login %}
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="btn navbar-brand" href="{% url 'login' %}">
-            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">ADMINISTRACIÓN
-        </a>
+      <a class="btn navbar-brand" href="{% url 'login' %}">
+        <div class="vertical-align">
+            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">
+            <span class="d-inline-block align-middle">ADMINISTRACIÓN</span>
+        </div>
+    </a>
     </div>
 </nav>
 
@@ -17,6 +20,13 @@
         outline: none !important;
         box-shadow: none !important;
     }
+
+    .vertical-align {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    } 
 </style>
 {% endblock %}
 {% block content %}
@@ -39,7 +49,7 @@
           {% endif %}
           <main class="form-signin">
             <div class="form-floating mb-3 ">
-              <div class="mb-3">
+              <div class="mb-3" style="display: none;">
                 <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
                   href="{% url 'digital_ticket_maker' %}">INICIAR TICKETS DIGITAL</a>
               </div>
@@ -83,7 +93,7 @@
   body{
     background-image: url('{% static "img/Fondo1.png" %}');
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: cover ;
     background-position: center;
     overflow: hidden;
   }
@@ -91,15 +101,15 @@
     background-color: #f3f4f5;
   }
   .btnStyle {
-    background-color: #1d1d1b;
+    background-color: #000000;
     color: #ffd142;
     border-radius: 50px;
-    border-color: #1d1d1b;
+    border-color: #000000;
     font-size: 25px;
   }
   .btnStyle:hover {
     background-color: #ffd142;
-    color: #1d1d1b;
+    color: #000000;
     border-color: #ffd142;
   }
   .btn:focus,
@@ -109,3 +119,19 @@
   }
 </style>
 {% endblock %}
+{% block footer %}
+<footer class="footerLogin d-flex">
+    <img src="{% static 'img/Imagen1.png' %}" alt="">
+</footer>
+
+<style>
+    .footerLogin{
+        position: fixed;
+        bottom: 25px;
+        width: 95%;
+        height: 9%;
+        background-color: transparent;
+        justify-content: end;
+    }
+</style>
+{% endblock footer %}

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark pt-4 pb-3" style="background-color: #1d1d1b;">
+<nav class="navbar navbar-expand-lg navbar-dark pt-4 pb-3" style="background-color: #000000;">
     <div class="container-fluid">
         <a class="navbar-brand px-5">
             <img src="../../static/img/Imagen1.png" alt="" width="95" height="55" class="d-inline-block align-text-top">
@@ -50,14 +50,14 @@
     .btn{
         border-radius: 50px;
         background-color: #ffd142;
-        color: #1d1d1b;
+        color: #000000;
         font-weight: bold;
         border-color: #ffd142;
     }
     .btn:hover {
-        background-color: #1d1d1b;
+        background-color: #000000;
         color: #ffd142;
-        border-color: #1d1d1b;
+        border-color: #000000;
     }
 
     .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .show>.nav-link {
@@ -103,10 +103,10 @@
         <div class="modal-content rounded-4">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_nuevoagenteTitle">
-                    CREACION DE NUEVO AGENTE
+                    CREACIÓN DE NUEVO AGENTE
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><span class="icon-close2"></span></span>
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
                 </button>
             </div>
             <div class="modal-body">
@@ -146,4 +146,19 @@
         </div>
     </div>
 </div>
+
+<style>
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .modal-header{
+        background-color: #000000;
+        color: white;
+    }
+    .btn-close{
+        color: white;
+    }
+</style>
 {% endblock modal_nuevoagente %}

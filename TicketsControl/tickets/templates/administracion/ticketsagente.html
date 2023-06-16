@@ -33,7 +33,7 @@
             <div class="row p-2">
                 <div class="col-12 mb-4 p-2">
                     <div class="mb-3 date col-6">
-                        <h3>Fecha:</h3>
+                        <h3 class="titulo2" style="text-align: justify;">Fecha:</h3>
                         <input type="date" class="form-control roundedInput" id="date"/>
                     </div>
                 </div>
@@ -43,12 +43,12 @@
                             <div class="row">
                                 <div class="col-12 col-sm-10 col-md-12 col-lg-6">
                                     <div class="table-responsive-sm">
-                                        <h4 class="text-center">Admisiones Clientes</h4>
+                                        <h4 class="titulo2 text-center">ADMISIONES CLIENTES</h4>
                                         <table id="record-table3" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark">
+                                            <thead class="table-dark1">
                                                 <tr>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CODIGO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">DPTO</h5>
@@ -71,10 +71,14 @@
                                                         <h5 class="">{{ admi.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ admi.fecha }}</h5>
+                                                        <h5 id="fecha" class="">{{ admi.fecha }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ admi.atendido }}</h5>
+                                                        {% if  admi.atendido %}
+                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
+                                                        {% else %}
+                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -84,12 +88,12 @@
                                 </div>
                                 <div class="col-12 col-sm-10 col-md-12 col-lg-6">
                                     <div class="table-responsive-sm">
-                                        <h4 class="text-center">Registro Clientes</h4>
+                                        <h4 class="titulo2 text-center">REGISTRO CLIENTES</h4>
                                         <table id="record-table4" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark">
+                                            <thead class="table-dark1">
                                                 <tr>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CODIGO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">DPTO</h5>
@@ -112,10 +116,14 @@
                                                         <h5 class="">{{ regi.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ regi.fecha }}</h5>
+                                                        <h5 id="fecha" class="">{{ regi.fecha }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ regi.atendido }}</h5>
+                                                        {% if  regi.atendido %}
+                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
+                                                        {% else %}
+                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -123,14 +131,14 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6">
+                                <div class="col-12 col-sm-10 col-md-12 col-lg-6" style="margin-top: 80px; display: none;">
                                     <div class="table-responsive-sm">
-                                        <h4 class="text-center">Cajas Clientes</h4>
+                                        <h4 class="titulo2 text-center">CAJAS CLIENTES</h4>
                                         <table id="record-table5" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark">
+                                            <thead class="table-dark1">
                                                 <tr>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CODIGO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">DPTO</h5>
@@ -153,10 +161,14 @@
                                                         <h5 class="">{{ caja.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ caja.fecha }}</h5>
+                                                        <h5 id="fecha" class="">{{ caja.fecha }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ caja.atendido }}</h5>
+                                                        {% if  caja.atendido %}
+                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
+                                                        {% else %}
+                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -164,14 +176,14 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6">
+                                <div class="col-12 col-sm-10 col-md-12 col-lg-6" style="margin-top: 80px;">
                                     <div class="table-responsive-sm">
-                                        <h4 class="text-center">C.L. Clientes</h4>
+                                        <h4 class="titulo2 text-center">C.L CLIENTES</h4>
                                         <table id="record-table6" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark">
+                                            <thead class="table-dark1">
                                                 <tr>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CODIGO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">DPTO</h5>
@@ -180,6 +192,7 @@
                                                         <h5 class="mt-2 text-center fw-bold">FECHA</h5>
                                                     </th>
                                                     <th>
+                                                        
                                                         <h5 class="mt-2 text-center fw-bold">ATEND</h5>
                                                     </th>
                                                 </tr>
@@ -194,10 +207,14 @@
                                                         <h5 class="">{{ curso.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ curso.fecha }}</h5>
+                                                        <h5 id="fecha" class="">{{ curso.fecha }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ curso.atendido }}</h5>
+                                                        {% if  curso.atendido %}
+                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
+                                                        {% else %}
+                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
+                                                        {% endif %}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -205,18 +222,18 @@
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-12">
+                                <div class="col-12 col-sm-10 col-md-12 col-lg-12" style="margin-top: 80px;">
                                     <div class="table-responsive-sm">
-                                        <h4 class="text-center">Clientes Solicitado a Ventanilla</h4>
+                                        <h4 class="titulo2 text-center">CLIENTES EN VENTANILLA</h4>
                                         <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                                         <table id="record-table" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark">
+                                            <thead class="table-dark1">
                                                 <tr>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CODIGO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">NUMERO DE VENTANILLA</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">NÚMERO DE VENTANILLA</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
@@ -239,7 +256,7 @@
                                                         <h5>{{ record.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5>{{ record.fecha }}</h5>
+                                                        <h5 id="fecha">{{ record.fecha }}</h5>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -256,6 +273,10 @@
     </div>
 </div>
 <style>
+    .table-dark1{
+        background-color: black;
+        color: white;
+    }
     .roundedInput {
         border-radius: 50px;
         text-align: justify;
@@ -269,14 +290,23 @@
         text-align: end;
         font-size: 40px;
         font-weight: 900;
+        color: #000000;
     }
-    table {
+
+    .titulo2{
+        text-align: center;
+        font-size: 25px;
+        font-weight: 800;
+        color: #000000;
+    }
+    table.dataTable  {
         border-collapse: separate;
         width: 100%;
         border-spacing: 0 4px;
     }
     .colorfilas{
         background-color: white;
+        border-color: transparent;
     }
     td:first-child,
     th:first-child {
@@ -289,6 +319,185 @@
     }
 </style>
 <script>
+    $(document).ready(function () {
+        $('#record-table3').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+
+        $('#record-table4').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+        $('#record-table5').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+        $('#record-table6').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+        $('#record-table').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+    });
+
     window.onload = function () {
         var dateInput = document.getElementById("date");
 
@@ -326,73 +535,11 @@
         request.send();
     }
 
-
-    const recordTable = document.getElementById('record-table');
-    const recordTable3 = document.getElementById('record-table3');
-    const recordTable4 = document.getElementById('record-table4');
-    const recordTable5 = document.getElementById('record-table5');
-    const recordTable6 = document.getElementById('record-table6');
-
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-            });
-    }
-    function fetchRecords3() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable3 = parser.parseFromString(data, 'text/html').getElementById('record-table3');
-                recordTable3.innerHTML = newTable3.innerHTML;
-            });
-    }
-
-    function fetchRecords4() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable4 = parser.parseFromString(data, 'text/html').getElementById('record-table4');
-                recordTable4.innerHTML = newTable4.innerHTML;
-            });
-    }
-
-    function fetchRecords5() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable5 = parser.parseFromString(data, 'text/html').getElementById('record-table5');
-                recordTable5.innerHTML = newTable5.innerHTML;
-            });
-    }
-
-    function fetchRecords6() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable6 = parser.parseFromString(data, 'text/html').getElementById('record-table6');
-                recordTable6.innerHTML = newTable6.innerHTML;
-            });
-    }
-
-    setInterval(fetchRecords, 15000);
-    setInterval(fetchRecords3, 15000);
-    setInterval(fetchRecords4, 15000);
-    setInterval(fetchRecords5, 15000);
-    setInterval(fetchRecords6, 15000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
-
     // Obtener la referencia al select del agente
-    var fechaInput = document.getElementById("fecha");
+    var fechaInput = document.getElementById("date");
 
     // Agregar un evento de escucha para capturar el cambio de opción
-    fechaInput.addEventListener("click", function () {
+    fechaInput.addEventListener("change", function () {
         // Obtener todas las filas de la tabla
         var rows3 = document.querySelectorAll("#record-table3 tbody tr");
         var rows4 = document.querySelectorAll("#record-table4 tbody tr");

@@ -7,12 +7,12 @@
         <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5">
             <div class="card border-0 cardCol rounded-3 mx-auto">
                 <div class="card-body p-sm-5">
-                    <h5 class="card-title text-center mb-5 fw-light fs-3 fw-bold">REGISTRO DE AGENTE</h5>
-                    <main class="form-signin">
+                    <h5 class="card-title text-center mb-5 fw-light fs-3 fw-bold" style="color: #000000;">REGISTRO DE AGENTE</h5>
+                    <main class="">
                         <form method="POST" action="{% url 'inicio_atencion' %}">
                             {% csrf_token %}
                             <div class="mb-4">
-                                <select id="departamento" data-placeholder="Seleccione Departamento" class="form-select roundedInput align-center"
+                                <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput align-center"
                                     name="departamento" required onchange="cargarAgentes()">
                                     <option value="Admisiones">Admisiones</option>
                                     <option value="Registro">Registro</option>
@@ -21,14 +21,14 @@
                                 </select>
                             </div>
                             <div class="mb-4">
-                                <select id="agente_select" class="form-select roundedInput align-center" name="agente_select"
+                                <select id="agente_select" class="roundedInput align-center" name="agente_select"
                                     data-placeholder="Seleccion Agente" required>
                                     <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente
                                     </option>
                                 </select>
                             </div>
                             <div class="mb-2">
-                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="form-select roundedInput align-center"
+                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="roundedInput align-center"
                                     name="ventanilla" required>
                                     <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione
                                         Ventanilla</option>
@@ -83,19 +83,31 @@
         padding-left: 30px;
         font-family: 'Abrade';
         font-weight: 600;
+        width: 100%;
     }
     
     .btnStyle {
         background-color: #ffd142;
-        color: #1d1d1b;
+        color: #000000;
         border-radius: 50px;
         border-color: #ffd142;
         font-size: 25px;
     }
     .btnStyle:hover {
-        background-color: #1d1d1b;
+        background-color: #000000;
         color: #ffd142;
-        border-color: #1d1d1b;
+        border-color: #000000;
+    }
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .roundedInput option{
+        background-color: rgba(255, 226, 147);
+    }
+    select.decorated option:hover {
+        box-shadow: 0 0 10px 100px #33bb18 inset;
     }
 </style>
 <script>

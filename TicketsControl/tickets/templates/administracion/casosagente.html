@@ -61,7 +61,7 @@
                         <div class="table-responsive-sm">
                             <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                             <table id="record-table" style="height: 200px;" class="table table-borderless table-hover table-fixed-height">
-                                <thead class="table-dark">
+                                <thead class="table-dark1">
                                     <tr>
                                         <th>
                                             <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
@@ -104,6 +104,10 @@
     </div>
 </div>
 <style>
+    .table-dark1{
+        background-color: black;
+        color: white;
+    }
     .roundedInput {
         border-radius: 50px;
         text-align: justify;
@@ -117,14 +121,16 @@
         text-align: end;
         font-size: 40px;
         font-weight: 900;
+        color: #000000;
     }
-    table {
+    table.dataTable  {
         border-collapse: separate;
         width: 100%;
         border-spacing: 0 4px;
     }
     .colorfilas{
         background-color: white;
+        border-color: transparent;
     }
     td:first-child,
     th:first-child {
@@ -137,6 +143,43 @@
     }
 </style>
 <script>
+    $(document).ready(function () {
+        $('#record-table').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+    });
     window.onload = function () {
         cargarAgentes();
         var dateInput = document.getElementById("date");
@@ -192,6 +235,32 @@
 
     // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
+    var fechaSelect = document.getElementById("date");
+
+    fechaSelect.addEventListener("change", function () {
+        var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
+        // Obtener todas las filas de la tabla
+        var rows = document.querySelectorAll("#record-table tbody tr");
+
+        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
+        rows.forEach(function (row) {
+            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha").textContent;
+            var dateInput = document.getElementById("date");
+
+            // Agregar un evento de escucha para capturar el cambio de fecha
+            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+
+            // Formatear la fecha como "aaaa-mm-dd"
+            var formattedDate = selectedDate.split("-").join("-");
+            console.log(formattedDate);
+            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+            } else {
+                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+            }
+        });
+    });
 
     // Agregar un evento de escucha para capturar el cambio de opción
     agenteSelect.addEventListener("click", function () {

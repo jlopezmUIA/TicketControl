@@ -4,7 +4,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="btn navbar-brand" href="{% url 'login' %}">
-            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">INICIO SESIÓN
+            <div class="vertical-align">
+                <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                <span class="d-inline-block align-middle">REGISTRO ADMINISTRATIVO</span>
+            </div>
         </a>
     </div>
 </nav>
@@ -17,6 +20,12 @@
         outline: none !important;
         box-shadow: none !important;
     }
+    .vertical-align {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      } 
 </style>
 {% endblock %}
 {% block content %}
@@ -127,15 +136,15 @@
     }
     
     .btnStyle {
-        background-color: #1D1D1B;
+        background-color: #000000;
         color: #ffd142;
         border-radius: 50px;
-        border-color: #1D1D1B;
+        border-color: #000000;
         font-size: 25px;
     }
     .btnStyle:hover {
         background-color: #ffd142;
-        color: #1D1D1B;
+        color: #000000;
         border-color: #ffd142;
     }
 </style>

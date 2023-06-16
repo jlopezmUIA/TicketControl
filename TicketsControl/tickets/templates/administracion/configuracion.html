@@ -6,14 +6,14 @@
 <div class="p-2 mt-5">
     <div class="row p-2">
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-            <h1 class="p-2 text-center fw-bold">Configuracion del Visualizador</h1>
+            <h1 class="p-2 text-center titulo">CONFIGURACIÓN DEL VISUALIZADOR</h1>
             <div class="row p-2">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
                     <form class="mt-4" method="POST" action="{% url 'cambiar_link_text' %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="basic-url" class="form-label">
-                                <h3>Ingrese URL de Youtube</h3>
+                                <h3 style="color: #000000;">Ingrese URL de Youtube</h3>
                             </label>
                             <div class="input-group mb-4">
                                 <span class="input-group-text " id="basic-addon3">https://www.youtube.com/</span>
@@ -23,7 +23,7 @@
                         </div>
                         <div class="form-group">
                             <label for="basic-url" class="form-label">
-                                <h3>Ingrese Texto del Pie de Pagina</h3>
+                                <h3 style="color: #000000;">Ingrese Texto del Pie de Página</h3>
                             </label>
                             <div class="input-group mb-4">
                                 <input type="text" value="{{ records.text }}" name="text" class="roundedInput form-control" id="text"
@@ -33,20 +33,20 @@
                         <div class="form-group mb-4">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="tipo" id="playlist" {% if records.tipo == "playlist" %}checked{% endif %}>
-                                <label class="form-check-label" for="flexRadioDefault2">
+                                <label style="color: #000000;" class="form-check-label" for="flexRadioDefault2">
                                     Playlist Youtube
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="tipo" id="imgs" {% if records.tipo == "imgs" %}checked{% endif %}>
-                                <label class="form-check-label" for="flexRadioDefault1">
+                                <label style="color: #000000;" class="form-check-label" for="flexRadioDefault1">
                                     Imagenes Tipo Carousel
                                 </label>
                             </div>
                         </div>
                         <div class="d-grid mb-2 justify-content-center align-items-center">
                             <button class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                type="submit"> Guardar Configuracion General</button>
+                                type="submit"> Guardar Configuración General</button>
                         </div>
                     </form>
                 </div>
@@ -57,7 +57,7 @@
                             <div class="">
                                 <label for="floatingFile" class="mb-2">
                                     <i class="fa fa-upload" aria-hidden="true"></i>
-                                    <h3>Imagen Nueva</h3>
+                                    <h3 style="color: #000000;">Imagen Nueva</h3>
                                 </label>
                                 <input class="roundedInput form-control custom-file-input" style="opacity: 0.65" type="file"
                                     id="floatingFile" name="imagen1" accept-language="es" />
@@ -66,7 +66,7 @@
                         <div class="form-group mt-4 mb-5">
                             <label for="floatingFile" class="mb-3">
                                 <i class="fa fa-upload" aria-hidden="true"></i>
-                                <h5>Imagen que desea cambiar:</h5>
+                                <h3 style="color: #000000;">Imagen que desea cambiar:</h3>
                             </label>
                             <select style=" font-size: 18px; font-weight: bold;"
                                 class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example" id="imagen"
@@ -81,7 +81,7 @@
                         <br>
                         <div class="d-grid mb-2 justify-content-center align-items-center ">
                             <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                id="loading-indicator"> Guardar Configuracion de Imagen</button>
+                                id="loading-indicator"> Guardar Configuración de Imagen</button>
                         </div>
                     </form>
                 </div>
@@ -98,6 +98,13 @@
         padding-left: 30px;
         font-family: 'Abrade';
         font-weight: 600;
+        color: #000000;
+    }
+    .titulo{
+        text-align: center;
+        font-size: 40px;
+        font-weight: 900;
+        color: #000000;
     }
 </style>
 <script>
