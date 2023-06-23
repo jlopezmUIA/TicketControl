@@ -4,42 +4,72 @@ from django.templatetags.static import static
 from datetime import date
 from datetime import datetime
 from escpos.printer import Network
+from PIL import Image, ImageDraw, ImageFont
 
 def imprimir(codigo, departamento):
     fecha_actual = date.today().strftime('%Y-%m-%d')
     hora_actual = datetime.now()
     hora_actual_str = hora_actual.strftime('%H:%M:%S')
-    # printer_ip = '192.168.8.35'
-    # img_path = os.path.join(settings.STATIC_ROOT,'img', 'logo.png')
-
-    # printer = Network(printer_ip)
-    # printer.open()
-    # printer.set(align='center')
-    # printer.image(img_path, impl="bitImageColumn")
-    # printer.text("\n")
-
-    # printer.set(align='center', font='1', width=2, height=2, text_type='italic')
-    # printer.text("Bienvenido")
-    # printer.text("\n\n")
-
-    # printer.set(align='center', font='1', width=5, height=5)
-    # printer.text(""+codigo+"\n\n")
-
-    # printer.set(align='center', width=1, height=1)
-    # printer.text(departamento)
-    # printer.text("\n\n")
-
-    # printer.set(align='center', width=1, height=1)
-    # printer.text("Gracias por su visita.")
-    # printer.text("\n\n")
-
-    # printer.set(align='center', width=1, height=1)
-    # printer.text(fecha_actual+"  "+hora_actual_str)
-    # printer.text("\n")
-
+    printer_ip = '192.168.8.35'
     
+    img_path = crear_img(codigo, departamento, fecha_actual, hora_actual_str)
+    img_path2 = Image.open("tickets/static/img/logo3.png")
 
-    # printer.cut()
-    # printer.close()
+    printer = Network(printer_ip)
+    printer.open()
+
+    nueva_ancho = 110  # Especifica el ancho deseado de la imagen
+    nueva_alto = 170  # Especifica el alto deseado de la imagen
+    imagen = img_path2.resize((nueva_ancho, nueva_alto))
+
+    printer.set(align='center')
+    printer.image(imagen, impl="bitImageColumn")
+    printer.text('\n')
+
+    printer.set(align='center')
+    printer.image(img_path, impl="bitImageColumn")
+    
+    printer.cut()
+    printer.close()
 
     return True
+
+
+def crear_img (codigo, departamento, fecha, hora):
+
+    # Crear una imagen en blanco
+    width = 600
+    height = 450
+    color_fondo = (255, 255, 255)  # Blanco
+    img = Image.new('RGB', (width, height), color_fondo)
+
+    # Crear un objeto de dibujo
+    dibujo = ImageDraw.Draw(img)
+
+    # Especificar la fuente a utilizar
+    fuente_b = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-SemiBold.ttf", 60)
+    fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 120)
+    fuente_t = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Medium.ttf", 30)
+
+    # Calcular las dimensiones del texto
+    texto1_width, texto1_height = dibujo.textsize("Texto 1", font=fuente_b)
+    texto2_width, texto2_height = dibujo.textsize("Texto 2", font=fuente_c)
+    texto3_width, texto3_height = dibujo.textsize("Texto 3", font=fuente_t)
+    texto4_width, texto4_height = dibujo.textsize("Texto 4", font=fuente_t)
+    texto5_width, texto5_height = dibujo.textsize("Texto 5", font=fuente_t)
+
+    # Posiciones de los textos
+    pos_texto1 = (width // 2, height // 7)
+    pos_texto2 = (width // 2, pos_texto1[1] + texto1_height + 100)
+    pos_texto3 = (width // 2, pos_texto2[1] + texto2_height + 10)
+    pos_texto4 = (width // 2, pos_texto3[1] + texto3_height + 30)
+    pos_texto5 = (width // 2, pos_texto4[1] + texto4_height + 30)
+
+    # Dibujar los textos en la imagen
+    dibujo.text(pos_texto1, "BIENVENIDO", fill=(0, 0, 0), font=fuente_b, anchor="ms")
+    dibujo.text(pos_texto2, codigo, fill=(0, 0, 0), font=fuente_c, anchor="ms")
+    dibujo.text(pos_texto3, departamento, fill=(0, 0, 0), font=fuente_t, anchor="ms")
+    dibujo.text(pos_texto4, "Gracias por tu visita.", fill=(0, 0, 0), font=fuente_t, anchor="ms")
+    dibujo.text(pos_texto5, fecha+"  "+hora, fill=(0, 0, 0), font=fuente_t, anchor="ms")
+
+    return img

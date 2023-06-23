@@ -3,298 +3,48 @@
 {% include 'componentes/navbarheader.html' %}
 {% endblock %}
 {% block content %}
-<div class="p-2">
-    <div class="row p-2">
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
-            <div class=" table-responsive px-md-4 px-2 pt-3">
-                <div class="table-responsive-sm">
-                    <table id="record-table" style="height: 200px;"
-                        class="table table-hover table-fixed-height">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
-                                </th>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">NÚMERO DE VENTANILLA</h5>
-                                </th>
-                                <th style="width: 300px;">
-                                    <h5 class="mt-2 text-center fw-bold">COLA DE ATENCION</h5>
-                                </th>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">ESTADO DE ATENCION</h5>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for record in records %}
-                            <tr class="colorfilas">
-                                <td class="text-center align-middle">
-                                    <h5 id="id_agente">{{ record.agente_id }}</h5>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <h5 class="">{{ record.numeroVentanilla }}</h5>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <select style="  width: 300px; height: 50px; font-size: 18px; font-weight: bold;"
-                                        class="form-select form-select-sm roundedInput" aria-label=".form-select-sm example"
-                                        id="cola_select" name="cola_select" onchange="cola()">
-                                        <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}
-                                        </option>
-                                        <option value="Registro/Documentos">Registro/Documentos</option>
-                                        <option value="Registro/Tesis">Registro/Tesis</option>
-                                        <option value="Registro/Convalidacion">Registro/Convalidacion</option>
-                                        <option value="Registro/Retiros">Registro/Retiro-Congelar</option>
-                                        <option value="Registro/Suficiencia">Registro/Suficiencias</option>
-                                        <option value="Registro/Graduaciones">Registro/Graduaciones</option>
-                                        <option value="Registro/Taller">Registro/Taller</option>
-                                        <option value="Registro/Apelaciones">Registro/Apelaciones</option>
-                                        <option value="Registro/Retenciones">Registro/Retenciones</option>
-                                        <option value="Admisiones">Admisiones</option>
-                                        <option value="Cursos Libres">Cursos Libres</option>
-                                        <option value="Cajas">Cajas</option>
-                                    </select>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <h5>{{ record.estadoAtencion }}</h5>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
-            <div class=" table-responsive px-md-4 px-2 pt-3">
-                <div class="table-responsive-sm">
-                    <table id="record-table2" style="height: 200px;"
-                        class="table table-hover table-fixed-height">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
-                                </th>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">CANTIDAD ATENDIDOS</h5>
-                                </th>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">CANTIDAD TRANSFERIDOS</h5>
-                                </th>
-                                <th>
-                                    <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for caso in casos %}
-                            <tr class="colorfilas">
-                                <td class="text-center align-middle">
-                                    <h5 id="id_agente">{{ caso.agente_id }}</h5>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <h5 class="">{{ caso.cantidadAtendidos }}</h5>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <h5>{{ caso.cantidadTransferidos }}</h5>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <h5>{{ caso.fecha }}</h5>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
-            <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                <div class=" table-responsive px-md-4 px-2 pt-3">
-                    <div class="row">
-                        <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                            <div class="table-responsive-sm">
-                                <h4 class="text-center">Admisiones Clientes</h4>
-                                <table id="record-table3" style="height: 200px;"
-                                    class="table  table-hover table-fixed-height">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for admi in admin %}
-                                        <tr class="colorfilas">
-                                            <td class="text-center align-middle">
-                                                <h5 id="id_agente">{{ admi.codigo }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ admi.departamento }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ admi.fecha }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ admi.atendido }}</h5>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                        </div>
-                        <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                            <div class="table-responsive-sm">
-                                <h4 class="text-center">Registro Clientes</h4>
-                                <table id="record-table4" style="height: 200px;"
-                                    class="table  table-hover table-fixed-height">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for regi in registro %}
-                                        <tr class="colorfilas">
-                                            <td class="text-center align-middle">
-                                                <h5 id="id_agente">{{ regi.codigo }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ regi.departamento }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ regi.fecha }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ regi.atendido }}</h5>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto  mb-4">
-            <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                <div class=" table-responsive px-md-4 px-2 pt-3">
-                    <div class="row">
-                        <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                            <div class="table-responsive-sm">
-                                <h4 class="text-center">Cajas Clientes</h4>
-                                <table id="record-table5" style="height: 200px;"
-                                    class="table  table-hover table-fixed-height">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for caja in cajas %}
-                                        <tr class="colorfilas">
-                                            <td class="text-center align-middle">
-                                                <h5 id="id_agente">{{ caja.codigo }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ caja.departamento }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ caja.fecha }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ caja.atendido }}</h5>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                            <div class="table-responsive-sm">
-                                <h4 class="text-center">C.L. Clientes</h4>
-                                <table id="record-table6" style="height: 200px;"
-                                    class="table  table-hover table-fixed-height">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                            </th>
-                                            <th>
-                                                <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for curso in cursos %}
-                                        <tr class="colorfilas">
-                                            <td class="text-center align-middle">
-                                                <h5 id="id_agente">{{ curso.codigo }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ curso.departamento }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ curso.fecha }}</h5>
-                                            </td>
-                                            <td class="text-center align-middle">
-                                                <h5 class="">{{ curso.atendido }}</h5>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">Hello, world!</h1>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a
+            jumbotron and three supporting pieces of content. Use it as a starting point to create something more
+            unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
     </div>
 </div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Heading</h2>
+            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
+                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                fermentum massa justo sit amet risus.</p>
+            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        </div>
+    </div>
+
+    <hr>
+
+</div> <!-- /container -->
+
 <style>
     .roundedInput {
         border-radius: 50px;
@@ -303,115 +53,5 @@
         padding: 10px;
         padding-left: 30px;
     }
-    table {
-        border-collapse: separate;
-        width: 100%;
-        border-spacing: 0 4px;
-    }
-    .table-dark{
-        background-color: #000000;
-    }
-    .colorfilas{
-        background-color: white;
-    }
-    td:first-child,
-    th:first-child {
-        border-radius: 50px 0 0 50px;
-    }
-
-    td:last-child,
-    th:last-child {
-        border-radius: 0 50px 50px 0;
-    }
 </style>
-<script>
-    function cola() {
-        var cola = document.getElementById("cola_select").value;
-        var agente = document.getElementById("id_agente").textContent;
-        var url = "/cambiar-cola/?agente=";
-        var request = new XMLHttpRequest();
-        request.open('GET', url + encodeURIComponent(agente) + "&cola=" + encodeURIComponent(cola), true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-            }
-        };
-        request.send();
-
-    }
-
-    const recordTable = document.getElementById('record-table');
-    const recordTable2 = document.getElementById('record-table2');
-    const recordTable3 = document.getElementById('record-table3');
-    const recordTable4 = document.getElementById('record-table4');
-    const recordTable5 = document.getElementById('record-table5');
-    const recordTable6 = document.getElementById('record-table6');
-
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-            });
-    }
-
-    function fetchRecords2() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable2 = parser.parseFromString(data, 'text/html').getElementById('record-table2');
-                recordTable2.innerHTML = newTable2.innerHTML;
-            });
-    }
-
-    function fetchRecords3() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable3 = parser.parseFromString(data, 'text/html').getElementById('record-table3');
-                recordTable3.innerHTML = newTable3.innerHTML;
-            });
-    }
-
-    function fetchRecords4() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable4 = parser.parseFromString(data, 'text/html').getElementById('record-table4');
-                recordTable4.innerHTML = newTable4.innerHTML;
-            });
-    }
-
-    function fetchRecords5() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable5 = parser.parseFromString(data, 'text/html').getElementById('record-table5');
-                recordTable5.innerHTML = newTable5.innerHTML;
-            });
-    }
-
-    function fetchRecords6() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable6 = parser.parseFromString(data, 'text/html').getElementById('record-table6');
-                recordTable6.innerHTML = newTable6.innerHTML;
-            });
-    }
-
-    setInterval(fetchRecords, 5000);
-    setInterval(fetchRecords2, 5000);
-    setInterval(fetchRecords3, 5000);
-    setInterval(fetchRecords4, 5000);
-    setInterval(fetchRecords5, 5000);
-    setInterval(fetchRecords6, 5000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
-</script>
 {% endblock %}
