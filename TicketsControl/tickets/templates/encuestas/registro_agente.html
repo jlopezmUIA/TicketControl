@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<div class="p-2">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5">
+            <div class="card border-0 cardCol rounded-3 mx-auto">
+                <div class="card-body p-sm-5">
+                    <h5 class="card-title text-center mb-5 fw-light fs-3 fw-bold" style="color: #000000;">REGISTRO DE ENCUESTA</h5>
+                    <main class="">
+                        <form method="POST" action="{% url 'inicio_encuesta' %}">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput align-center"
+                                    name="departamento" required onchange="cargarAgentes()">
+                                    <option value="Admisiones">Admisiones</option>
+                                    <option value="Registro">Registro</option>
+                                    <option value="Cursos Libres">Cursos Libres</option>
+                                    <option value="Cajas" disabled>Cajas</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <select id="agente_select" class="roundedInput align-center" name="agente_select"
+                                    data-placeholder="Seleccion Agente" required>
+                                    <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <select id="ventanilla" data-placeholder="Seleccion Agente" class="roundedInput align-center"
+                                    name="ventanilla" required>
+                                    <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione
+                                        Ventanilla</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="11">12</option>
+                                    <option value="11">13</option>
+                                    <option value="11">14</option>
+                                </select>
+                            </div>
+                            <br>
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle"
+                                    id="loading-indicator">INICIAR ENCUESTAS</button>
+
+                                <div id="loading-indicator" class="hidden">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                            <div class="d-grid mb-2 imgClass">
+                                <img class="" src="{% static 'img/uia_logo.png' %}" alt="UIA" style="width: 120px; height: 70px;">
+                            </div>
+                        </form>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .imgClass{
+        justify-content: center;
+    }
+    .card{
+        background-color: #f3f4f5;
+    }
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 22px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+        width: 100%;
+    }
+    
+    .btnStyle {
+        background-color: #ffd142;
+        color: #000000;
+        border-radius: 50px;
+        border-color: #ffd142;
+        font-size: 25px;
+    }
+    .btnStyle:hover {
+        background-color: #000000;
+        color: #ffd142;
+        border-color: #000000;
+    }
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .roundedInput option{
+        background-color: rgba(255, 226, 147);
+    }
+    select.decorated option:hover {
+        box-shadow: 0 0 10px 100px #33bb18 inset;
+    }
+</style>
+<script>
+    window.onload = function () {
+        cargarAgentes();
+    };
+    function cargarAgentes() {
+        var select = document.getElementById("departamento").value;
+        var select2 = document.getElementById("agente_select");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+</script>
+{% endblock %}

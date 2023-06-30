@@ -15,7 +15,7 @@
     }
 
     .imgFondo {
-        background: url('{% static "img/Fondo6.png" %}') no-repeat;
+        background: url('{% static "img/iStock5.jpg" %}') no-repeat;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -56,6 +56,82 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 <h5>{{ agente.departamento }}</h5>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto" style="margin-top: 80px;">
+            <h5 class="titulo">MÉTRICAS POR AGENTE</h5>
+            <div class="row">
+                <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
+                    <div class=" mb-3 col">
+                        <select id="departamento2" data-placeholder="Seleccione Departamento"
+                            class="roundedInput form-select" name="departamento" required onchange="cargarAgentes2()">
+                            <option value="Admisiones">Admisiones</option>
+                            <option value="Registro">Registro</option>
+                            <option value="Cursos Libres">Cursos Libres</option>
+                            <option value="Cajas">Cajas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
+                    <div class=" mb-3 col">
+                        <select id="agente_select2" class="roundedInput form-select" name="agente_select"
+                            data-placeholder="Seleccion Agente">
+                            <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
+                    <div class=" mb-3 date col">
+                        <input type="date" class="roundedInput form-control" id="date2" />
+                    </div>
+                </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <div class=" table-responsive">
+                            <button id="export-button" type="button" class="btn btn-outline-dark mb-2"
+                                onclick="exportToExcel2()">Exportar a Excel</button>
+                            <div class="table-responsive-sm">
+                                <table id="record-table3" style="height: 200px;"
+                                    class="table  table-hover table-fixed-height">
+                                    <thead class="table-dark1">
+                                        <tr>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
+                                            </th>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
+                                            </th>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">ESTADO</h5>
+                                            </th>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">FECHA</h5>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for encuesta in encuestas %}
+                                        <tr class="colorfilas">
+                                            <td class="text-center align-middle">
+                                                <h5 id="id_agente2">{{ encuesta.agente_id }}</h5>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <h5>{{ encuesta.codigoCaso }}</h5>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <h5>{{ encuesta.estado }}</h5>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <h5 id="fecha2">{{ encuesta.fecha }}</h5>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -274,9 +350,49 @@
             }
         });
     });
+    $(document).ready(function () {
+        $('#record-table3').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+    });
+    
     window.onload = function () {
         cargarAgentes();
+        cargarAgentes2();
         var dateInput = document.getElementById("date");
+        var dateInput2 = document.getElementById("date2");
 
         // Obtener la fecha actual
         var currentDate = new Date();
@@ -286,6 +402,7 @@
 
         // Establecer la fecha actual como valor predeterminado del campo
         dateInput.value = formattedDate;
+        dateInput2.value = formattedDate;
     };
 
     function cargarAgentes() {
@@ -312,32 +429,29 @@
         request.send();
     }
 
+    function cargarAgentes2() {
+        var select = document.getElementById("departamento2").value;
+        var select2 = document.getElementById("agente_select2");
 
-    const recordTable = document.getElementById('record-table');
-    const recordTable2 = document.getElementById('record-table2');
-
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-            });
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
     }
-
-    function fetchRecords2() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable2 = parser.parseFromString(data, 'text/html').getElementById('record-table2');
-                recordTable2.innerHTML = newTable2.innerHTML;
-            });
-    }
-
-    setInterval(fetchRecords, 300000);
-    setInterval(fetchRecords2, 300000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
 
     // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
@@ -393,6 +507,62 @@
         });
     });
 
+
+    // Obtener la referencia al select del agente
+    var agenteSelect2 = document.getElementById("agente_select2");
+    var fechaSelect2 = document.getElementById("date2");
+
+    fechaSelect2.addEventListener("change", function () {
+        var selectedAgenteId = agenteSelect2.value; // Obtener el ID del agente seleccionado
+        // Obtener todas las filas de la tabla
+        var rows = document.querySelectorAll("#record-table3 tbody tr");
+
+        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
+        rows.forEach(function (row) {
+            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha2").textContent;
+            var dateInput = document.getElementById("date2");
+
+            // Agregar un evento de escucha para capturar el cambio de fecha
+            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+
+            // Formatear la fecha como "aaaa-mm-dd"
+            var formattedDate = selectedDate.split("-").join("-");
+            console.log(formattedDate);
+            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+            } else {
+                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+            }
+        });
+    });
+    // Agregar un evento de escucha para capturar el cambio de opción
+    agenteSelect2.addEventListener("click", function () {
+        var selectedAgenteId = agenteSelect2.value; // Obtener el ID del agente seleccionado
+        // Obtener todas las filas de la tabla
+        var rows = document.querySelectorAll("#record-table3 tbody tr");
+
+        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
+        rows.forEach(function (row) {
+            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha2").textContent;
+            var dateInput = document.getElementById("date2");
+
+            // Agregar un evento de escucha para capturar el cambio de fecha
+            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+
+            // Formatear la fecha como "aaaa-mm-dd"
+            var formattedDate = selectedDate.split("-").join("-");
+            console.log(formattedDate);
+            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+            } else {
+                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+            }
+        });
+    });
+
+
     function exportToExcel() {
         // Obtener la tabla por su ID
         const table = document.getElementById('record-table2');
@@ -425,6 +595,47 @@
             const link = document.createElement('a');
             link.href = url;
             link.download = 'tabla_estados_casos.xlsx';
+
+            // Simular un clic en el enlace de descarga
+            link.click();
+
+            // Liberar el objeto URL
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    function exportToExcel2() {
+        // Obtener la tabla por su ID
+        const table = document.getElementById('record-table3');
+
+        // Crear un objeto de libro de Excel
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Datos');
+
+        // Recorrer las filas y celdas de la tabla
+        const rows = table.querySelectorAll('tr');
+        rows.forEach((row, rowIndex) => {
+            const cells = row.querySelectorAll('td, th');
+            cells.forEach((cell, cellIndex) => {
+                // Obtener el contenido de la celda
+                const cellData = cell.innerText;
+                // Agregar el contenido a la hoja de Excel
+                worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
+            });
+        });
+
+        // Crear un archivo Excel
+        workbook.xlsx.writeBuffer().then((buffer) => {
+            // Convertir el buffer a un blob
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // Crear un objeto URL para el blob
+            const url = URL.createObjectURL(blob);
+
+            // Crear un enlace de descarga
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'tabla_metricas.xlsx';
 
             // Simular un clic en el enlace de descarga
             link.click();

@@ -12,7 +12,7 @@ class atencion(models.Model):
                             null=True,
                             blank=True)
     numeroVentanilla = models.CharField(max_length=60)
-    colaAtencion = models.CharField(max_length=60)
+    colaAtencion = models.CharField(max_length=500)
     estadoAtencion = models.CharField(max_length=60)
 
 class admisiones(models.Model):
@@ -95,3 +95,13 @@ class visualizador(models.Model):
     imagen4_nombre = models.CharField(max_length=255, null=True, blank=True)
     link = models.CharField(max_length=500, null=True, blank=True)
     text = models.CharField(max_length=500, null=True, blank=True)
+
+class metricas(models.Model):
+    id_metrica = models.AutoField(primary_key=True)
+    agente = models.ForeignKey(agentes,
+                            on_delete=models.CASCADE,
+                            null=True,
+                            blank=True)
+    codigoCaso = models.CharField(max_length=60)
+    estado = models.CharField(max_length=60)
+    fecha = models.CharField(max_length=60)

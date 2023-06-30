@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+<div class="row mt-2">
+    <div class="col-12 col-lg-12 col-md-12 col-sm-12 mx-auto mb-4">
+        <div class="card border-0 cardCol rounded-3 my-5 mx-auto">
+            <div class="card-body pt-5 pl-8 pr-8">
+                <h1 class="card-title text-center mb-3 titulo" >TU OPINIÓN NOS AYUDA A MEJORAR</h1>
+                <h4 id="txtPregunta" class="card-title text-center mb-4" style="color: #878787; font-weight: bold;" hidden>¿Qué tan satisfecho estás con el servicio brindado?</h4>
+                <main class="form-signin">
+                    <div class="row d-flex justify-content-center">
+                        <div class=" mb-4 mt-3 rounded"
+                            style="display: flex; align-items: center; justify-content: center; border-color: white;">
+                            <div class="form-floating mb-3 mt-3" style="text-align: center;">
+                                <h1 id="txtCodigo" class="codigo" hidden>{{ codigo }}</h1>
+                                <h1 id="txtGracias" class="gracias">GRACIAS POR TU VISITA</h1>
+                                <h3 id="txtGracias2" class="gracias2">Es un gusto ayudarte a contruir tus sueños</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divCaras" class="row d-flex justify-content-center">
+                        <div id="img1"  class="col text-center pulse-animation hide-elements">
+                          <a onclick="metricas('Satisfecho');"><img src="{% static 'img/happy.png' %}" width="120px" height="120px"></a>
+                          <span class="image-text">Satisfecho</span>
+                        </div>
+                        <div id="img2" class="col text-center pulse-animation hide-elements">
+                          <a onclick="metricas('Neutral');"><img src="{% static 'img/upset.png' %}" width="120px" height="120px"></a>
+                          <span class="image-text">Neutral</span>
+                        </div>
+                        <div id="img3" class="col text-center pulse-animation hide-elements">
+                          <a onclick="metricas('Insatisfecho');"><img src="{% static 'img/depressed.png' %}" width="120px" height="120px"></a>
+                          <span class="image-text">Insatisfecho</span>
+                        </div>
+                    </div>
+                      
+                    <div class="row mt-5" style="justify-content: center;">
+                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 130px; height: 60px;">
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+    }
+      
+    .pulse-animation {
+        animation: pulse 3s infinite;
+    }
+
+    .hide-elements {
+        display: none;
+      }
+
+    a{
+        cursor: pointer;
+        animation-duration: 500ms;
+    }
+    .modal-dialog.custom-modal-xl {
+        max-width: 95%; /* Puedes ajustar el porcentaje según tus necesidades */
+    }
+    .image-text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600; 
+        font-size: 25px;
+        color: #000000;
+    }
+
+    .titulo{
+        font-weight: 900; 
+        font-size: 35px;
+        color: #000000;
+    }
+
+    .codigo{
+        font-weight: 600; 
+        font-size: 95px;
+        color: #000000;
+    }
+
+    .gracias{
+        font-weight: 500; 
+        font-size: 50px;
+        color: #000000;
+    }
+    .gracias2{
+        font-weight: 400; 
+        font-size: 30px;
+        color: #000000;
+    }
+
+    body{
+        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    .card-body{
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+    body{
+        background-image: url('{% static "img/Fondo2.png" %}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    
+</style>
+
+<script>
+    const txtPregunta = document.getElementById('txtPregunta');
+    const txtCodigo = document.getElementById('txtCodigo');
+    const txtGracias = document.getElementById('txtGracias');
+    const txtGracias2 = document.getElementById('txtGracias2');
+    var divImg1 = document.getElementById('img1');
+    var divImg2 = document.getElementById('img2');
+    var divImg3 = document.getElementById('img3');
+
+    function fetchRecords() {
+        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const newTable = parser.parseFromString(data, 'text/html').getElementById('txtCodigo');
+            const codigo = newTable.textContent;
+            if (codigo != 'N/C'){
+                txtCodigo.hidden = false;
+                txtCodigo.textContent = codigo;
+                encuesta();
+            }
+            else if (txtCodigo.textContent == 'N/C' && codigo == 'N/C'){
+                nocliente();
+                noencuesta();
+            }else if (txtCodigo.textContent != 'N/C' && codigo == 'N/C'){
+                txtCodigo.hidden = false;
+                encuesta();
+            }
+        });
+    }
+
+    function nocliente(){
+        txtCodigo.hidden = true;
+        txtPregunta.hidden = true;
+    }
+
+    function noencuesta(){
+        divImg1.style.display = 'none';
+        divImg2.style.display = 'none';
+        divImg3.style.display = 'none';
+        txtPregunta.hidden = true;
+        txtGracias.hidden = false;
+        txtGracias2.hidden = false;
+    }
+
+    function encuesta(){
+        divImg1.style.display = 'block';
+        divImg2.style.display = 'block';
+        divImg3.style.display = 'block';
+        txtPregunta.hidden = false;
+        txtGracias.hidden = true;
+        txtGracias2.hidden = true;
+    }
+
+    setInterval(fetchRecords, 1000);
+
+
+    function metricas(metrica) {
+        var url = "/metricas/?estado=";
+        var codigo = txtCodigo.textContent;
+        var cod = "&codigo=" + encodeURIComponent(codigo);
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(metrica) + cod, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                txtCodigo.textContent = "N/C";
+                nocliente();
+                noencuesta();
+            }
+        };
+        request.send();
+    }
+</script>
+{% endblock %}

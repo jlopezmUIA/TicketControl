@@ -6,14 +6,14 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
+from tickets.models import admisiones, agentes, metricas, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 import threading
 from .impresion import imprimir
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_tiempos_agente
+from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_metricas, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_tiempos_agente
 
 def home(request):
     request.session.flush() 
@@ -166,7 +166,8 @@ def ticketsagente(request):
 def datosagente(request):
     agente = agentes.objects.all()
     records = tiemposAgente.objects.all()
-    return render(request, 'administracion/datosagente.html', {'records':records, 'agentes': agente})
+    encuestas = metricas.objects.all()
+    return render(request, 'administracion/datosagente.html', {'records':records, 'agentes': agente, 'encuestas': encuestas})
 
 @login_required
 def nuevoagente(request):
@@ -255,12 +256,21 @@ def inicio_atencion(request):
                     }
                     save_caso = save_casos_agente(request, data_caso)
                     request.session['idcasos'] = save_caso.id_casoagente
-                return redirect('atencion_agentes')
+                
+                if departamento == 'Registro':
+                    return redirect('atencion_agentes_registro')
+                else:
+                    return redirect('atencion_agentes')
 
 def atencion_agentes(request):
     agente_id = request.session.get('id_agente')
     cola = obtener_cola(agente_id)
     return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola})
+
+def atencion_agentes_registro(request):
+    agente_id = request.session.get('id_agente')
+    cola = obtener_cola(agente_id)
+    return render(request, 'agentes/inicio_atencion_registro.html', {'agente':agente_id, 'cola': cola})
 
 def ticket_maker(request):
     return render(request, 'ticket/ticketmaker.html')
@@ -617,14 +627,6 @@ def numero_agente(request):
             data = {'codigo': numero.codigo}
             marcar_admision(numero.pk)
             caso = True
-    elif "Registro" in cola:
-        numero = obtener_primero_dato_registro(cola)
-        if "000" in numero.codigo:
-            data = {'codigo': 'N/C'}
-        else:
-            data = {'codigo': numero.codigo}
-            marcar_registro(numero.pk)
-            caso = True
     elif cola == "Cajas":
         numero = obtener_primero_dato_cajas()
         if "000" in numero.codigo:
@@ -641,6 +643,64 @@ def numero_agente(request):
             data = {'codigo': numero.codigo}
             marcar_cursoslibres(numero.pk)
             caso = True
+
+    if caso:
+        data_caso = {
+            'agente': request.session.get('id_agente'),
+            'codigoCaso': numero.codigo,
+            'fecha': str(fecha_actual),
+            'tiempoInicio': str(hora_actual_str),
+            'tiempoFinal': None
+        }
+        data_ticket = {
+            'codigoCaso': numero.codigo,
+            'numeroVentanilla': ventanilla,
+            'departamento': departamento,
+            'fecha': str(fecha_actual)
+        }
+
+        if 'idtiempo' in request.session:
+            save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
+            del request.session['idtiempo']
+            idtiempo = save_tiempos_agente(request, data_caso)
+            request.session['idtiempo'] = idtiempo.id_tiemposagente
+        else:
+            idtiempo = save_tiempos_agente(request, data_caso)
+            request.session['idtiempo'] = idtiempo.id_tiemposagente
+
+        request.session['cliente'] = numero.codigo
+
+        save_ticket = save_ticketcontrol(request, data_ticket)
+
+        if 'idcasos' in request.session:
+            save = update_casos_agente(
+                request, request.session.get('idcasos'), "caso")
+    else:
+        if 'idtiempo' in request.session:
+            save = update_tiempos_agente(
+                request, request.session.get('idtiempo'), str(hora_actual_str))
+            del request.session['idtiempo']
+
+    return JsonResponse(data, safe=False)
+
+def numero_agente_registro(request):
+    cola = obtener_cola(request.session.get('id_agente'))
+    ventanilla = obtener_ventanilla(request.session.get('id_agente'))
+    departamento = obtener_departamento(request.session.get('id_agente'))
+    caso = False
+
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
+
+    numero = obtener_primero_dato_registro(cola)
+    if "000" in numero.codigo:
+        data = {'codigo': 'N/C'}
+    else:
+        data = {'codigo': numero.codigo}
+        marcar_registro(numero.pk)
+        caso = True
+    
 
     if caso:
         data_caso = {
@@ -881,6 +941,82 @@ def cambiar_cola(request):
         dic = {
             'success': True
         }
+
+    return JsonResponse(dic, safe=False)
+
+def registroEncuesta(request):
+    return render(request, 'encuestas/registro_agente.html')
+
+def inicio_encuesta(request):
+    if request.method == 'POST':
+        agente = request.POST.get('agente_select')
+        numeroVentanilla = request.POST.get('ventanilla')
+        departamento = request.POST.get('departamento')
+
+        if departamento == 'Admisiones':
+            departamento = 'Adm'
+        elif departamento == 'Registro':
+            departamento = 'Reg'
+        elif departamento == 'Cursos Libres':
+            departamento = 'C.L.'
+        elif departamento == 'Cajas':
+            departamento = 'Cja'
+
+        request.session['agenteEncuesta'] = agente
+        request.session['ventanillaEncuesta'] = numeroVentanilla
+        request.session['departamentoEncuesta'] = departamento
+        
+    return redirect('ticket_control_encuesta')
+
+def ticketcontrolEncuesta(request):
+    ventanilla = request.session['ventanillaEncuesta']
+    departamentoAgente = request.session['departamentoEncuesta']
+
+    if 'last_ticket_id' in request.session:
+        last_ticket_id = request.session.get('last_ticket_id')
+        try:
+            new_last_ticket = ticketControl.objects.latest('id_ticketcontrol')
+        except:
+            new_last_ticket = ticketControl(pk = 0)
+
+        if new_last_ticket.pk == last_ticket_id:
+            return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': 'N/C'})
+        elif new_last_ticket.pk > last_ticket_id:
+            times = new_last_ticket.pk - last_ticket_id
+            for vfc in range(times):
+                last_ticket_id += 1
+                ticket = ticketControl.objects.get(id_ticketcontrol=last_ticket_id)
+                if ticket.numeroVentanilla == ventanilla and ticket.departamento == departamentoAgente:
+                    request.session['last_ticket_id'] = new_last_ticket.pk
+                    return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': ticket.codigoCaso})
+    else:
+        try:
+            last_ticket_id = ticketControl.objects.latest('id_ticketcontrol')
+            request.session['last_ticket_id'] = last_ticket_id.pk
+        except:
+            last_ticket_id = 0
+            request.session['last_ticket_id'] = last_ticket_id
+        return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': 'N/C'})
+
+def metricas_guardado(request):
+    estado = request.GET.get("estado")
+    codigo = request.GET.get("codigo")
+    agente = request.session.get('agenteEncuesta')
+    
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data = {
+        'agente': agente,
+        'codigoCaso': codigo,
+        'estado': estado,
+        'fecha': fecha_actual
+    }
+
+    save_metricas(request, data)
+    
+    dic = {
+        'success': True
+    }
 
     return JsonResponse(dic, safe=False)
 

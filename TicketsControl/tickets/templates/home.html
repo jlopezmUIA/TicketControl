@@ -1,41 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block nav_login %}
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="btn navbar-brand" href="{% url 'login' %}">
-        <div class="vertical-align">
-            <img src="{% static 'img/next.png' %}" alt="" width="30" height="30" class="d-inline-block align-text-top">
-            <span class="d-inline-block align-middle">ADMINISTRACIÓN</span>
-        </div>
-    </a>
-    </div>
-</nav>
-
-<style>
-    .btn:focus,
-    .btn:active,
-    .navbar-brand:focus,
-    .navbar-brand:active {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-    .vertical-align {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-    } 
-</style>
-{% endblock %}
 {% block content %}
-<div class="p-2">
+<div class="pt-2">
   <div class="row mt-5">
-    <div class="col-12 col-sm-12 col-md-9 col-lg-5 mx-auto mt-5 mb-5">
+    <div id="div3" class="col-6 col-sm-6 col-md-9 col-lg-5">
+    </div>
+    <div id="content" class="col-6 col-sm-6 col-md-9 col-lg-5 mx-auto mt-2 mb-5">
       <div class="border-0 rounded-3 my-5 mx-auto">
         <div class=" p-4 p-sm-5">
-          <h5 class="titulo mb-5">SISTEMA DE TICKET DE ATENCIÓN AL CLIENTE</h5>
+          <h5 class="titulo mb-5">SELECCIONÁ EL SISTEMA AL QUE DESEÁS INGRESAR</h5>
           {% if form.errors %}
           <div class="alert alert-danger" role="alert">
             {% for field, errors in form.errors.items %}
@@ -51,29 +24,40 @@
             <div class="form-floating mb-3 ">
               <div class="mb-3" style="display: none;">
                 <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
-                  href="{% url 'digital_ticket_maker' %}">INICIAR TICKETS DIGITAL</a>
+                  href="{% url 'digital_ticket_maker' %}">Iniciar Tickets Digital</a>
               </div>
             </div>
             <div class="form-floating mb-3 ">
               <div class="mb-3">
                 <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
-                  href="{% url 'ticket_maker' %}">INICIAR TICKETS</a>
+                  href="{% url 'ticket_maker' %}">Iniciar Creador de Tickets</a>
               </div>
             </div>
             <div class="form-floating mb-3">
               <div class="mb-3">
                 <a type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
-                  href="{% url 'ticket_control' %}"> INICIAR VIZUALIZADOR</a>
+                  href="{% url 'ticket_control' %}">Iniciar Visualizador</a>
               </div>
-
             </div>
             <div class="form-floating mb-3 ">
               <div class="mb-3">
                 <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
-                  href="{% url 'registro_agente' %}"> INICIAR AGENTE</a>
+                  href="{% url 'registro_encuesta' %}">Iniciar Encuestas</a>
               </div>
             </div>
-            <br>
+            <div class="form-floating mb-3 ">
+              <div class="mb-3">
+                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
+                  href="{% url 'registro_agente' %}">Iniciar Agente</a>
+              </div>
+            </div>
+            <hr class="my-4">
+            <div class="form-floating mb-3 ">
+              <div class="mb-3">
+                <a class="w-100 btn btn-lg btn-primary btn-login fw-bold btnStyle" id="loading-indicator"
+                href="{% url 'login' %}">Inicio Administrativo</a>
+              </div>
+            </div>
           </main>
         </div>
       </div>
@@ -82,19 +66,38 @@
 </div>
 
 <style>
+  #div3 {
+    width: 50%;
+    padding: 0%;
+  }
+  
+  #content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .container{
+    margin: 0%;
+    display: contents;
+    justify-content: center;
+    align-items: center;
+  }
+
   .titulo{
     font-size: 28px;
     font-family: 'Abrade';
     font-weight: 800;
     padding-bottom: 10px;
     text-align: center;
-    color: #ffd142;
+    color: #000000;
   }
   body{
-    background-image: url('{% static "img/Fondo1.png" %}');
+    background-image: url('{% static "img/Home.png" %}');
     background-repeat: no-repeat;
-    background-size: cover ;
-    background-position: center;
+    background-size: contain;
+    background-position: left;
     overflow: hidden;
   }
   .card{
@@ -102,15 +105,15 @@
   }
   .btnStyle {
     background-color: #000000;
-    color: #ffd142;
+    color: white;
     border-radius: 50px;
     border-color: #000000;
     font-size: 25px;
   }
   .btnStyle:hover {
-    background-color: #ffd142;
-    color: #000000;
-    border-color: #ffd142;
+    background-color: #000000;
+    color: #ffd142;
+    border-color: #000000;
   }
   .btn:focus,
   .btn:active{
@@ -121,7 +124,7 @@
 {% endblock %}
 {% block footer %}
 <footer class="footerLogin d-flex">
-    <img src="{% static 'img/Imagen1.png' %}" alt="">
+    <img src="{% static 'img/Imagen2.png' %}">
 </footer>
 
 <style>

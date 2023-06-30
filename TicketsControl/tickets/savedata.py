@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from tickets.forms import FormularioAdmisiones, FormularioAgente, FormularioAtencion, FormularioCajas, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCursosLibres, FormularioEstadosAgente, FormularioRegistro, FormularioTicketControl, FormularioTiemposAgente
+from tickets.forms import FormularioAdmisiones, FormularioAgente, FormularioAtencion, FormularioCajas, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCursosLibres, FormularioEstadosAgente, FormularioMetricas, FormularioRegistro, FormularioTicketControl, FormularioTiemposAgente
 from .models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
 from datetime import datetime
 from datetime import date
@@ -86,6 +86,14 @@ def update_estado(request, agente_id, estado_nuevo):
         atencion_obj.save()
         return True
     except atencion.DoesNotExist:
+        return False
+
+def save_metricas(request, data):
+    form = FormularioMetricas(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
         return False
 
 def save_admisiones(request, data):
@@ -334,9 +342,22 @@ def obtener_primero_dato_cursoslibres():
 
 def obtener_primero_dato_registro(cola):
     try:
+        colas = cola.split(",")
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola).earliest('id_registro')
-        return ultimo_dato
+        # ultimo_dato = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola).earliest('id_registro')
+        ultimo_dato = None
+
+        for cola in colas:
+            registros = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola)
+            if registros.exists():
+                ultimo_registro = registros.latest('id_registro')
+                if ultimo_dato is None or ultimo_registro.fecha > ultimo_dato.fecha:
+                    ultimo_dato = ultimo_registro
+        if ultimo_dato is None:
+            dato = registro(codigo = '000')
+            return dato
+        else:
+            return ultimo_dato
     except registro.DoesNotExist:
         dato = registro(codigo = '000')
         return dato
