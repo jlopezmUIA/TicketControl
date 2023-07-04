@@ -45,7 +45,10 @@ def crear_img (codigo, departamento, fecha, hora):
     dibujo = ImageDraw.Draw(img)
 
     fuente_b = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-SemiBold.ttf", 60)
-    fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 120)
+    if len(codigo)>7:
+        fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 100)
+    else:
+        fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 120)
     fuente_t = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Medium.ttf", 30)
 
     texto1_width, texto1_height = dibujo.textsize("Texto 1", font=fuente_b)
@@ -57,12 +60,18 @@ def crear_img (codigo, departamento, fecha, hora):
     pos_texto1 = (width // 2, height // 7)
     pos_texto2 = (width // 2, pos_texto1[1] + texto1_height + 100)
     pos_texto3 = (width // 2, pos_texto2[1] + texto2_height + 10)
+    pos_textoE = (width // 2, pos_texto2[1] + texto1_height)
     pos_texto4 = (width // 2, pos_texto3[1] + texto3_height + 30)
     pos_texto5 = (width // 2, pos_texto4[1] + texto4_height + 30)
 
     dibujo.text(pos_texto1, "BIENVENIDO", fill=(0, 0, 0), font=fuente_b, anchor="ms")
     dibujo.text(pos_texto2, codigo, fill=(0, 0, 0), font=fuente_c, anchor="ms")
-    dibujo.text(pos_texto3, departamento, fill=(0, 0, 0), font=fuente_t, anchor="ms")
+    if len(departamento)>35:
+        departamento = departamento.split("-")
+        dibujo.text(pos_texto3, departamento[1], fill=(0, 0, 0), font=fuente_t, anchor="ms")
+        dibujo.text(pos_textoE, departamento[0]+" -", fill=(0, 0, 0), font=fuente_t, anchor="ms")
+    else:
+        dibujo.text(pos_texto3, departamento, fill=(0, 0, 0), font=fuente_t, anchor="ms")
     dibujo.text(pos_texto4, "Gracias por tu visita.", fill=(0, 0, 0), font=fuente_t, anchor="ms")
     dibujo.text(pos_texto5, fecha+"  "+hora, fill=(0, 0, 0), font=fuente_t, anchor="ms")
 
