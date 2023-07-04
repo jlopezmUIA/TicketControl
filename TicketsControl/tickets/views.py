@@ -6,14 +6,14 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.models import admisiones, agentes, metricas, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
+from tickets.models import admisiones, agentes, departamentos, metricas, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 import threading
 from .impresion import imprimir
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_atencion, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_estados_agente, save_metricas, save_registro, save_ticketcontrol, save_tiempos_agente, update_casos_agente, update_cola, update_configuration, update_estado, update_estados_agente, update_tiempos_agente
+from tickets.savedata import delete_agente, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_cajas, marcar_cursoslibres, marcar_registro, marcar_admision, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_primero_dato_admisiones, obtener_primero_dato_cajas, obtener_primero_dato_cursoslibres, obtener_primero_dato_registro, obtener_ultimo_dato, obtener_ultimo_dato_admisiones, obtener_ultimo_dato_cajas, obtener_ultimo_dato_cursoslibres, obtener_ultimo_dato_registro, obtener_ventanilla, save_admisiones, save_agente, save_atencion, save_cajas, save_casos_agente, save_configuration, save_cursoslibres, save_departamento, save_estados_agente, save_metricas, save_registro, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def home(request):
     request.session.flush() 
@@ -70,7 +70,9 @@ def adminside(request):
     regis = registro.objects.all()
     caja = cajas.objects.all()
     cursos = cursoslibres.objects.all()
-    return render(request, 'administracion/admin.html', {'records': records, 'casos': casos, 'admin': admin, 'registro': regis, 'cajas': caja, 'cursos':cursos})
+    departamento = departamentos.objects.all()
+    tramite = tramites.objects.all()
+    return render(request, 'administracion/admin.html', {'departamentos': departamento, 'tramites': tramite,  'records': records, 'casos': casos, 'admin': admin, 'registro': regis, 'cajas': caja, 'cursos':cursos})
 
 @login_required
 def colasatencion(request):
@@ -172,17 +174,13 @@ def datosagente(request):
 @login_required
 def nuevoagente(request):
     nombreagente = request.POST.get('name')
-    departamento = request.POST.get('departamento')
+    departamento_select = request.POST.get('tramite_select')
+    departamento = departamentos.objects.get(id_departamentos=departamento_select)
     data_agente = {
-        'departamento': departamento,
+        'departamento': departamento.nombre,
         'nombreAgente': nombreagente
     }
     save = save_agente(request, data_agente)
-    return redirect(request.META.get('HTTP_REFERER'))
-
-def eliminaragente(request):
-    id = request.POST.get('id_agente')
-    save = delete_agente(request, id)
     return redirect(request.META.get('HTTP_REFERER'))
 
 def registroAgente(request):
@@ -257,15 +255,19 @@ def inicio_atencion(request):
                     save_caso = save_casos_agente(request, data_caso)
                     request.session['idcasos'] = save_caso.id_casoagente
                 
-                if departamento == 'Registro':
-                    return redirect('atencion_agentes_registro')
-                else:
-                    return redirect('atencion_agentes')
+                return redirect('atencion_agentes')
 
 def atencion_agentes(request):
     agente_id = request.session.get('id_agente')
     cola = obtener_cola(agente_id)
-    return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola})
+    departamento = departamentos.objects.get(nombre=cola)
+    tranferDepartamentos = departamentos.objects.all()
+    tranferTramites = tramites.objects.all()
+    if departamento.tramitesDepartamento:
+        tramite = tramites.objects.filter(departamento=departamento.pk)
+        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites})
+    else:
+        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites})
 
 def atencion_agentes_registro(request):
     agente_id = request.session.get('id_agente')
@@ -356,7 +358,7 @@ def crear_ticket_registro(request):
 
     data_admisiones = {
         'codigo': 'RG-'+numero_siguiente,
-        'departamento': 'Registro/Documentos',
+        'departamento': 'Documentos',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -379,7 +381,7 @@ def crear_ticket_registro_tesis(request):
 
     data_admisiones = {
         'codigo': 'RGT-'+numero_siguiente,
-        'departamento': 'Registro/Tesis',
+        'departamento': 'Tesis',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -402,14 +404,14 @@ def crear_ticket_registro_convalidacion(request):
 
     data_admisiones = {
         'codigo': 'RGC-'+numero_siguiente,
-        'departamento': 'Registro/Convalidacion',
+        'departamento': 'Convalidacion',
         'fecha': fecha_actual,
         'atentido': False
     }
     save_registro(request, data_admisiones)
     codigo = 'RGC-'+numero_siguiente
 
-    departamento = 'RGC, REG = Registro - Convalidacion'
+    departamento = 'RGC, REG = Registro - Convalidación'
     imprimir(codigo, departamento)
     dic = {
         'success': True
@@ -417,7 +419,7 @@ def crear_ticket_registro_convalidacion(request):
 
     return JsonResponse(dic, safe=False)
 
-def crear_ticket_registro_retiros(request):
+def crear_ticket_registro_congelamiento(request):
     dato = obtener_ultimo_dato_registro()
     codigo = dato.split('-')
     numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
@@ -425,14 +427,14 @@ def crear_ticket_registro_retiros(request):
 
     data_admisiones = {
         'codigo': 'RGR-'+numero_siguiente,
-        'departamento': 'Registro/Retiros',
+        'departamento': 'Congelamientos',
         'fecha': fecha_actual,
         'atentido': False
     }
     save_registro(request, data_admisiones)
     codigo = 'RGR-'+numero_siguiente
 
-    departamento = 'RGR, REG = Registro - Retiros/Congelacion'
+    departamento = 'RGR, REG = Registro - Congelamientos'
     imprimir(codigo, departamento)
     dic = {
         'success': True
@@ -448,7 +450,7 @@ def crear_ticket_registro_suficiencia(request):
 
     data_admisiones = {
         'codigo': 'RGS-'+numero_siguiente,
-        'departamento': 'Registro/Suficiencia',
+        'departamento': 'Suficiencia',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -471,7 +473,7 @@ def crear_ticket_registro_graduacion(request):
 
     data_admisiones = {
         'codigo': 'RGG-'+numero_siguiente,
-        'departamento': 'Registro/Graduaciones',
+        'departamento': 'Graduaciones',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -494,7 +496,7 @@ def crear_ticket_registro_taller(request):
 
     data_admisiones = {
         'codigo': 'RTT-'+numero_siguiente,
-        'departamento': 'Registro/Taller',
+        'departamento': 'Taller',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -517,7 +519,7 @@ def crear_ticket_registro_apelacion(request):
 
     data_admisiones = {
         'codigo': 'RGA-'+numero_siguiente,
-        'departamento': 'Registro/Apelaciones',
+        'departamento': 'Apelaciones',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -540,7 +542,7 @@ def crear_ticket_registro_retencion(request):
 
     data_admisiones = {
         'codigo': 'RRT-'+numero_siguiente,
-        'departamento': 'Registro/Retenciones',
+        'departamento': 'Retenciones',
         'fecha': fecha_actual,
         'atentido': False
     }
@@ -548,6 +550,190 @@ def crear_ticket_registro_retencion(request):
     codigo = 'RRT-'+numero_siguiente
 
     departamento = 'RRT, REG = Registro - Retenciones'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_semirario(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Seminario',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Seminario de Graduación'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_cartas(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Cartas',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Solicitudes de Cartas'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_adecuaciones(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Adecuaciones',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Adecuaciones'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_actas(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Actas',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Actas'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_tcu(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'TCU',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - TCU'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_curso(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'CursosLibres',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Cursos Libres'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_examenes(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Examenes',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Exámenes'
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def crear_ticket_registro_matricula(request):
+    dato = obtener_ultimo_dato_registro()
+    codigo = dato.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data_admisiones = {
+        'codigo': 'RRT-'+numero_siguiente,
+        'departamento': 'Matricula',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_registro(request, data_admisiones)
+    codigo = 'RRT-'+numero_siguiente
+
+    departamento = 'RRT, REG = Registro - Matricula'
     imprimir(codigo, departamento)
     dic = {
         'success': True
@@ -619,30 +805,20 @@ def numero_agente(request):
     hora_actual = datetime.now()
     hora_actual_str = hora_actual.strftime('%H:%M:%S')
 
-    if cola == "Admisiones":
-        numero = obtener_primero_dato_admisiones()
-        if "000" in numero.codigo:
-            data = {'codigo': 'N/C'}
-        else:
-            data = {'codigo': numero.codigo}
-            marcar_admision(numero.pk)
-            caso = True
-    elif cola == "Cajas":
-        numero = obtener_primero_dato_cajas()
-        if "000" in numero.codigo:
-            data = {'codigo': 'N/C'}
-        else:
-            data = {'codigo': numero.codigo}
-            marcar_cajas(numero.pk)
-            caso = True
-    elif cola == "Cursos Libres":
-        numero = obtener_primero_dato_cursoslibres()
-        if "000" in numero.codigo:
-            data = {'codigo': 'N/C'}
-        else:
-            data = {'codigo': numero.codigo}
-            marcar_cursoslibres(numero.pk)
-            caso = True
+    agente_departamento  = agentes.objects.get(id_agente=request.session.get('id_agente'))
+    deparData = departamentos.objects.get(nombre=agente_departamento.departamento)
+
+    if deparData.tramitesDepartamento:
+        numero = obtener_primero_dato(deparData.nombre, cola)
+    else: 
+        numero = obtener_primero_dato(deparData.nombre, 'N/A')
+
+    if "000" in numero.codigo:
+        data = {'codigo': 'N/C'}
+    else:
+        data = {'codigo': numero.codigo}
+        marcar_ticket(numero.pk)
+        caso = True
 
     if caso:
         data_caso = {
@@ -668,7 +844,7 @@ def numero_agente(request):
             idtiempo = save_tiempos_agente(request, data_caso)
             request.session['idtiempo'] = idtiempo.id_tiemposagente
 
-        request.session['cliente'] = numero.codigo
+        request.session['cliente'] = numero.pk
 
         save_ticket = save_ticketcontrol(request, data_ticket)
 
@@ -742,108 +918,28 @@ def numero_agente_registro(request):
     return JsonResponse(data, safe=False)
 
 def transferencia(request):
-    ventanilla = obtener_ventanilla(request.session.get('id_agente'))
-    departamento = obtener_departamento(request.session.get('id_agente'))
     departamento = request.GET.get("departamento")
-    cliente = request.session.get('cliente')
-    if departamento == 'Admisiones':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Admisiones'
-        }
-        save_admisiones(request, data_admisiones)
+    codigo = request.session.get('cliente')
+    fecha_actual = date.today().strftime('%Y-%m-%d')
 
-    elif departamento == 'Registro/Documentos':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Documentos'
-        }
-        save_registro(request, data_admisiones)
+    departamento = departamento.split('/')
 
-    elif departamento == 'Registro/Tesis':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Tesis'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Convalidacion':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Convalidacion'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Suficiencia':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Suficiencia'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Retiros':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Retiros'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Graduaciones':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Graduaciones'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Taller':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Taller'
-        }
-        save_registro(request, data_admisiones)
+    if len(departamento) > 1:
+        depart = departamento[0]
+        tramite = departamento[1]
+    else:
+        depart = departamento[0]
+        tramite = 'N/A'
     
-    elif departamento == 'Registro/Apelaciones':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Apelaciones'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Registro/Retenciones':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Registro/Retenciones'
-        }
-        save_registro(request, data_admisiones)
-
-    elif departamento == 'Cajas':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Cajas'
-        }
-        save_cajas(request, data_admisiones)
-
-    elif departamento == 'Cursos Libres':
-        data_admisiones = {
-            'codigo': cliente,
-            'departamento': 'Curso Libres'
-        }
-        save_cursoslibres(request, data_admisiones)
-
-    if departamento == "Admisiones":
-            departamento = 'Adm'
-    elif departamento == "Registro":
-            departamento = 'Reg'
-    elif departamento == "Cajas":
-            departamento = 'Cja'
-    elif departamento == "Cursos Libres":
-            departamento = 'C.L.'
-
-    data_ticket = {
-        'codigoCaso': cliente,
-        'numeroVentanilla': ventanilla,
-        'departamento': departamento
+    ticket = tickets.objects.get(pk=codigo)
+    data = {
+        'codigo': ticket.codigo,
+        'departamento': depart,
+        'tramite': tramite,
+        'fecha': fecha_actual,
+        'atentido': False
     }
+    save_ticket(request, data)
 
     save = update_casos_agente(request, request.session.get('idcasos'), "transferencia")
 
@@ -867,17 +963,10 @@ def ticketcontrol(request):
             
             for _ in range(cantidad_sobrepasada):
                 registro = ticketControl.objects.all()[cantregistro]
-                if registro.departamento == 'Adm':
-                    departamento = 'Admisiones'
-                elif registro.departamento == 'Reg':
-                    departamento = 'Registro'
-                elif registro.departamento == 'Cja':
-                    departamento = 'Cajas'
-                elif registro.departamento == 'C.L.':
-                    departamento = 'Cursos Libres'
+                departamento = departamentos.objects.get(siglasDepartamento=registro.departamento)
                 codigo = str(registro.codigoCaso).split('-')
                 numero = int(codigo[1].lstrip("0"))
-                texto = codigo[0]+"-"+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento
+                texto = codigo[0]+"-"+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento.nombre
                 request.session['listaR'].append(texto)
                 # Crear hilo y esperar a que el hilo anterior termine
                 if previous_thread:
@@ -951,20 +1040,12 @@ def inicio_encuesta(request):
     if request.method == 'POST':
         agente = request.POST.get('agente_select')
         numeroVentanilla = request.POST.get('ventanilla')
-        departamento = request.POST.get('departamento')
 
-        if departamento == 'Admisiones':
-            departamento = 'Adm'
-        elif departamento == 'Registro':
-            departamento = 'Reg'
-        elif departamento == 'Cursos Libres':
-            departamento = 'C.L.'
-        elif departamento == 'Cajas':
-            departamento = 'Cja'
+        departamento = departamentos.objects.get(nombre=request.POST.get('departamento'))
 
         request.session['agenteEncuesta'] = agente
         request.session['ventanillaEncuesta'] = numeroVentanilla
-        request.session['departamentoEncuesta'] = departamento
+        request.session['departamentoEncuesta'] = departamento.siglasDepartamento
         
     return redirect('ticket_control_encuesta')
 
@@ -1381,3 +1462,208 @@ def digital_crear_ticket_registro_retencion(request):
         request.session['departamentoDigital'] = departamento
     return render(request, 'ticket/ticketdigital.html', {'codigo': codigo, 'departamento': departamento, 'fecha':fecha_actual, 'hora': hora_actual_str})
 
+
+
+
+@login_required
+def nuevodepartamento(request):
+    nombredepartamento = request.POST.get('nombreDepartamento')
+    codigodepartamento = request.POST.get('codigoDepartamento')
+    siglasdepartamento = request.POST.get('siglasDepartamento')
+
+    data_agente = {
+        'nombre': nombredepartamento,
+        'codigoDepartamento': codigodepartamento,
+        'siglasDepartamento': siglasdepartamento,
+        'tramitesDepartamento': False
+    }
+
+    save = save_departamento(request, data_agente)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def modificardepartamento(request):
+    iddepartamento = request.POST.get('idDepartamento')
+    nombredepartamento = request.POST.get('nombreDepartamento')
+    codigodepartamento = request.POST.get('codigoDepartamento')
+    siglasdepartamento = request.POST.get('siglasDepartamento')
+
+    departamentoSelected = departamentos.objects.get(id_departamentos=iddepartamento)
+
+    data = {
+        'id_departamentos': iddepartamento,
+        'nombre': nombredepartamento,
+        'codigoDepartamento': codigodepartamento,
+        'siglasDepartamento': siglasdepartamento,
+        'tramitesDepartamento': departamentoSelected.tramites
+    }
+
+    save = update_departamento(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def eliminardepartamento(request):
+    iddepartamento = request.POST.get('idDepartamento')
+
+    data = {
+        'id_departamentos': iddepartamento
+    }
+
+    save = eliminar_departamento(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def obtener_departamentos(request):
+    departamentos_dict = {}
+    departamentos_queryset = departamentos.objects.all()
+
+    for departamento in departamentos_queryset:
+        departamentos_dict[departamento.id_departamentos] = departamento.nombre
+
+    return JsonResponse(departamentos_dict, safe=False)
+
+@login_required
+def nuevotramite(request):
+    departamento = request.POST.get('tramite_select')
+    nombretramiteo = request.POST.get('nombreTramite')
+    codigotramite = request.POST.get('codigoTramite')
+
+    departamentoSelected = departamentos.objects.get(id_departamentos=departamento)
+
+    dataDepartamento = {
+        'id_departamentos': departamentoSelected.pk,
+        'nombre': departamentoSelected.nombre,
+        'codigoDepartamento': departamentoSelected.codigoDepartamento,
+        'siglasDepartamento': departamentoSelected.siglasDepartamento,
+        'tramitesDepartamento': True
+    }
+
+    saveDepartamento = update_departamento(request, dataDepartamento)
+
+    data = {
+        'departamento':departamento,
+        'nombre': nombretramiteo,
+        'codigoTramite': codigotramite
+    }
+
+    save = save_tramite(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def modificartramite(request):
+    idtramite = request.POST.get('idTramite')
+    nombretramiteo = request.POST.get('nombreTramite')
+    codigotramite = request.POST.get('codigoTramite')
+
+    data = {
+        'id_tramites': idtramite,
+        'nombre': nombretramiteo,
+        'codigoTramite': codigotramite
+    }
+
+    save = update_tramite(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def eliminartramite(request):
+    idtramite = request.POST.get('idTramite')
+
+    data = {
+        'id_tramites': idtramite
+    }
+
+    save = eliminar_tramite(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def ticket_maker_new(request):
+    departamento = departamentos.objects.all()
+    tramite = tramites.objects.all()
+    return render(request, 'ticket/ticketmakerNew.html', {'departamentos': departamento, 'tramites': tramite})
+
+def crear_ticket(request):
+    dato = request.GET.get("departamento")
+    ticket = dato.split(",")
+
+    if len(ticket) > 1:
+        tramitesData = tramites.objects.get(id_tramites=ticket[1])
+        departamentoData = departamentos.objects.get(id_departamentos=tramitesData.departamento.pk)
+        tramite = tramitesData.nombre
+        
+    else:
+        departamentoData = departamentos.objects.get(id_departamentos=ticket[0])
+        tramite = 'N/A'
+
+    ultimoTicket = obtener_ultimo_dato(departamentoData.nombre, tramite)
+    codigo = ultimoTicket.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    if tramite == "N/A":
+        data = {
+            'codigo': departamentoData.codigoDepartamento+'-'+numero_siguiente,
+            'departamento': departamentoData.nombre,
+            'tramite': tramite,
+            'fecha': fecha_actual,
+            'atentido': False
+        }
+        save_ticket(request, data)
+        codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
+        departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
+    else:
+        data = {
+            'codigo': tramitesData.codigoTramite+'-'+numero_siguiente,
+            'departamento': departamentoData.nombre,
+            'tramite': tramite,
+            'fecha': fecha_actual,
+            'atentido': False
+        }
+        save_ticket(request, data)
+        codigo = tramitesData.codigoTramite+'-'+numero_siguiente
+        departamento = tramitesData.codigoTramite+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre+' - '+tramitesData.nombre
+
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)
+
+def cargar_tramites(request):
+    iddepartamento = request.GET.get("departamento")
+    tramitesData = tramites.objects.filter(departamento=iddepartamento)
+    tramites_dict = {}
+    for tramite in tramitesData:
+        tramites_dict[tramite.id_tramites] = tramite.nombre
+
+    return JsonResponse(tramites_dict, safe=False)
+
+def obtener_todos_departamentos(request):
+    departamentos_dict = {}
+    departamentos_queryset = departamentos.objects.all()
+
+    for departamento in departamentos_queryset:
+        departamentos_dict[departamento.id_departamentos] = departamento.nombre
+
+    return JsonResponse(departamentos_dict, safe=False)
+
+@login_required
+def eliminaragente(request):
+    idagente = request.POST.get('id_agente')
+    save = delete_agente(request, idagente)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def modificaragente(request):
+    id_agente = request.POST.get('id_agente')
+    nombre_agente = request.POST.get('nombre_agente')
+    tramite_select = request.POST.get('tramite_select')
+
+    departamentoSelected = departamentos.objects.get(id_departamentos=tramite_select)
+
+    data = {
+        'id_agente': id_agente,
+        'nombreAgente': nombre_agente,
+        'departamento': departamentoSelected.nombre
+    }
+
+    save = update_agente(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))

@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+<div class="row mt-2">
+    <div class="col-12 col-lg-12 col-md-12 col-sm-12 mx-auto mt-5 mb-5">
+        <div class="card border-0 cardCol rounded-3 my-5 mx-auto">
+            <div class="card-body pt-5 pl-8 pr-8">
+                <h1 class="card-title text-center mb-3 titulo" >DEPARTAMENTOS DE ATENCIÓN</h1>
+                <h4 class="card-title text-center mb-4" style="color: #878787; font-weight: bold;">Seleccioná el departamento al que deseas dirigirte.</h4>
+                <main class="form-signin">
+                    <div class="row">
+                        {% for departamento in departamentos %}
+                        <div class="col-md-6 mb-3">
+                            <div class="">
+                                <div>
+                                    <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
+                                    type="button" id="loading-indicator" 
+                                    {% if departamento.tramitesDepartamento %} 
+                                    data-bs-toggle="modal"data-bs-target="#modal_tramites"
+                                    onclick="cargar_tramites('{{ departamento.pk }}')" 
+                                    {% else %} 
+                                    onclick="crear_ticket('{{ departamento.pk }}')"
+                                    {% endif %}
+                                    ><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.nombre }}</p></button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    <div class="row mt-2" style="justify-content: center;">
+                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 170px; height: 85px;">
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Model de Cambio de data -->
+{% block modal_tramites%}
+<div class="modal fade" id="modal_tramites" tabindex="-1" aria-labelledby="modal_tramitesTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">TRÁMITES DEL DEPARTAMENTO</h1>
+                            <p style="text-align: center; font-size: 25px; color: #878787; font-weight: bold;">Seleccioná el trámite que deseas realizar.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <select id="tramites_select" class="form-select form-select-lg mb-3 mt-3 roundedInput" name="tramites_select" >
+                            <option selected disabled>Trámites</option>
+                        </select>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <button class="btnStyle2 btn btn-lg fw-bold pt-1 pb-1 mb-5 mt-1"
+                        type="button" id="btnGenerar" onclick="crear_ticket_tramite()"><p style="font-size: 30px;" class="mt-3 mb-3">Generar Ticket</p></button>
+                    </div>
+                    <div class="row mt-2" style="justify-content: center;">
+                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 170px; height: 85px;">
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_tramites %}
+
+<style>
+    .modal-dialog.custom-modal-lg {
+        max-width: 60%; /* Puedes ajustar el porcentaje según tus necesidades */
+    }
+
+    .titulo{
+        font-weight: 900; 
+        font-size: 35px;
+        color: #000000;
+    }
+
+    body{
+        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+    .card-body{
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+    body{
+        background-image: url('{% static "img/Fondo2.png" %}');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        overflow: hidden;
+    }
+    .btnStyle {
+        background-color: #000000;
+        color: white;
+        border-radius: 30px;
+        border-color: #000000;
+        font-size: 15px;
+    }
+    .btnStyle:hover, .btnStyle2:hover {
+        background-color: #000000;
+        color: #ffd142;
+        border-color: #000000;
+    }
+    .btn:focus,
+    .btn:active,
+    .navbar-brand:focus,
+    .navbar-brand:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    .btnStyle2 {
+        background-color: #000000;
+        color: white;
+        border-radius: 30px;
+        border-color: #000000;
+        font-size: 15px;
+        width: 50%;
+    }
+
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 30px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+        width: 70%;
+    }
+
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .roundedInput option{
+        background-color: rgba(255, 226, 147);
+    }
+    
+</style>
+
+<script>
+    $(document).ready(function() {
+        var registro = document.getElementById("registrobtn");
+        // Escucha el evento "shown.bs.modal" para el modal de registro
+        $('#modal_registro').on('shown.bs.modal', function() {
+          // Espera 15 segundos y luego cierra el modal
+          setTimeout(function() {
+            $('#modal_registro').modal('hide');
+            registro.style.color = "white";
+          }, 20000);
+        });
+    });
+
+    function crear_ticket(departamento) {
+        var url = "/crear-ticket/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(departamento), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_tramite() {
+        const select = document.getElementById('tramites_select').value;
+        console.log(select);
+        var url = "/crear-ticket/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent('Tramite,'+select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                location.reload();
+            }
+        };
+        request.send();
+    }
+
+    function cargar_tramites(id_departamento) {
+        var select2 = document.getElementById("tramites_select");
+        var url = "/cargar-tramites/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(id_departamento), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+</script>
+{% endblock %}

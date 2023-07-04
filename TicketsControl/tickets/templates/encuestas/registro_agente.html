@@ -14,10 +14,6 @@
                             <div class="mb-4">
                                 <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput align-center"
                                     name="departamento" required onchange="cargarAgentes()">
-                                    <option value="Admisiones">Admisiones</option>
-                                    <option value="Registro">Registro</option>
-                                    <option value="Cursos Libres">Cursos Libres</option>
-                                    <option value="Cajas" disabled>Cajas</option>
                                 </select>
                             </div>
                             <div class="mb-4">
@@ -112,8 +108,31 @@
 </style>
 <script>
     window.onload = function () {
-        cargarAgentes();
+        cargarDepartamentos();
     };
+    function cargarDepartamentos() {
+        var select2 = document.getElementById("departamento");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+                cargarAgentes();
+            }
+        };
+        request.send();
+    }
     function cargarAgentes() {
         var select = document.getElementById("departamento").value;
         var select2 = document.getElementById("agente_select");

@@ -34,6 +34,8 @@
             <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal"
+                        data-bs-target="#modal_nuevoagente" onclick="cargarDepartamentos()">Nuevo Agente</button>
                         <div class=" table-responsive">
                             <div class="table-responsive-sm">
                                 <table id="record-table" style="height: 200px;"
@@ -46,16 +48,26 @@
                                             <th>
                                                 <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
                                             </th>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">ACCIONES</h5>
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for agente in agentes %}
                                         <tr class="colorfilas">
                                             <td class="text-center align-middle">
-                                                <h5>{{ agente.nombreAgente }}</h5>
+                                                <h5 id="agente_id" hidden>{{ agente.id_agente }}</h5>
+                                                <h5 id="agente_nombre">{{ agente.nombreAgente }}</h5>
                                             </td>
                                             <td class="text-center align-middle">
-                                                <h5>{{ agente.departamento }}</h5>
+                                                <h5 id="agente_departamento">{{ agente.departamento }}</h5>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente"
+                                                    onclick="modalModificarAgente('modificar')" class="btn">Modificar</button>
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente"
+                                                    onclick="modalModificarAgente('eliminar')" class="btn">Eliminar</button>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -228,7 +240,73 @@
     </div>
 </div>
 
-<!-- Model de Cambio de foto -->
+{% block modal_nuevoagente%}
+<div class="modal fade" id="modal_nuevoagente" tabindex="-1" aria-labelledby="modal_nuevoagenteTitle"
+    style="display: none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_nuevoagenteTitle">
+                    CREACIÓN DE NUEVO AGENTE
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formModal" method="POST" action="{% url 'nuevo_agente' %}">
+                    {% csrf_token %}
+                    <div class="row ">
+                        <div class=" mb-3">
+                            <div class="mb-3">
+                                <input type="text" class="roundedInput form-control" id="id_agente"
+                                    name="id_agente" hidden>
+                                <label for="">Nombre del Agente</label>
+                                <input type="text" class="roundedInput form-control" id="nombre_agente" placeholder="Nombre de Agente"
+                                    name="nombre_agente" required>
+                            </div>
+
+                        </div>
+                        <div class="mb-3 ">
+                            <div class="mb-3">
+                                <label id="labelDepartamento" for="">Departamento</label>
+                                <select id="tramite_select" class="roundedInput form-select" name="tramite_select" required>
+                                    <option selected disabled>Departamentos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="d-grid mb-2">
+                            <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                id="btnModal"> Registrar Agente</button>
+
+                            <div id="loading-indicator" class="hidden">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .modal-header{
+        background-color: #000000;
+        color: white;
+    }
+    .btn-close{
+        color: white;
+    }
+</style>
+
+{% endblock modal_nuevoagente %}
 
 
 <style>
@@ -276,6 +354,80 @@
 </style>
 
 <script>
+    function cargarDepartamentos() {
+        var select2 = document.getElementById("tramite_select");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    function modalModificarAgente(accion) {
+        var fila = event.target.closest('tr');
+
+        var agente_id = fila.querySelector('#agente_id').textContent;
+        var agente_nombre = fila.querySelector('#agente_nombre').textContent;
+        var agente_departamento = fila.querySelector('#agente_departamento').textContent;
+
+        var id_agente = document.getElementById("id_agente");
+        var nombre_agente = document.getElementById("nombre_agente");
+        var tramite_select = document.getElementById("tramite_select");
+
+        var modal_nuevoagenteTitle = document.getElementById("modal_nuevoagenteTitle");
+        var btnModalDepartamento = document.getElementById("btnModal");
+        var formDepartamento = document.getElementById("formModal");
+        var labelDepartamento = document.getElementById("labelDepartamento");
+
+        id_agente.value = agente_id;
+        nombre_agente.value = agente_nombre;
+
+        cargarDepartamentos();
+
+        console.log(tramite_select.options.length);
+        for (var i = 0; i < tramite_select.options.length; i++) {
+            if (tramite_select.options[i].textContent === agente_departamento) {
+                tramite_select.selectedIndex = i;
+                break;
+            }
+        }
+
+        if (accion === 'modificar') {
+            btnModalDepartamento.innerText = "Modificar Agente";
+
+            modal_nuevoagenteTitle.innerText = "MODIFICACIÓN DE AGENTE";
+
+            formDepartamento.action = "{% url 'modificar_agente' %}";
+
+            tramite_select.style.display = "block";
+        }
+        else if (accion === 'eliminar') {
+            btnModalDepartamento.innerText = "Eliminar Agente";
+
+            modal_nuevoagenteTitle.innerText = "ELIMINACIÓN DE AGENTE";
+
+            formDepartamento.action = "{% url 'eliminar_agente' %}";
+
+            tramite_select.style.display = "none";
+            labelDepartamento.style.display = "none";
+        }
+
+    }
+
     $(document).ready(function () {
         $('#record-table').DataTable({
             select: true,

@@ -105,3 +105,30 @@ class metricas(models.Model):
     codigoCaso = models.CharField(max_length=60)
     estado = models.CharField(max_length=60)
     fecha = models.CharField(max_length=60)
+
+
+
+
+class departamentos(models.Model):
+    id_departamentos = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=60)
+    codigoDepartamento = models.CharField(max_length=60)
+    siglasDepartamento = models.CharField(max_length=60)
+    tramitesDepartamento = models.BooleanField(default=False)
+
+class tramites(models.Model):  
+    id_tramites = models.AutoField(primary_key=True)
+    departamento = models.ForeignKey(departamentos,
+                            on_delete=models.CASCADE,
+                            null=True,
+                            blank=True)
+    nombre = models.CharField(max_length=60)
+    codigoTramite = models.CharField(max_length=60)
+
+class tickets(models.Model): 
+    id_ticket = models.AutoField(primary_key=True)
+    codigo = models.CharField(max_length=60)
+    departamento = models.CharField(max_length=60)
+    tramite = models.CharField(max_length=60)
+    fecha = models.CharField(max_length=60)
+    atendido = models.BooleanField(default=False)

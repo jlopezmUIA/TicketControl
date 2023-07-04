@@ -24,14 +24,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'tickets_agente' %}">TICKETS</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="agentesDropdown" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" href="{% url 'datos_agente' %}">AGENTES</a>
-                    <ul class="dropdown-menu" aria-labelledby="agentesDropdown">
-                        <li><a class="dropdown-item" href="{% url 'datos_agente' %}">Ver Agentes</a></li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                data-bs-target="#modal_nuevoagente">Añadir Agentes</a></li>
-                    </ul>
+                <li class="nav-item">
+                    <a class="nav-link " id="agentesDropdown" role="button" href="{% url 'datos_agente' %}">AGENTES</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'configuracion' %}">CONFIGURACIÓN DE VISUALIZADOR</a>
@@ -95,70 +89,3 @@
         });
     });
 </script>
-
-{% block modal_nuevoagente%}
-<div class="modal fade" id="modal_nuevoagente" tabindex="-1" aria-labelledby="modal_nuevoagenteTitle"
-    style="display: none" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content rounded-4">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal_nuevoagenteTitle">
-                    CREACIÓN DE NUEVO AGENTE
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="{% url 'nuevo_agente' %}">
-                    {% csrf_token %}
-                    <div class="row ">
-                        <div class=" mb-3">
-                            <div class="mb-3">
-                                <input type="text" class="roundedInput form-control" id="floatingInput" placeholder="Nombre de Agente"
-                                    name="name" required>
-                            </div>
-
-                        </div>
-                        <div class="mb-3 ">
-                            <div class="mb-3">
-                                <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select" name="departamento"
-                                    required>
-                                    <option value="Admisiones">Admisiones</option>
-                                    <option value="Registro">Registro</option>
-                                    <option value="Cursos Libres">Cursos Libres</option>
-                                    <option value="Cajas">Cajas</option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="d-grid mb-2">
-                            <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                id="loading-indicator"> Registrar Agente</button>
-
-                            <div id="loading-indicator" class="hidden">
-                                <div class="spinner"></div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .roundedInput:focus{
-        outline: 1px solid #ffd142;
-        border-color: #ffd142;
-        box-shadow: 0 0 1px #ffd142;
-    }
-    .modal-header{
-        background-color: #000000;
-        color: white;
-    }
-    .btn-close{
-        color: white;
-    }
-</style>
-{% endblock modal_nuevoagente %}

@@ -3,55 +3,441 @@
 {% include 'componentes/navbarheader.html' %}
 {% endblock %}
 {% block content %}
-
-<!-- Main jumbotron for a primary marketing message or call to action -->
-<div class="jumbotron">
-    <div class="container">
-        <h1 class="display-3">Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a
-            jumbotron and three supporting pieces of content. Use it as a starting point to create something more
-            unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more »</a></p>
-    </div>
-</div>
-
-<div class="container">
+<div class="container mt-5">
     <!-- Example row of columns -->
     <div class="row">
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        <div class="col-md-6" style="text-align: center;">
+            <h2 class="titulo">DEPARTAMENTOS</h2>
+            <table id="record-table" style="height: 100px;" class="table table-hover table-fixed-height">
+                <thead class="table-dark1">
+                    <tr>
+                        <th>
+                            <h5 class="mt-2 text-center fw-bold">NOMBRE DEL DEPARTAMENTO</h5>
+                        </th>
+                        <th>
+                            <h5 class="mt-2 text-center fw-bold">ACCIONES</h5>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for departamento in departamentos %}
+                    <tr class="colorfilas">
+                        <td class="text-center align-middle">
+                            <h5 id="dNombre" class="">{{ departamento.nombre }}</h5>
+                            <h5 id="dDepartamento" hidden>{{ departamento.id_departamentos }}</h5>
+                            <h5 id="dCodigo" hidden>{{ departamento.codigoDepartamento }}</h5>
+                            <h5 id="dSiglas" hidden>{{ departamento.siglasDepartamento }}</h5>
+                        </td>
+                        <td class="text-center align-middle">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_departamento"
+                                onclick="modalModificar('modificar')" class="btn">Modificar</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_departamento"
+                                onclick="modalModificar('eliminar')" class="btn">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_departamento"
+                class="btn btnStyle">Agregar Departamento</button>
         </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-                fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-secondary" href="#" role="button">View details »</a></p>
+        <div class="col-md-6" style="text-align: center;">
+            <h2 class="titulo">TRÁMITES</h2>
+            <table id="record-table2" style="height: 100px;" class="table table-hover table-fixed-height">
+                <thead class="table-dark1">
+                    <tr>
+                        <th>
+                            <h5 class="mt-2 text-center fw-bold">NOMBRE DE LOS TRÁMITES</h5>
+                        </th>
+                        <th>
+                            <h5 class="mt-2 text-center fw-bold">ACCIONES</h5>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tramite in tramites %}
+                    <tr class="colorfilas">
+                        <td class="text-center align-middle">
+                            <h5 id="tId" hidden>{{ tramite.id_tramites }}</h5>
+                            <h5 id="tNombre" class="">{{ tramite.nombre }}</h5>
+                            <h5 id="tDepartamento" hidden>{{ tramite.departamento.pk }}</h5>
+                            <h5 id="tCodigo" hidden>{{ tramite.codigoTramite }}</h5>
+                        </td>
+                        <td class="text-center align-middle">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tramite"
+                                onclick="modalModificarTramite('modificar')" class="btn">Modificar</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tramite"
+                                onclick="modalModificarTramite('eliminar')" class="btn">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tramite" onclick="cargarDepartamentos()"
+                class="btn btnStyle">Agregar Tramite</button>
         </div>
     </div>
-
     <hr>
-
 </div> <!-- /container -->
+{% block modal_departamento%}
+<div class="modal fade" id="modal_departamento" tabindex="-1" aria-labelledby="modal_departamentoTitle"
+    style="display: none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">
+                    CREACIÓN DE NUEVO DEPARTAMENTO
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <form method="POST" id="formDepartamento" action="{% url 'nuevo_departamento' %}">
+                            {% csrf_token %}
+                            <div class="row ">
+                                <div class=" mb-3">
+                                    <input type="text" class="roundedInput form-control" id="idDepartamento"
+                                        name="idDepartamento" hidden>
+                                    <label for="">Nombre del Departamento</label>
+                                    <input type="text" class="roundedInput form-control" id="nombreDepartamento"
+                                        placeholder="Nombre" name="nombreDepartamento" required>
+                                </div>
 
-<style>
-    .roundedInput {
-        border-radius: 50px;
-        text-align: justify;
-        font-size: 20px;
-        padding: 10px;
-        padding-left: 30px;
-    }
-</style>
-{% endblock %}
+                            </div>
+                            <div class="mb-3 ">
+                                <label for="">Código del Departamento</label>
+                                <input type="text" class="roundedInput form-control" id="codigoDepartamento"
+                                    placeholder="Código" oninput="convertirMayusculas(this)" name="codigoDepartamento"
+                                    required>
+                            </div>
+                            <div class="mb-3 ">
+                                <label for="">Siglas del Departamento</label>
+                                <input type="text" class="roundedInput form-control" id="siglasDepartamento"
+                                    placeholder="Siglas" oninput="convertirMayusculas(this)" name="siglasDepartamento"
+                                    required>
+                            </div>
+                            <br>
+                            <div class="d-grid mb-2">
+                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    id="btnModalDepartamento"> Registrar Departamento</button>
+
+                                <div id="loading-indicator" class="hidden">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                    </div>
+                    </form>
+            </div>
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock modal_departamento %}
+
+{% block modal_tramite%}
+<div class="modal fade" id="modal_tramite" tabindex="-1" aria-labelledby="modal_tramiteTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTituloTramite">
+                    CREACIÓN DE NUEVO TRÁMITE
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <form method="POST" id="formTramite" action="{% url 'nuevo_tramite' %}">
+                            {% csrf_token %}
+                            <div class="row ">
+                                <div class=" mb-3">
+                                    <input type="text" class="roundedInput form-control" id="idTramite" name="idTramite"
+                                        hidden>
+                                    <label id="labelDepartamento" for="">Departamento</label>
+                                    <select id="tramite_select" class="roundedInputSelect" name="tramite_select"
+                                        data-placeholder="Seleccion Agente">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Nombre del Trámite</label>
+                                    <input type="text" class="roundedInput form-control" id="nombreTramite"
+                                        placeholder="Nombre" name="nombreTramite" required>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Código del Trámite</label>
+                                    <input type="text" class="roundedInput form-control" id="codigoTramite"
+                                        placeholder="Código" oninput="convertirMayusculas(this)" name="codigoTramite"
+                                        required>
+                                </div>
+                                <br>
+                                <div class="d-grid mb-2">
+                                    <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                        id="btnModalTramite"> Registrar Trámite</button>
+
+                                    <div id="loading-indicator" class="hidden">
+                                        <div class="spinner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    {% endblock modal_tramite %}
+    <style>
+        .modal-header {
+            background-color: #000000;
+            color: white;
+        }
+
+        .btn-close {
+            color: white;
+        }
+
+        .roundedInput {
+            border-radius: 50px;
+            text-align: justify;
+            font-size: 20px;
+            padding: 10px;
+            padding-left: 30px;
+        }
+
+        .roundedInputSelect {
+            width: 100%;
+            border-radius: 50px;
+            text-align: justify;
+            font-size: 20px;
+            padding: 10px;
+            padding-left: 30px;
+        }
+
+        .titulo {
+            font-size: 35px;
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .table {
+            border-collapse: separate;
+            width: 100%;
+            border-spacing: 0 4px;
+        }
+
+        .colorfilas {
+            background-color: white;
+            border-color: transparent;
+        }
+
+        td:first-child,
+        th:first-child {
+            border-radius: 50px 0 0 50px;
+        }
+
+        td:last-child,
+        th:last-child {
+            border-radius: 0 50px 50px 0;
+        }
+
+        .table-dark1 {
+            background-color: black;
+            color: white;
+        }
+
+        .btnStyle {
+            background-color: #000000;
+            color: #ffffff;
+            border-radius: 50px;
+            border-color: #000000;
+            font-size: 15px;
+        }
+
+        .btnStyle:hover {
+            background-color: #000000;
+            color: #ffd142;
+            border-color: #000000;
+        }
+    </style>
+
+    <script>
+        function cargarDepartamentos() {
+            var select2 = document.getElementById("tramite_select");
+
+            var url = "/obtener-departamentos/";
+            var request = new XMLHttpRequest();
+            request.open('GET', url, true);
+            request.onload = function () {
+                if (request.status === 200) {
+                    var data = JSON.parse(request.responseText);
+                    select2.options.length = 0;
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var option = document.createElement("option");
+                            option.value = key;
+                            option.text = data[key];
+                            select2.add(option);
+                        }
+                    }
+                }
+            };
+            request.send();
+        }
+
+        function convertirMayusculas(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        var modal = document.getElementById('modal_departamento');
+        var modalTramite = document.getElementById('modal_tramite');
+
+        $(document).on("click", "#record-table tbody tr", function() {
+            // Obtener el valor del departamento seleccionado
+            var departamento = $(this).find("#dDepartamento").text();
+        
+            // Filtrar la tabla de trámites según el departamento seleccionado
+            $("#record-table2 tbody tr").hide();
+            $("#record-table2 tbody tr").each(function() {
+                var tramiteDepartamento = $(this).find("#tDepartamento").text();
+                if (tramiteDepartamento === departamento) {
+                    $(this).show();
+                }
+            });
+        });
+        
+
+        modal.addEventListener('hidden.bs.modal', function () {
+            var iddepartamento = document.getElementById("idDepartamento");
+            var mnombre = document.getElementById("nombreDepartamento");
+            var mcodigo = document.getElementById("codigoDepartamento");
+            var msiglas = document.getElementById("siglasDepartamento");
+
+            var btnModalDepartamento = document.getElementById("btnModalDepartamento");
+            var formDepartamento = document.getElementById("formDepartamento");
+            var modalTitulo = document.getElementById("modalTitulo");
+
+            mnombre.value = "";
+            mcodigo.value = "";
+            msiglas.value = "";
+            iddepartamento.value = "";
+
+            btnModalDepartamento.innerText = "Registrar Departamento";
+
+            modalTitulo.innerText = "CREACIÓN DE NUEVO DEPARTAMENTO";
+
+            formDepartamento.action = "{% url 'nuevo_departamento' %}";
+        });
+
+        modalTramite.addEventListener('hidden.bs.modal', function () {
+            var idtramite = document.getElementById("idTramite");
+            var tramite_select = document.getElementById("tramite_select");
+            var mnombre = document.getElementById("nombreTramite");
+            var mcodigo = document.getElementById("codigoTramite");
+            var labelDepartamento = document.getElementById("labelDepartamento");
+
+            var modalTituloTramite = document.getElementById("modalTituloTramite");
+            var btnModalTramite = document.getElementById("btnModalTramite");
+            var formTramite = document.getElementById("formTramite");
+
+            mnombre.value = "";
+            mcodigo.value = "";
+            idtramite.value = "";
+            
+            tramite_select.style.display = 'block';
+            labelDepartamento.style.display = 'block';
+
+            btnModalTramite.innerText = "Registrar Trámite";
+
+            modalTituloTramite.innerText = "CREACIÓN DE NUEVO TRÁMITE";
+
+            formDepartamento.action = "{% url 'nuevo_tramite' %}";
+        });
+
+        function modalModificar(accion) {
+            var fila = event.target.closest('tr');
+
+            var ddepartamento = fila.querySelector('#dDepartamento').textContent;
+            var dnombre = fila.querySelector('#dNombre').textContent;
+            var dcodigo = fila.querySelector('#dCodigo').textContent;
+            var dsiglas = fila.querySelector('#dSiglas').textContent;
+
+            var iddepartamento = document.getElementById("idDepartamento");
+            var mnombre = document.getElementById("nombreDepartamento");
+            var mcodigo = document.getElementById("codigoDepartamento");
+            var msiglas = document.getElementById("siglasDepartamento");
+
+            var modal_nuevoagenteTitle = document.getElementById("modal_nuevoagenteTitle");
+            var btnModalDepartamento = document.getElementById("btnModalDepartamento");
+            var formDepartamento = document.getElementById("formDepartamento");
+
+            mnombre.value = dnombre;
+            mcodigo.value = dcodigo;
+            msiglas.value = dsiglas;
+            iddepartamento.value = ddepartamento;
+
+            if (accion === 'modificar') {
+                btnModalDepartamento.innerText = "Modificar Departamento";
+
+                modalTitulo.innerText = "MODIFICACIÓN DE DEPARTAMENTO";
+
+                formDepartamento.action = "{% url 'modificar_departamento' %}";
+            }
+            else if (accion === 'eliminar') {
+                btnModalDepartamento.innerText = "Eliminar Departamento";
+
+                modalTitulo.innerText = "ELIMINACIÓN DE DEPARTAMENTO";
+
+                formDepartamento.action = "{% url 'eliminar_departamento' %}";
+            }
+
+        }
+
+        function modalModificarTramite(accion) {
+            var fila = event.target.closest('tr');
+
+            var tId = fila.querySelector('#tId').textContent;
+            var tDepartamento = fila.querySelector('#tDepartamento').textContent;
+            var tnombre = fila.querySelector('#tNombre').textContent;
+            var tcodigo = fila.querySelector('#tCodigo').textContent;
+
+            var idtramite = document.getElementById("idTramite");
+            var tramite_select = document.getElementById("tramite_select");
+            var mnombre = document.getElementById("nombreTramite");
+            var mcodigo = document.getElementById("codigoTramite");
+            var labelDepartamento = document.getElementById("labelDepartamento");
+
+            var modalTituloTramite = document.getElementById("modalTituloTramite");
+            var btnModalTramite = document.getElementById("btnModalTramite");
+            var formTramite = document.getElementById("formTramite");
+
+            mnombre.value = tnombre;
+            mcodigo.value = tcodigo;
+            idtramite.value = tId;
+            tramite_select.style.display = 'none';
+            labelDepartamento.style.display = 'none';
+
+            if (accion === 'modificar') {
+                btnModalTramite.innerText = "Modificar Trámite";
+
+                modalTituloTramite.innerText = "MODIFICACIÓN DE TRÁMITE";
+
+                formTramite.action = "{% url 'modificar_tramite' %}";
+            }
+            else if (accion === 'eliminar') {
+                btnModalTramite.innerText = "Eliminar Trámite";
+
+                modalTituloTramite.innerText = "ELIMINACIÓN DE TRÁMITE";
+
+                formTramite.action = "{% url 'eliminar_tramite' %}";
+            }
+
+        }
+    </script>
+    {% endblock %}

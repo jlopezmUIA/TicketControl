@@ -1,5 +1,7 @@
 from django import forms
-from .models import agentes, atencion, admisiones, cajas, cursoslibres, metricas, registro, estadosAgente, casosAgente, ticketControl, tiemposAgente
+
+import tickets
+from .models import agentes, atencion, admisiones, cajas, cursoslibres, departamentos, metricas, registro, estadosAgente, casosAgente, ticketControl, tiemposAgente, tramites, tickets
 
 class FormularioAgente(forms.ModelForm):
     class Meta:
@@ -60,3 +62,19 @@ class FormularioMetricas(forms.ModelForm):
     class Meta:
         model = metricas
         fields = ('agente', 'codigoCaso', 'estado', 'fecha')
+
+
+class FormularioDepartamentos(forms.ModelForm):
+    class Meta:
+        model = departamentos
+        fields = ('nombre', 'codigoDepartamento', 'siglasDepartamento','tramitesDepartamento')
+
+class FormularioTramites(forms.ModelForm):
+    class Meta:
+        model = tramites
+        fields = ('departamento', 'nombre', 'codigoTramite')
+
+class FormularioTickets(forms.ModelForm):
+    class Meta:
+        model = tickets
+        fields = ('codigo', 'departamento', 'tramite', 'fecha', 'atendido')

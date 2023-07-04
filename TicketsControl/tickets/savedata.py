@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
-from tickets.forms import FormularioAdmisiones, FormularioAgente, FormularioAtencion, FormularioCajas, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCursosLibres, FormularioEstadosAgente, FormularioMetricas, FormularioRegistro, FormularioTicketControl, FormularioTiemposAgente
-from .models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, estadosAgente, registro, ticketControl, tiemposAgente, visualizador
+from tickets.forms import FormularioAdmisiones, FormularioAgente, FormularioAtencion, FormularioCajas, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCursosLibres, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioRegistro, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+from .models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, departamentos, estadosAgente, registro, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 
@@ -401,15 +401,154 @@ def obtener_agenteAtencion(id):
 def obtener_departamento(id):
     try:
         atencion_obj = agentes.objects.get(id_agente=id)
-        departamento = atencion_obj.departamento
-        if departamento == "Admisiones":
-            departamento = 'Adm'
-        elif departamento == "Registro":
-            departamento = 'Reg'
-        elif departamento == "Cajas":
-            departamento = 'Cja'
-        elif departamento == "Cursos Libres":
-            departamento = 'C.L.'
-        return departamento
+        departamento = departamentos.objects.get(nombre=atencion_obj.departamento)
+        return departamento.siglasDepartamento
     except agentes.DoesNotExist:
         return None
+    
+
+
+
+def save_departamento(request, data):
+    form = FormularioDepartamentos(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def update_departamento(request, data):
+    try:
+        atencion_obj = departamentos.objects.get(id_departamentos=data['id_departamentos'])
+        atencion_obj.nombre = data['nombre']
+        atencion_obj.codigoDepartamento = data['codigoDepartamento']
+        atencion_obj.siglasDepartamento = data['siglasDepartamento']
+        atencion_obj.tramitesDepartamento = data['tramitesDepartamento']
+        atencion_obj.save()
+        return True
+    except departamentos.DoesNotExist:
+        return False
+    
+def eliminar_departamento(request, data):
+    try:
+        try:
+            tickets_obj = tramites.objects.get(departamento=data['id_departamentos'])
+            return False
+        except tramites.DoesNotExist:
+            atencion_obj = departamentos.objects.get(id_departamentos=data['id_departamentos'])
+            atencion_obj.delete()
+            return True
+    except departamentos.DoesNotExist:
+        return False
+
+def save_tramite(request, data):
+    form = FormularioTramites(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def save_ticket(request, data):
+    form = FormularioTickets(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+
+def save_tramite(request, data):
+    form = FormularioTramites(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def update_tramite(request, data):
+    try:
+        atencion_obj = tramites.objects.get(id_tramites=data['id_tramites'])
+        atencion_obj.nombre = data['nombre']
+        atencion_obj.codigoTramite = data['codigoTramite']
+        atencion_obj.save()
+        return True
+    except tramites.DoesNotExist:
+        return False
+
+def eliminar_tramite(request, data):
+    try:
+        atencion_obj = tramites.objects.get(id_tramites=data['id_tramites'])
+        atencion_obj.delete()
+        return True
+    except tramites.DoesNotExist:
+        return False
+    
+def save_ticket(request, data):
+    form = FormularioTickets(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def obtener_primero_dato(departamentoNombre, tramiteNombre):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        if tramiteNombre == 'N/A':
+            ultimo_dato = tickets.objects.filter(atendido=False, fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
+            return ultimo_dato
+        else:
+            tramiteNombre = tramiteNombre.split(",")
+            ultimo_dato = None
+
+            for tramite in tramiteNombre:
+                ticket = tickets.objects.filter(atendido=False, fecha=fecha_actual, departamento=departamentoNombre, tramite=tramite)
+                if ticket.exists():
+                    ultimo_registro = ticket.earliest('id_ticket')
+                    if ultimo_dato is None or ultimo_registro.fecha > ultimo_dato.fecha:
+                        ultimo_dato = ultimo_registro
+            if ultimo_dato is None:
+                dato = tickets(codigo = '000')
+                return dato
+            else:
+                return ultimo_dato
+    except tickets.DoesNotExist:
+        dato = tickets(codigo = '000')
+        return dato
+
+def obtener_ultimo_dato(departamentoNombre, tramiteNombre):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        if tramiteNombre == 'N/A':
+            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
+        else:
+            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre, tramite=tramiteNombre).latest('id_ticket')
+
+        pr = ultimo_dato.codigo.split('-')
+        if pr[1] == "999":
+            return "PR-000"
+        else:
+            return ultimo_dato.codigo
+    except tickets.DoesNotExist:
+        return "PR-000"
+
+def marcar_ticket(id):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
+        admision_obj.atendido = True
+        admision_obj.save()
+        return True
+    except tickets.DoesNotExist:
+        return False 
+
+def update_agente(request, data):
+    try:
+        atencion_obj = agentes.objects.get(id_agente=data['id_agente'])
+        atencion_obj.nombreAgente = data['nombreAgente']
+        atencion_obj.departamento = data['departamento']
+        atencion_obj.save()
+        return True
+    except agentes.DoesNotExist:
+        return False
+    
