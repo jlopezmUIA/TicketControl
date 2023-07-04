@@ -95,6 +95,48 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12" style="margin-top: 80px;">
+                    <div class="table-responsive-sm">
+                        <h4 class="titulo2 text-center">CLIENTES EN VENTANILLA</h4>
+                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
+                        <table id="record-table-ventana" style="height: 100px;" class="table  table-hover table-fixed-height">
+                            <thead class="table-dark1">
+                                <tr>
+                                    <th>
+                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
+                                    </th>
+                                    <th>
+                                        <h5 class="mt-2 text-center fw-bold">NÚMERO DE VENTANILLA</h5>
+                                    </th>
+                                    <th>
+                                        <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
+                                    </th>
+                                    <th>
+                                        <h5 class="mt-2 text-center fw-bold">FECHA</h5>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in records %}
+                                <tr class="colorfilas">
+                                    <td class="text-center align-middle">
+                                        <h5 id="id_agente">{{ record.codigoCaso }}</h5>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <h5 class="">{{ record.numeroVentanilla }}</h5>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <h5>{{ record.departamento }}</h5>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <h5 id="fecha">{{ record.fecha }}</h5>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -234,99 +276,31 @@
 
     // Agregar un evento de escucha para capturar el cambio de opción
     fechaInput.addEventListener("change", function () {
-        // Obtener todas las filas de la tabla
-        var rows3 = document.querySelectorAll("#record-table3 tbody tr");
-        var rows4 = document.querySelectorAll("#record-table4 tbody tr");
-        var rows5 = document.querySelectorAll("#record-table5 tbody tr");
-        var rows6 = document.querySelectorAll("#record-table6 tbody tr");
-        var rows = document.querySelectorAll("#record-table tbody tr");
+        var cantidadDepartamentos = document.getElementById('cantidadDepartamentos').value;
+        for (let i = 0; i <= parseInt(cantidadDepartamentos); i++) {
+            var row33 = document.querySelectorAll("#record-table"+i+" tbody tr");
+            filtrado(row33);
+        }
+        var row = document.querySelectorAll("#record-table-ventana tbody tr");
+        filtrado(row);
+    });
 
-        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
-        rows.forEach(function (row) {// Obtener el ID del agente en la fila
+    function filtrado(rows){
+        rows.forEach(function(row) {
             var fecha = row.querySelector("#fecha").textContent;
             var dateInput = document.getElementById("date");
 
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+            var selectedDate = dateInput.value;
 
-            // Formatear la fecha como "aaaa-mm-dd"
             var formattedDate = selectedDate.split("-").join("-");
             console.log(formattedDate);
             if ((formattedDate === "" || fecha === formattedDate)) {
-                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+                row.style.display = "";
             } else {
-                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+                row.style.display = "none";
             }
         });
-
-        rows3.forEach(function (rows3) {// Obtener el ID del agente en la fila
-            var fecha = rows3.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                rows3.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                rows3.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-
-        rows4.forEach(function (rows4) {// Obtener el ID del agente en la fila
-            var fecha = rows4.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                rows4.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                rows4.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-
-        rows5.forEach(function (rows5) {// Obtener el ID del agente en la fila
-            var fecha = rows5.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                rows5.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                rows5.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-        
-        rows6.forEach(function (rows6) {// Obtener el ID del agente en la fila
-            var fecha = rows6.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                rows6.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                rows6.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-    });
+    }
 
     function exportToExcel() {
         // Obtener la tabla por su ID
@@ -368,5 +342,44 @@
           URL.revokeObjectURL(url);
         });
     }
+
+    $(document).ready(function () {
+
+        $('#record-table-ventana').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+    });
 </script>
 {% endblock %}

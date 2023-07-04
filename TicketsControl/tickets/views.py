@@ -65,7 +65,8 @@ class RegistroAdmin(FormView):
 def adminside(request):
     departamento = departamentos.objects.all()
     tramite = tramites.objects.all()
-    return render(request, 'administracion/admin.html', {'departamentos': departamento, 'tramites': tramite})
+    records = atencion.objects.all()
+    return render(request, 'administracion/admin.html', {'records':records, 'departamentos': departamento, 'tramites': tramite})
 
 @login_required
 def colasatencion(request):

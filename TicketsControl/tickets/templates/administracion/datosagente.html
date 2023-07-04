@@ -84,20 +84,16 @@
             <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class=" mb-3 col">
-                        <select id="departamento2" data-placeholder="Seleccione Departamento"
-                            class="roundedInput form-select" name="departamento" required onchange="cargarAgentes2()">
-                            <option value="Admisiones">Admisiones</option>
-                            <option value="Registro">Registro</option>
-                            <option value="Cursos Libres">Cursos Libres</option>
-                            <option value="Cajas">Cajas</option>
+                        <select id="departamento1"
+                            class="roundedInput form-select" name="departamento" onchange="cargarAgentes()">
                         </select>
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class=" mb-3 col">
-                        <select id="agente_select2" class="roundedInput form-select" name="agente_select"
+                        <select id="agente_select1" class="roundedInput form-select" name="agente_select2"
                             data-placeholder="Seleccion Agente">
-                            <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
+                            <option style="opacity: 0.65" value="" disabled selected>Seleccione Agente</option>
                         </select>
                     </div>
                 </div>
@@ -160,18 +156,14 @@
             <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class=" mb-3 col">
-                        <select id="departamento" data-placeholder="Seleccione Departamento"
-                            class="roundedInput form-select" name="departamento" required onchange="cargarAgentes()">
-                            <option value="Admisiones">Admisiones</option>
-                            <option value="Registro">Registro</option>
-                            <option value="Cursos Libres">Cursos Libres</option>
-                            <option value="Cajas">Cajas</option>
+                        <select id="departamento2" data-placeholder="Seleccione Departamento"
+                            class="roundedInput form-select" name="departamento" onchange="cargarAgentes2()">
                         </select>
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class=" mb-3 col">
-                        <select id="agente_select" class="roundedInput form-select" name="agente_select"
+                        <select id="agente_select2" class="roundedInput form-select" name="agente_select2"
                             data-placeholder="Seleccion Agente">
                             <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
                         </select>
@@ -354,6 +346,23 @@
 </style>
 
 <script>
+    window.onload = function () {
+        cargarDepartamentos2();
+        cargarDepartamentos3();
+        var dateInput = document.getElementById("date");
+        var dateInput2 = document.getElementById("date2");
+
+        // Obtener la fecha actual
+        var currentDate = new Date();
+
+        // Obtener el formato de fecha YYYY-MM-DD
+        var formattedDate = currentDate.toISOString().split("T")[0];
+
+        // Establecer la fecha actual como valor predeterminado del campo
+        dateInput.value = formattedDate;
+        dateInput2.value = formattedDate;
+    };
+
     function cargarDepartamentos() {
         var select2 = document.getElementById("tramite_select");
 
@@ -376,6 +385,122 @@
         };
         request.send();
     }
+
+    function cargarDepartamentos2() {
+        var select2 = document.getElementById("departamento1");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+                cargarAgentes();
+            }
+        };
+        request.send();
+    }
+
+    function cargarDepartamentos3() {
+        var select2 = document.getElementById("departamento2");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+                cargarAgentes2();
+            }
+        };
+        request.send();
+    }
+
+    function cargarAgentes() {
+        var select = document.getElementById("departamento1").value;
+        var select2 = document.getElementById("agente_select1");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    function cargarAgentes2() {
+        var select = document.getElementById("departamento2").value;
+        var select2 = document.getElementById("agente_select2");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    var modal = document.getElementById('modal_nuevoagente');
+    modal.addEventListener('hidden.bs.modal', function () {
+        var nombre_agente = document.getElementById("nombre_agente");
+        var tramite_select = document.getElementById("tramite_select");
+
+        var modal_nuevoagenteTitle = document.getElementById("modal_nuevoagenteTitle");
+        var btnModalDepartamento = document.getElementById("btnModal");
+        var formDepartamento = document.getElementById("formModal");
+
+        nombre_agente.value = "";
+
+        btnModalDepartamento.innerText = "Registrar Agente";
+
+        modal_nuevoagenteTitle.innerText = "CREACIÓN DE NUEVO AGENTE";
+
+        formDepartamento.action = "{% url 'nuevo_agente' %}";
+
+        tramite_select.style.display = "block";
+    });
 
     function modalModificarAgente(accion) {
         var fila = event.target.closest('tr');
@@ -464,8 +589,6 @@
                 }
             }
         });
-    });
-    $(document).ready(function () {
         $('#record-table2').DataTable({
             select: true,
             searching: false,
@@ -501,8 +624,6 @@
                 }
             }
         });
-    });
-    $(document).ready(function () {
         $('#record-table3').DataTable({
             select: true,
             searching: false,
@@ -539,86 +660,20 @@
             }
         });
     });
-    
-    window.onload = function () {
-        cargarAgentes();
-        cargarAgentes2();
-        var dateInput = document.getElementById("date");
-        var dateInput2 = document.getElementById("date2");
 
-        // Obtener la fecha actual
-        var currentDate = new Date();
-
-        // Obtener el formato de fecha YYYY-MM-DD
-        var formattedDate = currentDate.toISOString().split("T")[0];
-
-        // Establecer la fecha actual como valor predeterminado del campo
-        dateInput.value = formattedDate;
-        dateInput2.value = formattedDate;
-    };
-
-    function cargarAgentes() {
-        var select = document.getElementById("departamento").value;
-        var select2 = document.getElementById("agente_select");
-
-        var url = "/obtener-agentes/?departamento=";
-        var request = new XMLHttpRequest();
-        request.open('GET', url + encodeURIComponent(select), true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                select2.options.length = 0;
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var option = document.createElement("option");
-                        option.value = key;
-                        option.text = data[key];
-                        select2.add(option);
-                    }
-                }
-            }
-        };
-        request.send();
-    }
-
-    function cargarAgentes2() {
-        var select = document.getElementById("departamento2").value;
-        var select2 = document.getElementById("agente_select2");
-
-        var url = "/obtener-agentes/?departamento=";
-        var request = new XMLHttpRequest();
-        request.open('GET', url + encodeURIComponent(select), true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                select2.options.length = 0;
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var option = document.createElement("option");
-                        option.value = key;
-                        option.text = data[key];
-                        select2.add(option);
-                    }
-                }
-            }
-        };
-        request.send();
-    }
-
-    // Obtener la referencia al select del agente
-    var agenteSelect = document.getElementById("agente_select");
-    var fechaSelect = document.getElementById("date");
+    var agenteSelect = document.getElementById("agente_select1");
+    var fechaSelect = document.getElementById("date2");
 
     fechaSelect.addEventListener("change", function () {
         var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table2 tbody tr");
+        var rows = document.querySelectorAll("#record-table3 tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
+            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha2").textContent;
+            var dateInput = document.getElementById("date2");
 
             // Agregar un evento de escucha para capturar el cambio de fecha
             var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
@@ -637,6 +692,36 @@
     agenteSelect.addEventListener("click", function () {
         var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
+        var rows = document.querySelectorAll("#record-table3 tbody tr");
+
+        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
+        rows.forEach(function (row) {
+            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha2").textContent;
+            var dateInput = document.getElementById("date2");
+
+            // Agregar un evento de escucha para capturar el cambio de fecha
+            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+
+            // Formatear la fecha como "aaaa-mm-dd"
+            var formattedDate = selectedDate.split("-").join("-");
+            console.log(formattedDate);
+            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+            } else {
+                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+            }
+        });
+    });
+
+
+    // Obtener la referencia al select del agente
+    var agenteSelect2 = document.getElementById("agente_select2");
+    var fechaSelect2 = document.getElementById("date");
+
+    fechaSelect2.addEventListener("change", function () {
+        var selectedAgenteId = agenteSelect2.value; // Obtener el ID del agente seleccionado
+        // Obtener todas las filas de la tabla
         var rows = document.querySelectorAll("#record-table2 tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
@@ -658,47 +743,17 @@
             }
         });
     });
-
-
-    // Obtener la referencia al select del agente
-    var agenteSelect2 = document.getElementById("agente_select2");
-    var fechaSelect2 = document.getElementById("date2");
-
-    fechaSelect2.addEventListener("change", function () {
-        var selectedAgenteId = agenteSelect2.value; // Obtener el ID del agente seleccionado
-        // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table3 tbody tr");
-
-        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
-        rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#fecha2").textContent;
-            var dateInput = document.getElementById("date2");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
-                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-    });
     // Agregar un evento de escucha para capturar el cambio de opción
     agenteSelect2.addEventListener("click", function () {
         var selectedAgenteId = agenteSelect2.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table3 tbody tr");
+        var rows = document.querySelectorAll("#record-table2 tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente2").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#fecha2").textContent;
-            var dateInput = document.getElementById("date2");
+            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#fecha").textContent;
+            var dateInput = document.getElementById("date");
 
             // Agregar un evento de escucha para capturar el cambio de fecha
             var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
