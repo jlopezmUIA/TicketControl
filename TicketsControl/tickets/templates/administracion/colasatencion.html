@@ -53,7 +53,7 @@
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                     <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
-                            <table id="record-table" style="height: 200px;" class="table table-hover table-fixed-height">
+                            <table id="record-table" style="height: 100px;" class="table table-hover table-fixed-height">
                                 <thead class="table-dark1">
                                     <tr>
                                         <th>
@@ -80,23 +80,7 @@
                                             <h5 class="">{{ record.numeroVentanilla }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <select style="width: 300px; height: 50px; font-size: 18px; font-weight: bold;"
-                                                class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example" id="cola_select"
-                                                name="cola_select" onchange="cola()">
-                                                <option value="{{ record.colaAtencion }}" selected>{{ record.colaAtencion }}</option>
-                                                <option value="Registro/Documentos">Registro/Documentos</option>
-                                                <option value="Registro/Tesis">Registro/Tesis</option>
-                                                <option value="Registro/Convalidacion">Registro/Convalidacion</option>
-                                                <option value="Registro/Retiros">Registro/Retiro-Congelar</option>
-                                                <option value="Registro/Suficiencia">Registro/Suficiencias</option>
-                                                <option value="Registro/Graduaciones">Registro/Graduaciones</option>
-                                                <option value="Registro/Taller">Registro/Taller</option>
-                                                <option value="Registro/Apelaciones">Registro/Apelaciones</option>
-                                                <option value="Registro/Retenciones">Registro/Retenciones</option>
-                                                <option value="Admisiones">Admisiones</option>
-                                                <option value="Cursos Libres">Cursos Libres</option>
-                                                <option value="Cajas">Cajas</option>
-                                            </select>
+                                            <h5 class="">{{ record.colaAtencion }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
                                             <h5>{{ record.estadoAtencion }}</h5>

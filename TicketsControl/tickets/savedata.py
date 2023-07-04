@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
-from tickets.forms import FormularioAdmisiones, FormularioAgente, FormularioAtencion, FormularioCajas, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCursosLibres, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioRegistro, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
-from .models import admisiones, agentes, atencion, cajas, casosAgente, cursoslibres, departamentos, estadosAgente, registro, ticketControl, tickets, tiemposAgente, tramites, visualizador
-from datetime import datetime
+from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+from .models import agentes, atencion, casosAgente, departamentos, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import date
 
 def save_configuration(request, visualizador_id, campo, nuevo_valor):
@@ -94,78 +93,6 @@ def save_metricas(request, data):
         form.save()
         return True
     else:
-        return False
-
-def save_admisiones(request, data):
-    form = FormularioAdmisiones(data)
-    if form.is_valid():
-        form.save()
-        return True
-    else:
-        return False
-
-def save_cajas(request, data):
-    form = FormularioCajas(data)
-    if form.is_valid():
-        form.save()
-        return True
-    else:
-        return False
-
-def save_cursoslibres(request, data):
-    form = FormularioCursosLibres(data)
-    if form.is_valid():
-        form.save()
-        return True
-    else:
-        return False
-
-def save_registro(request, data):
-    form = FormularioRegistro(data)
-    if form.is_valid():
-        form.save()
-        return True
-    else:
-        return False
-
-def marcar_admision(id):
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        admision_obj = admisiones.objects.get(pk=id, fecha=fecha_actual)
-        admision_obj.atendido = True
-        admision_obj.save()
-        return True
-    except admisiones.DoesNotExist:
-        return False
-    
-def marcar_cajas(id):
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        cajas_obj = cajas.objects.get(pk=id, fecha=fecha_actual)
-        cajas_obj.atendido = True
-        cajas_obj.save()
-        return True
-    except cajas.DoesNotExist:
-        return False
-    
-def marcar_cursoslibres(id):
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        cursoslibres_obj = cursoslibres.objects.get(pk=id, fecha=fecha_actual)
-        cursoslibres_obj.atendido = True
-        cursoslibres_obj.save()
-        return True
-    except cursoslibres.DoesNotExist:
-        return False
-    
-def marcar_registro(id):
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        registro_obj = registro.objects.get(pk=id, fecha=fecha_actual)
-        registro_obj.atendido = True
-        registro_obj.save()
-        return True
-    except registro.DoesNotExist:
         return False
 
 def save_estados_agente(request, data):
@@ -265,103 +192,6 @@ def update_tiempos_agente(request, id_tiempo, tiempo):
 
     return False
 
-def obtener_ultimo_dato_admisiones():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = admisiones.objects.filter(fecha=fecha_actual).latest('id_admision')
-        pr = ultimo_dato.codigo.split('-')
-        if pr[1] == "999":
-            return "PR-000"
-        else:
-            return ultimo_dato.codigo
-    except admisiones.DoesNotExist:
-        return "PR-000"
-
-def obtener_ultimo_dato_cajas():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = cajas.objects.filter(fecha=fecha_actual).latest('id_cajas')
-        pr = ultimo_dato.codigo.split('-')
-        if pr[1] == "999":
-            return "PR-000"
-        else:
-            return ultimo_dato.codigo
-    except cajas.DoesNotExist:
-        return "PR-000"
-
-def obtener_ultimo_dato_cursoslibres():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = cursoslibres.objects.filter(fecha=fecha_actual).latest('id_cursolibres')
-        pr = ultimo_dato.codigo.split('-')
-        if pr[1] == "999":
-            return "PR-000"
-        else:
-            return ultimo_dato.codigo
-    except cursoslibres.DoesNotExist:
-        return "PR-000"
-
-def obtener_ultimo_dato_registro():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = registro.objects.filter(fecha=fecha_actual).latest('id_registro')
-        pr = ultimo_dato.codigo.split('-')
-        if pr[1] == "999":
-            return "PR-000"
-        else:
-            return ultimo_dato.codigo
-    except registro.DoesNotExist:
-        return "PR-000"
-    
-def obtener_primero_dato_admisiones():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = admisiones.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_admision')
-        return ultimo_dato
-    except admisiones.DoesNotExist:
-        dato = admisiones(codigo = '000')
-        return dato
-
-def obtener_primero_dato_cajas():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = cajas.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_cajas')
-        return ultimo_dato
-    except cajas.DoesNotExist:
-        dato = cajas(codigo = '000')
-        return dato
-
-def obtener_primero_dato_cursoslibres():
-    try:
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        ultimo_dato = cursoslibres.objects.filter(atendido=False, fecha=fecha_actual).earliest('id_cursolibres')
-        return ultimo_dato
-    except cursoslibres.DoesNotExist:
-        dato = cursoslibres(codigo = '000')
-        return dato
-
-def obtener_primero_dato_registro(cola):
-    try:
-        colas = cola.split(",")
-        fecha_actual = date.today().strftime('%Y-%m-%d')
-        # ultimo_dato = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola).earliest('id_registro')
-        ultimo_dato = None
-
-        for cola in colas:
-            registros = registro.objects.filter(atendido=False, fecha=fecha_actual, departamento=cola)
-            if registros.exists():
-                ultimo_registro = registros.latest('id_registro')
-                if ultimo_dato is None or ultimo_registro.fecha > ultimo_dato.fecha:
-                    ultimo_dato = ultimo_registro
-        if ultimo_dato is None:
-            dato = registro(codigo = '000')
-            return dato
-        else:
-            return ultimo_dato
-    except registro.DoesNotExist:
-        dato = registro(codigo = '000')
-        return dato
- 
 def obtener_caso(id):
     fecha_actual = date.today().strftime('%Y-%m-%d')
     try:
@@ -405,9 +235,6 @@ def obtener_departamento(id):
         return departamento.siglasDepartamento
     except agentes.DoesNotExist:
         return None
-    
-
-
 
 def save_departamento(request, data):
     form = FormularioDepartamentos(data)

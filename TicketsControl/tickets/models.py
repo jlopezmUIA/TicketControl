@@ -15,34 +15,6 @@ class atencion(models.Model):
     colaAtencion = models.CharField(max_length=500)
     estadoAtencion = models.CharField(max_length=60)
 
-class admisiones(models.Model):
-    id_admision = models.AutoField(primary_key=True)
-    codigo = models.CharField(max_length=60)
-    departamento = models.CharField(max_length=60)
-    fecha = models.CharField(max_length=60)
-    atendido = models.BooleanField(default=False)
-
-class cajas(models.Model):
-    id_cajas = models.AutoField(primary_key=True)
-    codigo = models.CharField(max_length=60)
-    departamento = models.CharField(max_length=60)
-    fecha = models.CharField(max_length=60)
-    atendido = models.BooleanField(default=False)
-
-class cursoslibres(models.Model):
-    id_cursolibres = models.AutoField(primary_key=True)
-    codigo = models.CharField(max_length=60)
-    departamento = models.CharField(max_length=60)
-    fecha = models.CharField(max_length=60)
-    atendido = models.BooleanField(default=False)
-
-class registro(models.Model):
-    id_registro = models.AutoField(primary_key=True)
-    codigo = models.CharField(max_length=60)
-    departamento = models.CharField(max_length=60)
-    fecha = models.CharField(max_length=60)
-    atendido = models.BooleanField(default=False)
-
 class estadosAgente(models.Model):
     id_estado = models.AutoField(primary_key=True)
     agente = models.ForeignKey(agentes,
@@ -105,9 +77,6 @@ class metricas(models.Model):
     codigoCaso = models.CharField(max_length=60)
     estado = models.CharField(max_length=60)
     fecha = models.CharField(max_length=60)
-
-
-
 
 class departamentos(models.Model):
     id_departamentos = models.AutoField(primary_key=True)

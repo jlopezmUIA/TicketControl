@@ -10,43 +10,23 @@
                 <h4 class="card-title text-center mb-4" style="color: #878787; font-weight: bold;">Seleccioná el departamento al que deseas dirigirte.</h4>
                 <main class="form-signin">
                     <div class="row">
+                        {% for departamento in departamentos %}
                         <div class="col-md-6 mb-3">
                             <div class="">
                                 <div>
                                     <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
-                                    type="button" id="loading-indicator" onclick="crear_ticket_admision()"><p style="font-size: 30px;" class="mt-3 mb-3">Admisiones</p></button>
+                                    type="button" id="loading-indicator" 
+                                    {% if departamento.tramitesDepartamento %} 
+                                    data-bs-toggle="modal"data-bs-target="#modal_tramites"
+                                    onclick="cargar_tramites('{{ departamento.pk }}')" 
+                                    {% else %} 
+                                    onclick="crear_ticket('{{ departamento.pk }}')"
+                                    {% endif %}
+                                    ><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.nombre }}</p></button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="">
-                                <div>
-                                    <button type="submit"
-                                        class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
-                                        id="registrobtn"  data-bs-toggle="modal"
-                                        data-bs-target="#modal_registro"><p style="font-size: 30px;" class="mt-3 mb-3">Registro</p></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="form-floating">
-                                <div>
-                                    <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2" hidden
-                                    type="button" id="loading-indicator" onclick="crear_ticket_cajas()"><p style="font-size: 30px;" class="mt-3 mb-3">Cajas</p></button>
-                                    <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
-                                    type="button" id="loading-indicator" onclick="crear_ticket_registro_retencion()"><p style="font-size: 30px;" class="mt-3 mb-3">Retenciones</p></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="form-floating">
-                                <div>
-                                    <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2" type="button" id="loading-indicator" style="width: 360px;" onclick="crear_ticket_cursolibre()">
-                                        <p style="font-size: 30px;" class="mt-3 mb-3">Cursos Libres</p></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        {% endfor %}
                     <div class="row mt-2" style="justify-content: center;">
                         <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 170px; height: 85px;">
                     </div>
@@ -59,8 +39,8 @@
 
 
 <!-- Model de Cambio de data -->
-{% block modal_registro%}
-<div class="modal fade" id="modal_registro" tabindex="-1" aria-labelledby="modal_registroTitle" style="display: none"
+{% block modal_tramites%}
+<div class="modal fade" id="modal_tramites" tabindex="-1" aria-labelledby="modal_tramitesTitle" style="display: none"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
         <div class="modal-content">
@@ -69,35 +49,18 @@
                     <div class="row">
                         <div class="form-floating" style="margin-bottom: 1px;">
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            <h1 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_registroTitle">REGISTRO</h1>
+                            <h1 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">TRÁMITES DEL DEPARTAMENTO</h1>
                             <p style="text-align: center; font-size: 25px; color: #878787; font-weight: bold;">Seleccioná el trámite que deseas realizar.</p>
                         </div>
                     </div>
                     <div class="row mb-3" style="align-items: center; justify-content: center;">
-                        <select id="tramitesSelect" class="form-select form-select-lg mb-3 mt-3 roundedInput" aria-label=".form-select-lg example" onchange="botonGenerar()">
+                        <select id="tramites_select" class="form-select form-select-lg mb-3 mt-3 roundedInput" name="tramites_select" >
                             <option selected disabled>Trámites</option>
-                            <option value="Documentos">Documentos</option>
-                            <option value="Suficiencia">Suficiencia</option>
-                            <option value="Convalidacion">Convalidación</option>
-                            <option value="Congelamientos">Congelamientos</option>
-                            <option value="Graduaciones">Graduaciones</option>
-                            <option value="Seminario">Seminario de Graduación</option>
-                            <option value="Taller">Taller</option>
-                            <option value="Cartas">Solicitudes Cartas</option>
-                            <option value="Adecuaciones">Adecuaciones</option>
-                            <option value="Actas">Actas</option>
-                            <option value="TCU">TCU</option>
-                            <option value="CursosLibres">Cursos Libres</option>
-                            <option value="Examenes">Exámenes</option>
-                            <option value="Matricula">Matrícula</option>
-
-                            <option value="Retenciones">Retenciones</option>
-                            <option value="Tesis">Tesis</option>
                         </select>
                     </div>
                     <div class="row mb-3" style="align-items: center; justify-content: center;">
-                        <button class="btnStyle2 btn btn-lg fw-bold pt-1 pb-1 mb-5 mt-1" disabled
-                        type="button" id="btnGenerar" onclick="GenerarTicket()"><p style="font-size: 30px;" class="mt-3 mb-3">Generar Ticket</p></button>
+                        <button class="btnStyle2 btn btn-lg fw-bold pt-1 pb-1 mb-5 mt-1"
+                        type="button" id="btnGenerar" onclick="crear_ticket_tramite()"><p style="font-size: 30px;" class="mt-3 mb-3">Generar Ticket</p></button>
                     </div>
                     <div class="row mt-2" style="justify-content: center;">
                         <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 170px; height: 85px;">
@@ -107,7 +70,7 @@
         </div>
     </div>
 </div>
-{% endblock modal_registro %}
+{% endblock modal_tramites %}
 
 <style>
     .modal-dialog.custom-modal-lg {
@@ -200,147 +163,10 @@
         });
     });
 
-    function botonGenerar(){
-        var btnGenerar = document.getElementById("btnGenerar");
-        btnGenerar.disabled = false
-    }
-
-    function GenerarTicket(){
-        const select = document.getElementById('tramitesSelect');
-        var opcion = select.value;
-
-        if (opcion === "Documentos"){
-            crear_ticket_registro();
-        }else if (opcion === "Suficiencia"){
-            crear_ticket_registro_suficiencia();
-        }else if (opcion === "Convalidacion"){
-            crear_ticket_registro_convalidacion();
-        }else if (opcion === "Congelamientos"){
-            crear_ticket_registro_congelamiento();
-        }else if (opcion === "Graduaciones"){
-            crear_ticket_registro_graduacion();
-        }else if (opcion === "Seminario"){
-            crear_ticket_registro_semirario();
-        }else if (opcion === "Taller"){
-            crear_ticket_registro_taller();
-        }else if (opcion === "Cartas"){
-            crear_ticket_registro_cartas();
-        }else if (opcion === "Adecuaciones"){
-            crear_ticket_registro_adecuaciones();
-        }else if (opcion === "Actas"){
-            crear_ticket_registro_actas();
-        }else if (opcion === "TCU"){
-            crear_ticket_registro_tcu();
-        }else if (opcion === "CursosLibres"){
-            crear_ticket_registro_curso();
-        }else if (opcion === "Examenes"){
-            crear_ticket_registro_examenes();
-        }else if (opcion === "Matricula"){
-            crear_ticket_registro_matricula();
-        }else if (opcion === "Tesis"){
-            crear_ticket_registro_tesis();
-        }
-
-        select.selectedIndex = 0;
-        $('#modal_registro').modal('hide');
-        btnGenerar.disabled = true
-    }
-
-    function crear_ticket_admision() {
-        var url = "/crear-ticket-admision/";
+    function crear_ticket(departamento) {
+        var url = "/crear-ticket/?departamento=";
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_cajas() {
-        var url = "/crear-ticket-cajas/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_cursolibre() {
-        var url = "/crear-ticket-cursolibre/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();s
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro() {
-        var url = "/crear-ticket-registro/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_tesis() {
-        var url = "/crear-ticket-registro-tesis/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_convalidacion() {
-        var url = "/crear-ticket-registro-convalidacion/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_congelamiento() {
-        var url = "/crear-ticket-registro-congelamiento/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_suficiencia() {
-        var url = "/crear-ticket-registro-suficiencia/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', url + encodeURIComponent(departamento), true);
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
@@ -350,10 +176,12 @@
         request.send();
     }
 
-    function crear_ticket_registro_graduacion() {
-        var url = "/crear-ticket-registro-graduacion/";
+    function crear_ticket_tramite() {
+        const select = document.getElementById('tramites_select').value;
+        console.log(select);
+        var url = "/crear-ticket/?departamento=";
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', url + encodeURIComponent('Tramite,'+select), true);
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
@@ -363,148 +191,26 @@
         request.send();
     }
 
-    function crear_ticket_registro_taller() {
-        var url = "/crear-ticket-registro-taller/";
+    function cargar_tramites(id_departamento) {
+        var select2 = document.getElementById("tramites_select");
+        var url = "/cargar-tramites/?departamento=";
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', url + encodeURIComponent(id_departamento), true);
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
-                location.reload();
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
             }
         };
         request.send();
     }
-
-    function crear_ticket_registro_apelacion() {
-        var url = "/crear-ticket-registro-apelacion/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_retencion() {
-        var url = "/crear-ticket-registro-retencion/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_semirario() {
-        var url = "/crear-ticket-registro-seminario/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_cartas() {
-        var url = "/crear-ticket-registro-cartas/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_adecuaciones() {
-        var url = "/crear-ticket-registro-adecuaciones/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_actas() {
-        var url = "/crear-ticket-registro-actas/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_tcu() {
-        var url = "/crear-ticket-registro-tcu/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_curso() {
-        var url = "/crear-ticket-registro-curso/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-
-    function crear_ticket_registro_examenes() {
-        var url = "/crear-ticket-registro-examenes/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
-    function crear_ticket_registro_matricula() {
-        var url = "/crear-ticket-registro-matricula/";
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                location.reload();
-            }
-        };
-        request.send();
-    }
-    
 </script>
 {% endblock %}

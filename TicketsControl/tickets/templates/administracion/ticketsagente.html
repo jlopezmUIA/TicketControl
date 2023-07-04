@@ -41,10 +41,12 @@
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                         <div class=" table-responsive px-md-4 px-2 pt-3">
                             <div class="row">
+                                <input type="text" hidden value="{{ departamento.count }}" id="cantidadDepartamentos">
+                                {% for depart in departamento %}
                                 <div class="col-12 col-sm-10 col-md-12 col-lg-6">
                                     <div class="table-responsive-sm">
-                                        <h4 class="titulo2 text-center">ADMISIONES CLIENTES</h4>
-                                        <table id="record-table3" style="height: 200px;" class="table  table-hover table-fixed-height">
+                                        <h4 class="titulo2 text-center" style="text-transform: uppercase;">{{ depart.nombre }}</h4>
+                                        <table id="record-table{{ forloop.counter }}" style="height: 100px;" class="table  table-hover table-fixed-height">
                                             <thead class="table-dark1">
                                                 <tr>
                                                     <th>
@@ -62,208 +64,33 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {% for admi in admin %}
+                                                {% for ticketDepart in ticket %}
+                                                {% if ticketDepart.departamento == depart.nombre %}
                                                 <tr class="colorfilas">
                                                     <td class="text-center align-middle">
-                                                        <h5 id="id_agente">{{ admi.codigo }}</h5>
+                                                        <h5 id="id_agente">{{ ticketDepart.codigo }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ admi.departamento }}</h5>
+                                                        <h5 class="">{{ ticketDepart.departamento }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 id="fecha" class="">{{ admi.fecha }}</h5>
+                                                        <h5 id="fecha" class="">{{ ticketDepart.fecha }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        {% if  admi.atendido %}
+                                                        {% if  ticketDepart.atendido %}
                                                         <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
                                                         {% else %}
                                                         <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
                                                         {% endif %}
                                                     </td>
                                                 </tr>
+                                                {% endif %}
                                                 {% endfor %}
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                                    <div class="table-responsive-sm">
-                                        <h4 class="titulo2 text-center">REGISTRO CLIENTES</h4>
-                                        <table id="record-table4" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark1">
-                                                <tr>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for regi in registro %}
-                                                <tr class="colorfilas">
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="id_agente">{{ regi.codigo }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 class="">{{ regi.departamento }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="fecha" class="">{{ regi.fecha }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        {% if  regi.atendido %}
-                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
-                                                        {% else %}
-                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6" style="margin-top: 80px; display: none;">
-                                    <div class="table-responsive-sm">
-                                        <h4 class="titulo2 text-center">CAJAS CLIENTES</h4>
-                                        <table id="record-table5" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark1">
-                                                <tr>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for caja in cajas %}
-                                                <tr class="colorfilas">
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="id_agente">{{ caja.codigo }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 class="">{{ caja.departamento }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="fecha" class="">{{ caja.fecha }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        {% if  caja.atendido %}
-                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
-                                                        {% else %}
-                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6" style="margin-top: 80px;">
-                                    <div class="table-responsive-sm">
-                                        <h4 class="titulo2 text-center">C.L CLIENTES</h4>
-                                        <table id="record-table6" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark1">
-                                                <tr>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DPTO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                                    </th>
-                                                    <th>
-                                                        
-                                                        <h5 class="mt-2 text-center fw-bold">ATEND</h5>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for curso in cursos %}
-                                                <tr class="colorfilas">
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="id_agente">{{ curso.codigo }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 class="">{{ curso.departamento }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="fecha" class="">{{ curso.fecha }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        {% if  curso.atendido %}
-                                                        <i class="fa-solid fa-circle-check fa-xl" style="color: #006602;"></i>
-                                                        {% else %}
-                                                        <i class="fa-solid fa-circle-xmark fa-xl" style="color: #9e0000;"></i>
-                                                        {% endif %}
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-12" style="margin-top: 80px;">
-                                    <div class="table-responsive-sm">
-                                        <h4 class="titulo2 text-center">CLIENTES EN VENTANILLA</h4>
-                                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
-                                        <table id="record-table" style="height: 200px;" class="table  table-hover table-fixed-height">
-                                            <thead class="table-dark1">
-                                                <tr>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">NÚMERO DE VENTANILLA</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
-                                                    </th>
-                                                    <th>
-                                                        <h5 class="mt-2 text-center fw-bold">FECHA</h5>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for record in records %}
-                                                <tr class="colorfilas">
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="id_agente">{{ record.codigoCaso }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 class="">{{ record.numeroVentanilla }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5>{{ record.departamento }}</h5>
-                                                    </td>
-                                                    <td class="text-center align-middle">
-                                                        <h5 id="fecha">{{ record.fecha }}</h5>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -319,8 +146,15 @@
     }
 </style>
 <script>
-    $(document).ready(function () {
-        $('#record-table3').DataTable({
+    document.addEventListener('DOMContentLoaded', function() {
+        var cantidadDepartamentos = document.getElementById('cantidadDepartamentos').value;
+        for (let i = 0; i <= parseInt(cantidadDepartamentos); i++) {
+            var tablaId = "#record-table"+i;
+            configurarTabla(tablaId);
+        }
+    });
+    function configurarTabla(tablaId) {
+        $(tablaId).DataTable({
             select: true,
             searching: false,
             language: {
@@ -356,147 +190,7 @@
             }
         });
 
-        $('#record-table4').DataTable({
-            select: true,
-            searching: false,
-            language: {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "select": {
-                    "rows": {
-                        "_": "Seleccionado %d filas",
-                        "0": "Haga clic en una fila para seleccionarla",
-                        "1": "Seleccionado 1 fila"
-                    }
-                }
-            }
-        });
-        $('#record-table5').DataTable({
-            select: true,
-            searching: false,
-            language: {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "select": {
-                    "rows": {
-                        "_": "Seleccionado %d filas",
-                        "0": "Haga clic en una fila para seleccionarla",
-                        "1": "Seleccionado 1 fila"
-                    }
-                }
-            }
-        });
-        $('#record-table6').DataTable({
-            select: true,
-            searching: false,
-            language: {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "select": {
-                    "rows": {
-                        "_": "Seleccionado %d filas",
-                        "0": "Haga clic en una fila para seleccionarla",
-                        "1": "Seleccionado 1 fila"
-                    }
-                }
-            }
-        });
-        $('#record-table').DataTable({
-            select: true,
-            searching: false,
-            language: {
-                "sProcessing": "Procesando...",
-                "sLengthMenu": "Mostrar _MENU_ registros",
-                "sZeroRecords": "No se encontraron resultados",
-                "sEmptyTable": "Ningún dato disponible en esta tabla",
-                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix": "",
-                "sSearch": "Buscar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst": "Primero",
-                    "sLast": "Último",
-                    "sNext": "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "select": {
-                    "rows": {
-                        "_": "Seleccionado %d filas",
-                        "0": "Haga clic en una fila para seleccionarla",
-                        "1": "Seleccionado 1 fila"
-                    }
-                }
-            }
-        });
-    });
+    }
 
     window.onload = function () {
         var dateInput = document.getElementById("date");
