@@ -729,8 +729,15 @@ def eliminartramite(request):
 
 def ticket_maker(request):
     departamento = departamentos.objects.all()
+
+    if departamento.count() % 2 != 0:
+        par = True
+    else:
+        par = False
+
     tramite = tramites.objects.all()
-    return render(request, 'ticket/ticketmaker.html', {'departamentos': departamento, 'tramites': tramite})
+
+    return render(request, 'ticket/ticketmaker.html', {'departamentos': departamento, 'tramites': tramite, 'par':par})
 
 def crear_ticket(request):
     dato = request.GET.get("departamento")
@@ -805,7 +812,7 @@ def eliminaragente(request):
     return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
-def modificaragente(request):
+def modificaragente(request): 
     id_agente = request.POST.get('id_agente')
     nombre_agente = request.POST.get('nombre_agente')
     tramite_select = request.POST.get('tramite_select')
