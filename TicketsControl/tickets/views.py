@@ -165,7 +165,7 @@ def datosagente(request):
 
 @login_required
 def nuevoagente(request):
-    nombreagente = request.POST.get('name')
+    nombreagente = request.POST.get('nombre_agente')
     departamento_select = request.POST.get('tramite_select')
     departamento = departamentos.objects.get(id_departamentos=departamento_select)
     data_agente = {

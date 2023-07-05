@@ -35,10 +35,6 @@
                     <div class="mb-3 col">
                         <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"
                             name="departamento" required onchange="cargarAgentes()">
-                            <option value="Admisiones">Admisiones</option>
-                            <option value="Registro">Registro</option>
-                            <option value="Cursos Libres">Cursos Libres</option>
-                            <option value="Cajas">Cajas</option>
                         </select>
                     </div>
                 </div>
@@ -190,7 +186,7 @@
     });
     
     window.onload = function () {
-        cargarAgentes();
+        cargarDepartamentos();
         var dateInput = document.getElementById("date");
 
         // Obtener la fecha actual
@@ -202,6 +198,30 @@
         // Establecer la fecha actual como valor predeterminado del campo
         dateInput.value = formattedDate;
     };
+
+    function cargarDepartamentos() {
+        var select2 = document.getElementById("departamento");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+                cargarAgentes();
+            }
+        };
+        request.send();
+    }
 
     function cargarAgentes() {
         var select = document.getElementById("departamento").value;
