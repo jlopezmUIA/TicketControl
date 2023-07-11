@@ -56,13 +56,23 @@
                         {% for record in records|slice:":6" %}
                         <tr class="colorfilas">
                             <td class="text-center">
+                                {% if record.codigoCaso|length > 7 %}
+                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 52px;">{{ record.codigoCaso }}</h1>
+                                {% else %}
                                 <h1 class="display-4 mt-3 mb-3 fw-bold">{{ record.codigoCaso }}</h1>
+                                {% endif %}
+                                    
                             </td>
                             <td class="text-center">
                                 <h1 class="display-4 mt-3 mb-3 fw-bold">&nbsp&nbsp{{ record.numeroVentanilla }}&nbsp&nbsp</h1>
                             </td>
                             <td class="text-center uppercase-column">
+                                {% if record.codigoCaso|length > 3 %}
+                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 52px;">&nbsp{{ record.departamento }}&nbsp</h1>
+                                {% else %}
                                 <h1 class="display-4 mt-3 mb-3 fw-bold">&nbsp{{ record.departamento }}&nbsp</h1>
+                                {% endif %}
+                                
                             </td>
                         </tr>
                         {% endfor %}

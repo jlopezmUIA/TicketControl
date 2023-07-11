@@ -36,7 +36,7 @@
                         {% endif %}
                         {% endfor %}
                     <div class="row mt-2" style="justify-content: center;">
-                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 170px; height: 85px;">
+                        <img src="{% static 'img/uia_logo.png' %}" onclick="toggleFullScreen()" alt="" style="width: 170px; height: 85px;">
                     </div>
                 </main>
             </div>
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div class="row mb-3" style="align-items: center; justify-content: center;">
-                        <select id="tramites_select" class="form-select form-select-lg mb-3 mt-3 roundedInput" name="tramites_select" >
+                        <select ontouchstart="" id="tramites_select" class="form-select form-select-lg mb-3 mt-3 roundedInput" name="tramites_select" >
                             <option selected disabled>Trámites</option>
                         </select>
                     </div>
@@ -82,7 +82,7 @@
 
 <style>
     .modal-dialog.custom-modal-lg {
-        max-width: 60%; /* Puedes ajustar el porcentaje según tus necesidades */
+        max-width: 75%; /* Puedes ajustar el porcentaje según tus necesidades */
     }
 
     .titulo{
@@ -159,17 +159,31 @@
 </style>
 
 <script>
-    $(document).ready(function() {
-        var registro = document.getElementById("registrobtn");
-        // Escucha el evento "shown.bs.modal" para el modal de registro
-        $('#modal_registro').on('shown.bs.modal', function() {
-          // Espera 15 segundos y luego cierra el modal
-          setTimeout(function() {
-            $('#modal_registro').modal('hide');
-            registro.style.color = "white";
-          }, 20000);
-        });
+    $('select').on('touchstart', function(event) {
+        event.stopPropagation();
     });
+
+    function toggleFullScreen() {
+        var doc = window.document;
+        var docEl = doc.documentElement;
+
+        var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+        var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+        var modal = document.getElementById('modal_tramites');
+
+        if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+            if (requestFullScreen) {
+                requestFullScreen.call(docEl);
+                modal.setAttribute('fullscreen', '');
+            }
+        } else {
+            if (cancelFullScreen) {
+                cancelFullScreen.call(doc);
+                modal.removeAttribute('fullscreen');
+            }
+        }
+    }
 
     function crear_ticket(departamento) {
         var url = "/crear-ticket/?departamento=";
@@ -178,10 +192,10 @@
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
-                location.reload();
             }
         };
         request.send();
+        
     }
 
     function crear_ticket_tramite() {
@@ -193,7 +207,7 @@
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
-                location.reload();
+                $('#modal_tramites').modal('hide');
             }
         };
         request.send();

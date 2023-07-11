@@ -33,9 +33,8 @@
                           <span class="image-text">Insatisfecho</span>
                         </div>
                     </div>
-                      
                     <div class="row mt-5" style="justify-content: center;">
-                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 130px; height: 60px;">
+                        <img src="{% static 'img/uia_logo.png' %}" onclick="toggleFullScreen()" alt="" style="width: 130px; height: 60px;">
                     </div>
                 </main>
             </div>
@@ -132,6 +131,25 @@
 </style>
 
 <script>
+    function toggleFullScreen() {
+        var doc = window.document;
+        var docEl = doc.documentElement;
+
+        var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+        var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+        if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+            if (requestFullScreen) {
+                requestFullScreen.call(docEl);
+            }
+        } else {
+            if (cancelFullScreen) {
+                cancelFullScreen.call(doc);
+            }
+        }
+    }
+
+
     const txtPregunta = document.getElementById('txtPregunta');
     const txtCodigo = document.getElementById('txtCodigo');
     const txtGracias = document.getElementById('txtGracias');
