@@ -218,6 +218,9 @@
     </div>
     {% endblock modal_tramite %}
     <style>
+        .colorfilas.selected {
+            background-color: #ffb25b;
+        }
         .modal-header {
             background-color: #000000;
             color: white;
@@ -329,10 +332,12 @@
         var modalTramite = document.getElementById('modal_tramite');
 
         $(document).on("click", "#record-table tbody tr", function() {
-            // Obtener el valor del departamento seleccionado
+
+            $("#record-table tbody tr").removeClass("selected");
+            $(this).addClass("selected");
+            
             var departamento = $(this).find("#dDepartamento").text();
         
-            // Filtrar la tabla de trámites según el departamento seleccionado
             $("#record-table2 tbody tr").hide();
             $("#record-table2 tbody tr").each(function() {
                 var tramiteDepartamento = $(this).find("#tDepartamento").text();

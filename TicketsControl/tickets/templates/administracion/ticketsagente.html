@@ -32,19 +32,19 @@
             <h5 class="titulo">CONTROL DE TICKETS</h5>
             <div class="row p-2">
                 <div class="col-12 mb-4 p-2">
-                    <div class="mb-3 date col-6">
+                    <div class="date col-6">
                         <h3 class="titulo2" style="text-align: justify;">Fecha:</h3>
                         <input type="date" class="form-control roundedInput" id="date"/>
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                        <div class=" table-responsive px-md-4 px-2 pt-3">
+                        <div class=" table-responsive px-md-4 px-2 pt-1">
                             <div class="row">
                                 <input type="text" hidden value="{{ departamento.count }}" id="cantidadDepartamentos">
                                 {% for depart in departamento %}
-                                <div class="col-12 col-sm-10 col-md-12 col-lg-6">
-                                    <div class="table-responsive-sm">
+                                <div class="col-12 col-sm-10 col-md-12 col-lg-6 mt-4">
+                                    <div class="table-responsive-sm mt-5">
                                         <h4 class="titulo2 text-center" style="text-transform: uppercase;">{{ depart.nombre }}</h4>
                                         <table id="record-table{{ forloop.counter }}" style="height: 100px;" class="table  table-hover table-fixed-height">
                                             <thead class="table-dark1">
