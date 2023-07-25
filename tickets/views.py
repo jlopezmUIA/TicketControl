@@ -432,7 +432,8 @@ def ticketcontrol(request):
                 departamento = departamentos.objects.get(siglasDepartamento=registro.departamento)
                 codigo = str(registro.codigoCaso).split('-')
                 numero = int(codigo[1].lstrip("0"))
-                texto = codigo[0]+"-"+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento.nombre
+                letras = insertar_comas(texto)
+                texto = letras+", "+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento.nombre
                 request.session['listaR'].append(texto)
                 # Crear hilo y esperar a que el hilo anterior termine
                 if previous_thread:
@@ -468,6 +469,9 @@ def ticketcontrol(request):
     else:
         link = registro.link
         return render(request, 'visualizador/ticket_control.html', {'records': records, 'noticia': noticia, 'tipo': tipovisual, 'link': link})
+
+def insertar_comas(string):
+    return ",".join(char for char in string)
 
 def reproductor(request):
     dic = {}
