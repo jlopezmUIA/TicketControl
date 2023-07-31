@@ -232,6 +232,7 @@ def inicio_atencion(request):
             'colaAtencion': departamento,
             'estadoAtencion': 'Activo'
         }
+        request.session['departamentoAgente'] = departamento
         delete = eliminar_atencion(agente)
         save = save_atencion(request, data_atencion)
 
@@ -254,15 +255,27 @@ def inicio_atencion(request):
 
 def atencion_agentes(request):
     agente_id = request.session.get('id_agente')
+    fecha_actual = date.today().strftime('%Y-%m-%d')
     cola = obtener_cola(agente_id)
-    departamento = departamentos.objects.get(nombre=cola)
+    if 'departamentoAgente' in request.session:
+        depart = request.session.get('departamentoAgente')
+        departamento = departamentos.objects.get(nombre=depart)
+    
     tranferDepartamentos = departamentos.objects.all()
     tranferTramites = tramites.objects.all()
+    
     if departamento.tramitesDepartamento:
+        dict = {}
         tramite = tramites.objects.filter(departamento=departamento.pk)
-        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites})
+        
+        for tr in tramite:
+            dict[tr.nombre] = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
+
+        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
     else:
-        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites})
+        dict = {}
+        dict[departamento.nombre] = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
+        return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
 
 def digital_ticket_maker(request):
     request.session.flush() 

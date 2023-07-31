@@ -13,9 +13,9 @@
                         <div class="">
                             <div class="" style="align-items: center;">
                                 <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
-                                <select style="width: 135px; height: 35px;" class="roundedInput form-select form-select-sm"
-                                    aria-label=".form-select-sm example" id="status_select" name="status_select"
-                                    onchange="estados()">
+                                <select style="width: 135px; height: 35px;"
+                                    class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example"
+                                    id="status_select" name="status_select" onchange="estados()">
                                     <option value="Activo" selected>Activo</option>
                                     <option value="Disponible">Disponible</option>
                                     <option value="Ocupado" disabled>Ocupado</option>
@@ -28,9 +28,8 @@
                         <div class="mt-2">
                             <div class="" style="align-items: center;">
                                 <h5 class="fw-light fw-bold">Cola:&nbsp;&nbsp;</h5>
-                                <button class="btnStyle btn btn-md btn-login  mb-2 d-flex" type="button"
-                                    id="btnAsignar" data-bs-toggle="modal"
-                                    data-bs-target="#modal_colas">Asignar</button>
+                                <button class="btnStyle btn btn-md btn-login  mb-2 d-flex" type="button" id="btnAsignar"
+                                    data-bs-toggle="modal" data-bs-target="#modal_colas">Asignar</button>
                             </div>
                         </div>
                         {% endif %}
@@ -48,31 +47,34 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <div class="col-md-6 justify-content-center">
-                                <button class="btnStyle btn btn-md btn-login mb-2 d-flex" type="button"
+                                <button class="btnStyle btn btn-md btn-login mb-2" type="button"
                                     id="btnSiguiente" onclick="numeroSiguiente()">Siguiente</button>
+                                <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button"
+                                    id="btnTerminar" onclick="terminar()">Terminar</button>
                             </div>
 
                             <button id="btnTransferir" type="button" class="btnStyle btn btn-md dropdown-toggle mb-2"
                                 data-bs-toggle="dropdown" aria-expanded="false">Transferir</button>
                             <ul class="dropdown-menu">
                                 {% for depart in tranferDepartamentos %}
-                                    {% if depart.tramitesDepartamento %}
-                                        <hr class="dropdown-divider">
-                                        <li><a class="dropdown-item" style="cursor: pointer;">{{ depart.nombre }} &raquo; </a>
-                                            <ul class="dropdown-menu dropdown-submenu">
+                                {% if depart.tramitesDepartamento %}
+                                <hr class="dropdown-divider">
+                                <li><a class="dropdown-item" style="cursor: pointer;">{{ depart.nombre }} &raquo; </a>
+                                    <ul class="dropdown-menu dropdown-submenu">
                                         {% for tranfer in tranferTramites %}
-                                            {% if tranfer.departamento ==  depart %}
-                                                <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('{{ depart.nombre }}/{{ tranfer.nombre }}')">{{ tranfer.nombre }}</a></li>
-                                            {% endif %}
-                                        {% endfor %}
-                                        </ul>
-                                        </li>
-                                        <hr class="dropdown-divider">
-                                    {% else %}
+                                        {% if tranfer.departamento == depart %}
                                         <li><a class="dropdown-item" style="cursor: pointer;"
+                                                onclick="transferencia('{{ depart.nombre }}/{{ tranfer.nombre }}')">{{
+                                                tranfer.nombre }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                <hr class="dropdown-divider">
+                                {% else %}
+                                <li><a class="dropdown-item" style="cursor: pointer;"
                                         onclick="transferencia('{{ depart.nombre }}')">{{ depart.nombre }}</a></li>
-                                    {% endif %}
+                                {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -86,31 +88,80 @@
                         </div>
                     </div>
                 </div>
+                {% if departamento.tramitesDepartamento %}
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                        <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                            <table id="record-table" class="table table-striped-columns">
+                                <thead>
+                                    <tr>
+                                        <th>Trámite</th>
+                                        <th>Cant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, value in tickets.items %}
+                                    <tr>
+                                        <td><p>{{ key }}</p></td>
+                                        <td><p>{{ value }}</p></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                        <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                            <table id="record-table" class="table table-striped-columns">
+                                <thead>
+                                    <tr>
+                                        <th>Depart</th>
+                                        <th>Cant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for key, value in tickets.items %}
+                                    <tr>
+                                        <td><p>{{ key }}</p></td>
+                                        <td><p>{{ value }}</p></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </main>
         </div>
     </div>
 </div>
 {% block modal_colas%}
 <div class="modal fade" id="modal_colas" tabindex="-1" aria-labelledby="modal_colasTitle" style="display: none"
-    aria-hidden="true" >
+    aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title titulo" id="exampleModalCenterTitle">Colas de Atencion</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div id="checkboxContainer"  class="modal-body">
+            <div id="checkboxContainer" class="modal-body">
                 <div class="row">
                     {% for tramite in tramites %}
                     <div class="col form-check form-check-inline">
-                        <input class="form-check-input" id="input_{{ forloop.counter }}" type="checkbox" value="{{ tramite.nombre }}">
+                        <input class="form-check-input" id="input_{{ forloop.counter }}" type="checkbox"
+                            value="{{ tramite.nombre }}">
                         <label class="form-check-label" for="input_{{ forloop.counter }}">{{ tramite.nombre }}</label>
                     </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="cola()" data-bs-dismiss="modal" class="btnStyle btn">Guardar Cambios</button>
+                <button type="button" onclick="cola()" data-bs-dismiss="modal" class="btnStyle btn">Guardar
+                    Cambios</button>
             </div>
         </div>
     </div>
@@ -121,7 +172,7 @@
     .dropdown-menu li {
         position: relative;
     }
-    
+
     .dropdown-menu .dropdown-submenu {
         display: none;
         position: absolute;
@@ -134,14 +185,15 @@
         left: auto;
     }
 
-    .dropdown-menu > li:hover > .dropdown-submenu {
+    .dropdown-menu>li:hover>.dropdown-submenu {
         display: block;
     }
 
-    #checkboxContainer{
+    #checkboxContainer {
         overflow-y: auto;
         overflow-x: hidden;
     }
+
     .roundedInput {
         border-radius: 40px;
         text-align: justify;
@@ -149,6 +201,7 @@
         font-family: 'Abrade';
         font-weight: 600;
     }
+
     .btnStyle {
         background-color: #000000;
         color: #ffffff;
@@ -180,9 +233,9 @@
         var checkboxContainer = document.getElementById("checkboxContainer");
         var checkboxes = checkboxContainer.querySelectorAll('input[type="checkbox"]');
         var cola = "Departamento";
-        checkboxes.forEach(function(checkbox) {
+        checkboxes.forEach(function (checkbox) {
             if (checkbox.checked) {
-                cola = cola.concat(",",checkbox.value)
+                cola = cola.concat(",", checkbox.value)
             }
         });
 
@@ -217,37 +270,54 @@
     }
 
     function estadosbtn() {
+        var select = document.getElementById("status_select");
         var estadoactual = document.getElementById("status_select").value;
-        console.log(estadoactual);
         var boton = document.getElementById("btnSiguiente");
+        var botonT = document.getElementById("btnTerminar")
         var boton2 = document.getElementById("btnTransferir");
         var boton3 = document.getElementById("btnSalir");
         var numero = document.getElementById("txtNumero");
         var cola = document.getElementById("btnAsignar");
 
         if (estadoactual == 'Activo' || estadoactual == 'Inactivo') {
+            select.disabled = false;
             boton.disabled = true;
+            boton.style.display = 'block';
+            botonT.disabled = true;
+            botonT.style.display = 'none';
             boton2.disabled = true;
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
             cola.disabled = false;
         }
         else if (estadoactual == 'Desconectado') {
+            select.disabled = false;
             boton.disabled = true;
+            boton.style.display = 'block';
+            botonT.disabled = true;
+            botonT.style.display = 'none';
             boton2.disabled = true;
             boton3.classList.remove("disabled");
             numero.innerHTML = 'N/C';
             cola.disabled = true;
         }
         else if (estadoactual == 'Disponible') {
+            select.disabled = false;
             boton.disabled = false;
-            boton2.disabled = false;
+            boton.style.display = 'block';
+            botonT.disabled = true;
+            botonT.style.display = 'none';
+            boton2.disabled = true;
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
             cola.disabled = true;
         }
         else if (estadoactual == 'Ocupado') {
+            select.disabled = true;
             boton.disabled = false;
+            boton.style.display = 'none';
+            botonT.disabled = false;
+            botonT.style.display = 'block';
             boton2.disabled = false;
             boton3.classList.add("disabled");
             cola.disabled = true;
@@ -284,6 +354,12 @@
         }
     }
 
+    function terminar(){
+        var estadoactual = document.getElementById("status_select");
+        estadoactual.selectedIndex = 1;
+        estadosbtn();
+    }
+
     function transferencia(departamento) {
         var estadoactual = document.getElementById("status_select");
         var numero = document.getElementById("txtNumero");
@@ -312,5 +388,18 @@
         }
     }
     
+    const recordTable = document.getElementById('record-table');
+    
+    function fetchRecords() {
+        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
+            recordTable.innerHTML = newTable.innerHTML;
+        });
+    }
+
+    setInterval(fetchRecords, 5000);
 </script>
 {% endblock %}

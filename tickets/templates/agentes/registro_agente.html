@@ -165,11 +165,7 @@
             new QWebChannel(qt.webChannelTransport, function (channel) {
                 var resizeObj = channel.objects.resizeObj;
                 if (resizeObj) {
-                    if(valor === 'Registro'){
-                        resizeObj.resize_window(200, 438);
-                    }else{
-                        resizeObj.resize_window(200, 348);
-                    }
+                    resizeObj.resize_window(200, 550);
                 }
             });
         }

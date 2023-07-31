@@ -5,6 +5,7 @@ from datetime import date
 from datetime import datetime
 from escpos.printer import Network
 from PIL import Image, ImageDraw, ImageFont
+from django.templatetags.static import static
 
 def imprimir(codigo, departamento):
     # fecha_actual = date.today().strftime('%Y-%m-%d')
@@ -13,7 +14,7 @@ def imprimir(codigo, departamento):
     # printer_ip = '192.168.8.35'
     
     # img_path = crear_img(codigo, departamento, fecha_actual, hora_actual_str)
-    # img_path2 = Image.open("tickets/static/img/logo3.png")
+    # img_path2 = Image.open(static('img/logo3.png'))
 
     # printer = Network(printer_ip)
     # printer.open()
@@ -44,12 +45,12 @@ def crear_img (codigo, departamento, fecha, hora):
 
     dibujo = ImageDraw.Draw(img)
 
-    fuente_b = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-SemiBold.ttf", 60)
+    fuente_b = ImageFont.truetype(static('fonts/Abrade/Abrade-SemiBold.ttf'), 60)
     if len(codigo)>7:
-        fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 90)
+        fuente_c = ImageFont.truetype(static('fonts/Abrade/Abrade-Bold.ttf'), 90)
     else:
-        fuente_c = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Bold.ttf", 120)
-    fuente_t = ImageFont.truetype("tickets/static/fonts/Abrade/Abrade-Medium.ttf", 30)
+        fuente_c = ImageFont.truetype(static('fonts/Abrade/Abrade-Bold.ttf'), 120)
+    fuente_t = ImageFont.truetype(static('fonts/Abrade/Abrade-Medium.ttf'), 30)
 
     texto1_width, texto1_height = dibujo.textsize("Texto 1", font=fuente_b)
     texto2_width, texto2_height = dibujo.textsize("Texto 2", font=fuente_c)
