@@ -247,7 +247,10 @@ def save_departamento(request, data):
 def update_departamento(request, data):
     try:
         atencion_obj = departamentos.objects.get(id_departamentos=data['id_departamentos'])
+        agentes_cambio = agentes.objects.filter(departamento=atencion_obj.nombre)
+        agentes_cambio.update(departamento=data['nombre'])
         atencion_obj.nombre = data['nombre']
+        atencion_obj.alias = data['alias']
         atencion_obj.codigoDepartamento = data['codigoDepartamento']
         atencion_obj.siglasDepartamento = data['siglasDepartamento']
         atencion_obj.tramitesDepartamento = data['tramitesDepartamento']

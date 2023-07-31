@@ -12,6 +12,7 @@ from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 import threading
 from .impresion import imprimir
+from django.db.models import F
 from django.contrib.auth.forms import AuthenticationForm
 from tickets.savedata import delete_agente, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
@@ -35,15 +36,17 @@ class Logueo(FormView):
 
         if user is not None:
             login(self.request, user)
-            return redirect('admin_side')  # Reemplaza 'admin_side' con la vista a la que deseas redirigir luego del inicio de sesión exitoso
+            if user.username == 'mercadeo':
+                return redirect('configuracion')
+            else:
+                return redirect('admin_side')
         else:
             # El usuario no existe o las credenciales son inválidas
             return render(self.request, self.template_name, {'form': form, 'error': 'Usuario o contraseña incorrectos'})
 
     def get(self, *args, **kwargs):
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated != True:
             logout(self.request)
-            return redirect('login_admin')  # Reemplaza 'login_admin' con la URL a la vista de inicio de sesión
         return super(Logueo, self).get(*args, **kwargs)
 
 class RegistroAdmin(FormView):
@@ -96,7 +99,7 @@ def configuracion(request):
         'text': text
     }
         
-    return render(request, 'administracion/configuracion.html', {'records': records})
+    return render(request, 'administracion/configuracion.html', {'records': records, 'merca':True})
 
 def cambiar_imagen(request):
     imgnueva = request.FILES.get('imagen1')
@@ -432,7 +435,7 @@ def ticketcontrol(request):
                 departamento = departamentos.objects.get(siglasDepartamento=registro.departamento)
                 codigo = str(registro.codigoCaso).split('-')
                 numero = int(codigo[1].lstrip("0"))
-                letras = insertar_comas(texto)
+                letras = insertar_comas(codigo[0])
                 texto = letras+", "+str(numero) + ", dirigirse a la Ventanilla número " + registro.numeroVentanilla+" del área de "+ departamento.nombre
                 request.session['listaR'].append(texto)
                 # Crear hilo y esperar a que el hilo anterior termine
@@ -456,7 +459,7 @@ def ticketcontrol(request):
         request.session['cantrecords'] = recordscant
         request.session['reproduccion'] = recordscant
     registro = visualizador.objects.first() 
-    records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:6]
+    records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:5]
     noticia = registro.text
     tipovisual = registro.tipo_visor
 
@@ -470,8 +473,8 @@ def ticketcontrol(request):
         link = registro.link
         return render(request, 'visualizador/ticket_control.html', {'records': records, 'noticia': noticia, 'tipo': tipovisual, 'link': link})
 
-def insertar_comas(string):
-    return ",".join(char for char in string)
+def insertar_comas(text):
+    return ",".join(char for char in text)
 
 def reproductor(request):
     dic = {}
@@ -625,11 +628,13 @@ def digital_crear_ticket(request):
 @login_required
 def nuevodepartamento(request):
     nombredepartamento = request.POST.get('nombreDepartamento')
+    aliasDepartamento = request.POST.get('aliasDepartamento')
     codigodepartamento = request.POST.get('codigoDepartamento')
     siglasdepartamento = request.POST.get('siglasDepartamento')
 
     data_agente = {
         'nombre': nombredepartamento,
+        'alias': aliasDepartamento,
         'codigoDepartamento': codigodepartamento,
         'siglasDepartamento': siglasdepartamento,
         'tramitesDepartamento': False
@@ -642,6 +647,7 @@ def nuevodepartamento(request):
 def modificardepartamento(request):
     iddepartamento = request.POST.get('idDepartamento')
     nombredepartamento = request.POST.get('nombreDepartamento')
+    aliasDepartamento = request.POST.get('aliasDepartamento')
     codigodepartamento = request.POST.get('codigoDepartamento')
     siglasdepartamento = request.POST.get('siglasDepartamento')
 
@@ -650,9 +656,10 @@ def modificardepartamento(request):
     data = {
         'id_departamentos': iddepartamento,
         'nombre': nombredepartamento,
+        'alias': aliasDepartamento,
         'codigoDepartamento': codigodepartamento,
         'siglasDepartamento': siglasdepartamento,
-        'tramitesDepartamento': departamentoSelected.tramites
+        'tramitesDepartamento': departamentoSelected.tramitesDepartamento
     }
 
     save = update_departamento(request, data)
@@ -689,6 +696,7 @@ def nuevotramite(request):
     dataDepartamento = {
         'id_departamentos': departamentoSelected.pk,
         'nombre': departamentoSelected.nombre,
+        'alias': departamentoSelected.alias,
         'codigoDepartamento': departamentoSelected.codigoDepartamento,
         'siglasDepartamento': departamentoSelected.siglasDepartamento,
         'tramitesDepartamento': True
@@ -811,13 +819,13 @@ def obtener_todos_departamentos(request):
 
 @login_required
 def eliminaragente(request):
-    idagente = request.POST.get('id_agente')
+    idagente = request.POST.get('id_agente_modal')
     save = delete_agente(request, idagente)
     return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def modificaragente(request): 
-    id_agente = request.POST.get('id_agente')
+    id_agente = request.POST.get('id_agente_modal')
     nombre_agente = request.POST.get('nombre_agente')
     tramite_select = request.POST.get('tramite_select')
 

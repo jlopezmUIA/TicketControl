@@ -20,7 +20,7 @@
                                 onclick="cargar_tramites('{{ departamento.pk }}')" 
                                 {% else %} 
                                 onclick="crear_ticket('{{ departamento.pk }}')"
-                                {% endif %}><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.nombre }}</p></button>
+                                {% endif %}><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.alias }}</p></button>
                         </div>
                         {% else %}
                         <div class="col-md-6 mb-3">
@@ -31,7 +31,7 @@
                                 onclick="cargar_tramites('{{ departamento.pk }}')" 
                                 {% else %} 
                                 onclick="crear_ticket('{{ departamento.pk }}')"
-                                {% endif %}><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.nombre }}</p></button>
+                                {% endif %}><p style="font-size: 30px;" class="mt-3 mb-3">{{ departamento.alias }}</p></button>
                         </div>
                         {% endif %}
                         {% endfor %}

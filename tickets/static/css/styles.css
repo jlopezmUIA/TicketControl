@@ -58,17 +58,17 @@ footer{
 
 .fullscreen {
     #div1 {
-        width: 51%;
+        width: 50.4%;
     }
     #div2 {
         width: 49%;
     }
     #videoFrame{
         width: 100%;
-        height: 830px;
+        height: 800px;
     }
     .footer {
-        height: 8%;
+        height: 9%;
     }
 }
 

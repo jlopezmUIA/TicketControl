@@ -147,6 +147,12 @@
         border-color: #ffd142;
     }
 </style>
+<script>
+    setTimeout(function () {
+        localStorage.removeItem('activeLink');
+    }, 1);
+</script>
+
 {% endblock %}
 {% block footer %}
 <footer class="footerLogin d-flex">

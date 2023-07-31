@@ -81,6 +81,7 @@ class metricas(models.Model):
 class departamentos(models.Model):
     id_departamentos = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=60)
+    alias = models.CharField(max_length=60)
     codigoDepartamento = models.CharField(max_length=60)
     siglasDepartamento = models.CharField(max_length=60)
     tramitesDepartamento = models.BooleanField(default=False)

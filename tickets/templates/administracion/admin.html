@@ -48,6 +48,7 @@
                     <tr class="colorfilas">
                         <td class="text-center align-middle">
                             <h5 id="dNombre" class="">{{ departamento.nombre }}</h5>
+                            <h5 id="dAlias" hidden>{{ departamento.alias }}</h5>
                             <h5 id="dDepartamento" hidden>{{ departamento.id_departamentos }}</h5>
                             <h5 id="dCodigo" hidden>{{ departamento.codigoDepartamento }}</h5>
                             <h5 id="dSiglas" hidden>{{ departamento.siglasDepartamento }}</h5>
@@ -130,6 +131,12 @@
                                         placeholder="Nombre" name="nombreDepartamento" required>
                                 </div>
 
+                            </div>
+                            <div class="mb-3 ">
+                                <label for="">Alias del Departamento</label>
+                                <input type="text" class="roundedInput form-control" id="aliasDepartamento"
+                                    placeholder="Alias" name="aliasDepartamento"
+                                    required>
                             </div>
                             <div class="mb-3 ">
                                 <label for="">Código del Departamento</label>
@@ -351,6 +358,7 @@
         modal.addEventListener('hidden.bs.modal', function () {
             var iddepartamento = document.getElementById("idDepartamento");
             var mnombre = document.getElementById("nombreDepartamento");
+            var malias = document.getElementById("aliasDepartamento");
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
 
@@ -358,6 +366,7 @@
             var formDepartamento = document.getElementById("formDepartamento");
             var modalTitulo = document.getElementById("modalTitulo");
 
+            malias.value = "";
             mnombre.value = "";
             mcodigo.value = "";
             msiglas.value = "";
@@ -399,12 +408,14 @@
             var fila = event.target.closest('tr');
 
             var ddepartamento = fila.querySelector('#dDepartamento').textContent;
+            var dalias = fila.querySelector('#dAlias').textContent;
             var dnombre = fila.querySelector('#dNombre').textContent;
             var dcodigo = fila.querySelector('#dCodigo').textContent;
             var dsiglas = fila.querySelector('#dSiglas').textContent;
 
             var iddepartamento = document.getElementById("idDepartamento");
             var mnombre = document.getElementById("nombreDepartamento");
+            var malias = document.getElementById("aliasDepartamento");
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
 
@@ -413,6 +424,7 @@
             var formDepartamento = document.getElementById("formDepartamento");
 
             mnombre.value = dnombre;
+            malias.value = dalias;
             mcodigo.value = dcodigo;
             msiglas.value = dsiglas;
             iddepartamento.value = ddepartamento;

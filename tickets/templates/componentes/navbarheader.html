@@ -9,8 +9,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if merca != True %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin_side' %}" aria-current="page">INICIO</a>
+                    <a class="nav-link" id="inicioLink" href="{% url 'admin_side' %}" aria-current="page">INICIO</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'colas_atencion' %}">COLAS DE ACCIÓN</a>
@@ -27,9 +28,7 @@
                 <li class="nav-item">
                     <a class="nav-link " id="agentesDropdown" role="button" href="{% url 'datos_agente' %}">AGENTES</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'configuracion' %}">CONFIGURACIÓN DE VISUALIZADOR</a>
-                </li>
+                {% endif %}
             </ul>
             <form class="d-flex" style="padding-right: 30px;">
                 <a class="btn" href="{% url 'logout' %}" type="button">CERRAR SESIÓN</a>
@@ -69,6 +68,12 @@
 </style>
 <script>
     const activeLink = localStorage.getItem('activeLink');
+    if (!activeLink) {
+        const inicioLink = document.querySelector('#inicioLink');
+        if (inicioLink) {
+          inicioLink.classList.add('active');
+        }
+    }
     if (activeLink) {
         const link = document.querySelector(`.navbar-nav .nav-link[href="${activeLink}"]`);
         if (link) {

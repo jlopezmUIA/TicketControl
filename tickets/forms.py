@@ -46,7 +46,7 @@ class FormularioMetricas(forms.ModelForm):
 class FormularioDepartamentos(forms.ModelForm):
     class Meta:
         model = departamentos
-        fields = ('nombre', 'codigoDepartamento', 'siglasDepartamento','tramitesDepartamento')
+        fields = ('nombre', 'alias', 'codigoDepartamento', 'siglasDepartamento','tramitesDepartamento')
 
 class FormularioTramites(forms.ModelForm):
     class Meta:

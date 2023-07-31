@@ -251,8 +251,8 @@
                     <div class="row ">
                         <div class=" mb-3">
                             <div class="mb-3">
-                                <input type="text" class="roundedInput form-control" id="id_agente"
-                                    name="id_agente" hidden>
+                                <input type="text" class="roundedInput form-control" id="id_agente_modal"
+                                    name="id_agente_modal" style="display: none;">
                                 <label for="">Nombre del Agente</label>
                                 <input type="text" class="roundedInput form-control" id="nombre_agente" placeholder="Nombre de Agente"
                                     name="nombre_agente" required>
@@ -509,7 +509,7 @@
         var agente_nombre = fila.querySelector('#agente_nombre').textContent;
         var agente_departamento = fila.querySelector('#agente_departamento').textContent;
 
-        var id_agente = document.getElementById("id_agente");
+        var id_agente = document.getElementById("id_agente_modal");
         var nombre_agente = document.getElementById("nombre_agente");
         var tramite_select = document.getElementById("tramite_select");
 
