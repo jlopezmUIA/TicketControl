@@ -47,39 +47,32 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <div class="col-md-6 justify-content-center">
-                                <button class="btnStyle btn btn-md btn-login mb-2" type="button"
+                                <button class="btnStyle btn btn-md btn-login mb-2 mr-2" type="button"
                                     id="btnSiguiente" onclick="numeroSiguiente()">Siguiente</button>
                                 <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button"
                                     id="btnTerminar" onclick="terminar()">Terminar</button>
                             </div>
 
-                            <button id="btnTransferir" type="button" class="btnStyle btn btn-md dropdown-toggle mb-2"
-                                data-bs-toggle="dropdown" aria-expanded="false">Transferir</button>
-                            <ul class="dropdown-menu">
-                                {% for depart in tranferDepartamentos %}
-                                {% if depart.tramitesDepartamento %}
-                                <hr class="dropdown-divider">
-                                <li><a class="dropdown-item" style="cursor: pointer;">{{ depart.nombre }} &raquo; </a>
-                                    <ul class="dropdown-menu dropdown-submenu">
-                                        {% for tranfer in tranferTramites %}
-                                        {% if tranfer.departamento == depart %}
-                                        <li><a class="dropdown-item" style="cursor: pointer;"
-                                                onclick="transferencia('{{ depart.nombre }}/{{ tranfer.nombre }}')">{{
-                                                tranfer.nombre }}</a></li>
-                                        {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                <hr class="dropdown-divider">
-                                {% else %}
-                                <li><a class="dropdown-item" style="cursor: pointer;"
-                                        onclick="transferencia('{{ depart.nombre }}')">{{ depart.nombre }}</a></li>
-                                {% endif %}
-                                {% endfor %}
-                            </ul>
+                            <button id="btnTransferir" type="button" class="btnStyle btn btn-md mb-2"
+                            type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Transferir</button>
+              
                         </div>
                     </div>
                 </div>
+                {% if departamento.citasDepartamento %}
+                <div class="row d-flex justify-content-center">
+                    <div class="col-12 col-sm-12 col-md-8 col-lg-6">
+                        <div class="d-flex justify-content-center flex-wrap mx-auto ">
+                            <div class="col-md-6 justify-content-center">
+                                <button id="btnCrearCita" type="button" class="btnStyle btn btn-md btn-login mb-2 mr-2" type="button" data-bs-toggle="offcanvas" 
+                                data-bs-target="#offcanvasExample2" aria-controls="offcanvasExample2" onclick="citasvista('crear')">Crear Cita</button>
+                            </div>
+                                <button class="btnStyle btn btn-md btn-login mb-2" type="button" id="btnVerCita" data-bs-toggle="offcanvas" 
+                                data-bs-target="#offcanvasExample2" aria-controls="offcanvasExample2" onclick="citasvista('ver')">Ver Citas</button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
@@ -102,8 +95,8 @@
                                 <tbody>
                                     {% for key, value in tickets.items %}
                                     <tr>
-                                        <td><p>{{ key }}</p></td>
-                                        <td><p>{{ value }}</p></td>
+                                        <td><p></p></td>
+                                        <td><p></p></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -123,12 +116,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for key, value in tickets.items %}
                                     <tr>
-                                        <td><p>{{ key }}</p></td>
-                                        <td><p>{{ value }}</p></td>
+                                        <td><p></p></td>
+                                        <td><p></p></td>
                                     </tr>
-                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -139,6 +130,131 @@
         </div>
     </div>
 </div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Menu Transferencia</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div>
+        Seleccione el area al que desea transferir.
+      </div>
+      <div class="dropdown mt-3">
+        {% for depart in tranferDepartamentos %}
+            {% if depart.tramitesDepartamento %}
+                <button class="btn btn-dark dropdown-toggle mb-3" type="button" data-bs-toggle="dropdown">
+                {{ depart.nombre }} </button>
+                <ul class="dropdown-menu">
+                {% for tranfer in tranferTramites %}
+                {% if tranfer.departamento == depart %}
+                    <li><a class="dropdown-item" style="cursor: pointer;"
+                        onclick="transferencia('{{ depart.nombre }}/{{ tranfer.nombre }}')">{{ tranfer.nombre }}</a></li>
+                {% endif %}
+                {% endfor %}
+                </ul>
+            {% else %}
+                <button class="btn btn-dark mb-3" type="button" style="cursor: pointer;"
+                onclick="transferencia('{{ depart.nombre }}')">{{ depart.nombre }}</button>
+            {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample2" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+      <h3 class="offcanvas-title fw-bold" id="offcanvasExampleLabel">Citas</h3>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div id="div_crearcita">
+            <div class="row ">
+                <p id="pAviso" style="display: none; color: #960000;">Exíste una cita en la misma fecha y hora.</p>
+                <div class=" mb-3">
+                    <label for="">Número Identificación</label>
+                    <input type="text" class="roundedInput form-control" id="identificacion"
+                        placeholder="Identificación" name="identificacion" onkeyup="datacedula()"
+                        required>
+                </div>
+                <div class="mb-3 ">
+                    <label for="">Nombre Completo del Cliente</label>
+                    <input type="text" class="roundedInput form-control" id="nombre"
+                        placeholder="Nombre Completo" name="nombre" oninput="convertirTitulo(this)"
+                        required>
+                </div>
+                <div class="mb-3 ">
+                    <label for="">Teléfono</label>
+                    <input type="text" class="roundedInput form-control" id="telefono"
+                        placeholder="Teléfono" name="telefono" required>
+                </div>
+                <div class="mb-3 ">
+                    <label for="">Fecha de Cita</label>
+                    <input type="date" class="roundedInput form-control" id="fecha" name="fecha"
+                        required>
+                </div>
+                <div class="mb-3 ">
+                    <label for="">Hora de Cita</label>
+                    <input type="time" class="roundedInput form-control" id="hora" name="hora" required>
+                </div>
+            </div>
+            <br>
+            <div class="d-grid mb-2">
+                <button type="submit" class="btnStyle w-100 btn btn-lg btn-primary btn-login fw-bold"
+                    id="btnModalDepartamento" onclick="crearcita()"> Registrar Cita</button>
+
+                <div id="loading-indicator" class="hidden">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+        <div id="div_vercita">
+            <div class="row ">
+                <h4>Citas del Dia</h4>
+                <table id="record-table-citas" class="table table-striped-columns">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        {% if cita.fecha == fecha %}
+                        <tr>
+                            <td><p>{{ cita.nombreCliente }}</p></td>
+                            <td><p>{{ cita.hora }}</p></td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="row ">
+                <h4>Citas Generales</h4>
+                <table id="record-table-generales" class="table table-striped-columns">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td><p>{{ cita.nombreCliente }}</p></td>
+                            <td><p>{{ cita.fecha }}</p></td>
+                            <td><p>{{ cita.hora }}</p></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+
 {% block modal_colas%}
 <div class="modal fade" id="modal_colas" tabindex="-1" aria-labelledby="modal_colasTitle" style="display: none"
     aria-hidden="true">
@@ -208,6 +324,8 @@
         border-radius: 50px;
         border-color: #000000;
         font-size: 15px;
+        margin-right: 7px;
+        margin-left: 7px;
     }
 
     .btnStyle3 {
@@ -228,6 +346,114 @@
     window.onload = function () {
         estados();
     };
+
+    function crearcita() {
+        var identificacion = document.getElementById("identificacion");
+        var nombre = document.getElementById("nombre");
+        var telefono = document.getElementById("telefono");
+        var fecha = document.getElementById("fecha");
+        var hora = document.getElementById("hora");
+        var pAviso = document.getElementById("pAviso");
+        var url = "/nueva-cita-agente/?identificacion=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(identificacion.value) + "&nombre=" + encodeURIComponent(nombre.value) + 
+        "&telefono=" + encodeURIComponent(telefono.value) + "&fecha=" + encodeURIComponent(fecha.value) + "&hora=" + encodeURIComponent(hora.value), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                identificacion.value = "";
+                nombre.value = "";
+                telefono.value = "";
+                fecha.value = "";
+                hora.value = "";
+                $('#offcanvasExample2').offcanvas('hide');
+                pAviso.style.display = 'none';
+            }
+            else{
+                pAviso.style.display = 'block';
+                console.log('error');
+            }
+        };
+        request.send();
+
+    }
+
+    function citasvista(tipo){
+        var div_crearcita = document.getElementById("div_crearcita");
+        var div_vercita = document.getElementById("div_vercita");
+
+        if (tipo === "crear"){
+            div_crearcita.style.display = 'block';
+            div_vercita.style.display = 'none';
+        }
+        else if (tipo === 'ver'){
+            div_vercita.style.display = 'block';
+            div_crearcita.style.display = 'none';
+        }
+    }
+
+    function datacedula() {
+        var input = document.getElementById("identificacion");
+        var input2 = document.getElementById("nombre");
+
+        if (input.value.length >= 10 && input.value.length <= 12) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var datos = this.responseText;
+                    const datos_usuario = datos.split(",");
+
+                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
+                    input2.readOnly = true;
+                    convertirTitulo();
+
+                } else if (this.status == 404) {
+                    input2.value = "";
+                    input2.readOnly = false;
+                }
+            };
+            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
+            xhttp.send();
+
+        } else {
+            input2.value = "";
+            input2.readOnly = false;
+        }
+
+        if (input.value.length === 9) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var datos = this.responseText;
+                    const datos_usuario = datos.split(",");
+
+                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
+                    input2.readOnly = true;
+                    convertirTitulo();
+
+                } else if (this.status == 404) {
+                    input2.value = "";
+                    input2.readOnly = false;
+                }
+            };
+            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
+            xhttp.send();
+        } else {
+            input2.value = "";
+            input2.readOnly = false;
+        }
+    }
+
+    function convertirTitulo() {
+        var input = document.getElementById("nombre");
+        var palabras = input.value.toLowerCase().split(' ');
+
+        for (var i = 0; i < palabras.length; i++) {
+            palabras[i] = palabras[i].charAt(0).toUpperCase() + palabras[i].slice(1);
+        }
+
+        input.value = palabras.join(' ');
+    }
 
     function cola() {
         var checkboxContainer = document.getElementById("checkboxContainer");
@@ -372,6 +598,7 @@
                 estadoactual.selectedIndex = 1;
                 numero.innerHTML = "N/C";
                 estados();
+                $('#offcanvasExample').offcanvas('hide');
             }
         };
         request.send();
@@ -388,18 +615,193 @@
         }
     }
     
-    const recordTable = document.getElementById('record-table');
+    var tabla = document.getElementById("record-table");
+    function actualizar_tabla() {
+        var url = "/actualizar-tabla-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
     
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-        .then(response => response.text())
-        .then(data => {
-            const parser = new DOMParser();
-            const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-            recordTable.innerHTML = newTable.innerHTML;
-        });
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla.insertRow();
+
+                    var depart = fila.insertCell();
+                    depart.className = '';
+                    var pDepart = document.createElement("p");
+                    pDepart.textContent = registro.nombreDepartamento;
+                    pDepart.className = '';
+                    pDepart.style.fontSize = '';
+                    depart.appendChild(pDepart);
+    
+                    var cant = fila.insertCell();
+                    cant.className = '';
+                    var pCant = document.createElement("p");
+                    pCant.textContent = registro.cantidad;
+                    pCant.className = '';
+                    pCant.style.fontSize = '';
+                    cant.appendChild(pCant);
+
+                });
+            }
+            
+        };
+    
+        request.send();
     }
 
-    setInterval(fetchRecords, 5000);
+    var tabla_generales = document.getElementById("record-table-generales");
+    function actualizar_tabla_citas_actuales() {
+        var url = "/actualizar-tabla-citas-actuales/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+    
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla_generales.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla_generales.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla_generales.insertRow();
+
+                    var cliente = fila.insertCell();
+                    cliente.className = '';
+                    var pCliente = document.createElement("p");
+                    pCliente.textContent = registro.nombreCliente;
+                    pCliente.className = '';
+                    pCliente.style.fontSize = '';
+                    cliente.appendChild(pCliente);
+    
+                    var fecha = fila.insertCell();
+                    fecha.className = '';
+                    var pFecha = document.createElement("p");
+                    pFecha.textContent = registro.fecha;
+                    pFecha.className = '';
+                    pFecha.style.fontSize = '';
+                    fecha.appendChild(pFecha);
+
+                    var hora = fila.insertCell();
+                    hora.className = '';
+                    var pHora = document.createElement("p");
+                    pHora.textContent = registro.hora;
+                    pHora.className = '';
+                    pHora.style.fontSize = '';
+                    hora.appendChild(pHora);
+
+                });
+            }
+            
+        };
+    
+        request.send();
+    }
+
+    var tabla_citas = document.getElementById("record-table-citas");
+    function actualizar_tabla_citas_dia() {
+        var url = "/actualizar-tabla-citas/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+    
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla_citas.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla_citas.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla_citas.insertRow();
+
+                    var cliente = fila.insertCell();
+                    cliente.className = '';
+                    var pCliente = document.createElement("p");
+                    pCliente.textContent = registro.nombreCliente;
+                    pCliente.className = '';
+                    pCliente.style.fontSize = '';
+                    cliente.appendChild(pCliente);
+
+                    var hora = fila.insertCell();
+                    hora.className = '';
+                    var pHora = document.createElement("p");
+                    pHora.textContent = registro.hora;
+                    pHora.className = '';
+                    pHora.style.fontSize = '';
+                    hora.appendChild(pHora);
+
+                });
+            }
+            
+        };
+    
+        request.send();
+    }
+
+    setInterval(function() {
+        actualizar_tabla();
+        actualizar_tabla_citas_actuales();
+        actualizar_tabla_citas_dia();
+    }, 1000);
+
+    var offcanvasElement = document.getElementById('offcanvasExample2');
+    offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
+        var identificacion = document.getElementById("identificacion");
+            var nombre = document.getElementById("nombre");
+            var telefono = document.getElementById("telefono");
+            var fecha = document.getElementById("fecha");
+            var hora = document.getElementById("hora");
+            var pAviso = document.getElementById("pAviso");
+
+            identificacion.value = '';
+            nombre.value = '';
+            telefono.value = '';
+            pAviso.style.display = 'none';
+    });
+
+    $(document).ready(function () {
+        $('#record-table-generales').DataTable({
+            select: true,
+            searching: false,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+        document.getElementById('record-table-generales_length').style.display = 'none';
+        document.getElementById('record-table-generales_info').style.display = 'none';
+    });
 </script>
 {% endblock %}

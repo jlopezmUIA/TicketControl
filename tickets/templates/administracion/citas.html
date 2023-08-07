@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block nav_header %}
-    {% include 'componentes/navbarheader.html' %}
+{% include 'componentes/navbarheader.html' %}
 {% endblock %}
 {% block background %}
 
@@ -13,8 +13,9 @@
     .fondoFigura {
         width: 100%;
     }
-    .imgFondo{
-        background: url('{% static "img/iStock2.jpg" %}') no-repeat;
+
+    .imgFondo {
+        background: url('{% static "img/iStock7.jpg" %}') no-repeat;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -28,71 +29,76 @@
 {% block content %}
 <div class="">
     <div class="row">
-        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
-            <h5 class="titulo">ESTADOS DE AGENTES</h5>
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+            <h5 class="titulo">CONTROL DE CITAS</h5>
             <div class="row">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
                     <div class="mb-3 col">
-                        <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"
-                            name="departamento" required onchange="cargarAgentes()">
+                        <select id="departamento" data-placeholder="Seleccione Departamento"
+                            class="roundedInput form-select" name="departamento" required onchange="cargarAgentes()">
                         </select>
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
-                    <div class="mb-3 col">
+                    <div class=" mb-3 col">
                         <select id="agente_select" class="roundedInput form-select" name="agente_select"
                             data-placeholder="Seleccion Agente">
                             <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
                         </select>
+
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
-                    <div class="mb-3 date col">
+                    <div class=" mb-3 date col">
                         <input type="date" class="roundedInput form-control" id="date" />
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                    <div class=" table-responsive px-md-4 px-2 pt-3">
+                    <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
-                            <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
+                            <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal"
+                                data-bs-target="#modal_cita" onclick="cargarDepartamentosCita();">Crear Nueva
+                                Cita</button>
                             <table id="record-table" style="height: 100px;"
-                                class="table table-hover table-fixed-height">
+                                class="table table-borderless table-hover table-fixed-height">
                                 <thead class="table-dark1">
                                     <tr>
                                         <th>
-                                            <h5 class="mt-2 text-center fw-bold">AGENTE</h5>
+                                            <h5 id="" class="mt-2 text-center fw-bold">FECHA</h5>
                                         </th>
                                         <th>
-                                            <h5 class="mt-2 text-center fw-bold">ESTADO</h5>
+                                            <h5 id="" class="mt-2 text-center fw-bold">NOMBRE DEL CLIENTE</h5>
                                         </th>
                                         <th>
-                                            <h5 class="mt-2 text-center fw-bold">FECHA</h5>
+                                            <h5 id="" class="mt-2 text-center fw-bold">TELEFONO</h5>
                                         </th>
                                         <th>
-                                            <h5 class="mt-2 text-center fw-bold">HORA DE INICIO</h5>
+                                            <h5 id="" class="mt-2 text-center fw-bold">NOMBRE DE ASESOR</h5>
                                         </th>
                                         <th>
-                                            <h5 class="mt-2 text-center fw-bold">HORA DE FIN</h5>
+                                            <h5 id="" class="mt-2 text-center fw-bold">ESTADO</h5>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for record in records %}
-                                    <tr class="colorfilas">
+                                    <tr class="colorfilas my-1">
                                         <td class="text-center align-middle">
-                                            <h5 id="id_agente">{{ record.agente_id }}</h5>
+                                            <h5 id="cId" hidden>{{ record.id_citas }}</h5>
+                                            <h5 id="cCodigo" hidden>{{ record.codigo }}</h5>
+                                            <h5 id="cFecha">{{ record.fecha }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <h5 class="">{{ record.estado }}</h5>
+                                            <h5 id="cCliente">{{ record.nombreCliente }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <h5 id="fecha">{{ record.fecha }}</h5>
+                                            <h5 id="cTelefono">{{ record.telefono }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <h5>{{ record.tiempoInicio }}</h5>
+                                            <h5 id="cAsesor">{{ record.nombreAgente }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
-                                            <h5>{{ record.tiempoFinal }}</h5>
+                                            <h5 id="cEstado">{{ record.estado }}</h5>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -102,15 +108,90 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
+{% block modal_cita %}
+<div class="modal fade" id="modal_cita" tabindex="-1" aria-labelledby="modal_citaTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">
+                    CREACIÓN DE NUEVA CITA
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <form method="POST" id="formCita" action="{% url 'nueva_cita' %}">
+                            {% csrf_token %}
+                            <div class="row ">
+                                <div class="mb-3">
+                                    <select id="departamento_cita" data-placeholder="Seleccione Departamento"
+                                        class="roundedInput form-select" name="departamento_cita" required>
+                                    </select>
+                                </div>
+                                <div class=" mb-3">
+                                    <label for="">Número Identificación</label>
+                                    <input type="text" class="roundedInput form-control" id="identificacion"
+                                        placeholder="Identificación" name="identificacion" onkeyup="datacedula()"
+                                        required>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Nombre Completo del Cliente</label>
+                                    <input type="text" class="roundedInput form-control" id="nombre"
+                                        placeholder="Nombre Completo" name="nombre" oninput="convertirTitulo(this)"
+                                        required>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Teléfono</label>
+                                    <input type="text" class="roundedInput form-control" id="telefono"
+                                        placeholder="Teléfono" name="telefono" required>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Fecha de Cita</label>
+                                    <input type="date" class="roundedInput form-control" id="fecha" name="fecha"
+                                        required>
+                                </div>
+                                <div class="mb-3 ">
+                                    <label for="">Hora de Cita</label>
+                                    <input type="time" class="roundedInput form-control" id="hora" name="hora" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="d-grid mb-2">
+                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                    id="btnModalDepartamento"> Registrar Cita</button>
+
+                                <div id="loading-indicator" class="hidden">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_cita %}
 <style>
-    .table-dark1{
+    .modal-header {
+        background-color: #000000;
+        color: white;
+    }
+
+    .table-dark1 {
         background-color: black;
         color: white;
     }
+
     .roundedInput {
         border-radius: 50px;
         text-align: justify;
@@ -120,21 +201,25 @@
         font-family: 'Abrade';
         font-weight: 600;
     }
-    .titulo{
+
+    .titulo {
         text-align: end;
         font-size: 40px;
         font-weight: 900;
         color: #000000;
     }
-    table.dataTable  {
+
+    table.dataTable {
         border-collapse: separate;
         width: 100%;
         border-spacing: 0 4px;
     }
-    .colorfilas{
+
+    .colorfilas {
         background-color: white;
         border-color: transparent;
     }
+
     td:first-child,
     th:first-child {
         border-radius: 50px 0 0 50px;
@@ -145,7 +230,6 @@
         border-radius: 0 50px 50px 0;
     }
 </style>
-
 <script>
     $(document).ready(function () {
         $('#record-table').DataTable({
@@ -184,9 +268,10 @@
             }
         });
     });
-    
+
     window.onload = function () {
         cargarDepartamentos();
+
         var dateInput = document.getElementById("date");
 
         // Obtener la fecha actual
@@ -198,6 +283,92 @@
         // Establecer la fecha actual como valor predeterminado del campo
         dateInput.value = formattedDate;
     };
+
+    function convertirTitulo() {
+        var input = document.getElementById("nombre");
+        var palabras = input.value.toLowerCase().split(' ');
+
+        for (var i = 0; i < palabras.length; i++) {
+            palabras[i] = palabras[i].charAt(0).toUpperCase() + palabras[i].slice(1);
+        }
+
+        input.value = palabras.join(' ');
+    }
+
+    function datacedula() {
+        var input = document.getElementById("identificacion");
+        var input2 = document.getElementById("nombre");
+
+        if (input.value.length >= 10 && input.value.length <= 12) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var datos = this.responseText;
+                    const datos_usuario = datos.split(",");
+
+                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
+                    input2.readOnly = true;
+                    convertirTitulo();
+
+                } else if (this.status == 404) {
+                    input2.value = "";
+                    input2.readOnly = false;
+                }
+            };
+            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
+            xhttp.send();
+
+        } else {
+            input2.value = "";
+            input2.readOnly = false;
+        }
+
+        if (input.value.length === 9) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var datos = this.responseText;
+                    const datos_usuario = datos.split(",");
+
+                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
+                    input2.readOnly = true;
+                    convertirTitulo();
+
+                } else if (this.status == 404) {
+                    input2.value = "";
+                    input2.readOnly = false;
+                }
+            };
+            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
+            xhttp.send();
+        } else {
+            input2.value = "";
+            input2.readOnly = false;
+        }
+    }
+
+    function cargarDepartamentosCita() {
+        var select2 = document.getElementById("departamento_cita");
+
+        var url = "/obtener-departamentos-cita/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
 
     function cargarDepartamentos() {
         var select2 = document.getElementById("departamento");
@@ -237,7 +408,7 @@
                 for (var key in data) {
                     if (data.hasOwnProperty(key)) {
                         var option = document.createElement("option");
-                        option.value = key;
+                        option.value = data[key];
                         option.text = data[key];
                         select2.add(option);
                     }
@@ -257,46 +428,10 @@
                 const parser = new DOMParser();
                 const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
                 recordTable.innerHTML = newTable.innerHTML;
-                $('#record-table').DataTable().destroy();
-                $('#record-table').DataTable({
-                    select: true,
-                    searching: false,
-                    language: {
-                        "sProcessing": "Procesando...",
-                        "sLengthMenu": "Mostrar _MENU_ registros",
-                        "sZeroRecords": "No se encontraron resultados",
-                        "sEmptyTable": "Ningún dato disponible en esta tabla",
-                        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                        "sInfoPostFix": "",
-                        "sSearch": "Buscar:",
-                        "sUrl": "",
-                        "sInfoThousands": ",",
-                        "sLoadingRecords": "Cargando...",
-                        "oPaginate": {
-                            "sFirst": "Primero",
-                            "sLast": "Último",
-                            "sNext": "Siguiente",
-                            "sPrevious": "Anterior"
-                        },
-                        "oAria": {
-                            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                        },
-                        "select": {
-                            "rows": {
-                                "_": "Seleccionado %d filas",
-                                "0": "Haga clic en una fila para seleccionarla",
-                                "1": "Seleccionado 1 fila"
-                            }
-                        }
-                    }
-                });
             });
     }
 
-    setInterval(fetchRecords, 15000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
+    setInterval(fetchRecords, 15000); 
 
     // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
@@ -309,8 +444,8 @@
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#fecha").textContent;
+            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#cFecha").textContent;
             var dateInput = document.getElementById("date");
 
             // Agregar un evento de escucha para capturar el cambio de fecha
@@ -327,7 +462,6 @@
         });
     });
 
-
     // Agregar un evento de escucha para capturar el cambio de opción
     agenteSelect.addEventListener("click", function () {
         var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
@@ -336,8 +470,8 @@
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#fecha").textContent;
+            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
+            var fecha = row.querySelector("#cFecha").textContent;
             var dateInput = document.getElementById("date");
 
             // Agregar un evento de escucha para capturar el cambio de fecha
@@ -357,42 +491,43 @@
     function exportToExcel() {
         // Obtener la tabla por su ID
         const table = document.getElementById('record-table');
-      
+
         // Crear un objeto de libro de Excel
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Datos');
-      
+
         // Recorrer las filas y celdas de la tabla
         const rows = table.querySelectorAll('tr');
         rows.forEach((row, rowIndex) => {
-          const cells = row.querySelectorAll('td, th');
-          cells.forEach((cell, cellIndex) => {
-            // Obtener el contenido de la celda
-            const cellData = cell.innerText;
-            // Agregar el contenido a la hoja de Excel
-            worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
-          });
+            const cells = row.querySelectorAll('td, th');
+            cells.forEach((cell, cellIndex) => {
+                // Obtener el contenido de la celda
+                const cellData = cell.innerText;
+                // Agregar el contenido a la hoja de Excel
+                worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
+            });
         });
-      
+
         // Crear un archivo Excel
         workbook.xlsx.writeBuffer().then((buffer) => {
-          // Convertir el buffer a un blob
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      
-          // Crear un objeto URL para el blob
-          const url = URL.createObjectURL(blob);
-      
-          // Crear un enlace de descarga
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'tabla_estados.xlsx';
-      
-          // Simular un clic en el enlace de descarga
-          link.click();
-      
-          // Liberar el objeto URL
-          URL.revokeObjectURL(url);
+            // Convertir el buffer a un blob
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            // Crear un objeto URL para el blob
+            const url = URL.createObjectURL(blob);
+
+            // Crear un enlace de descarga
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'tabla_citas.xlsx';
+
+            // Simular un clic en el enlace de descarga
+            link.click();
+
+            // Liberar el objeto URL
+            URL.revokeObjectURL(url);
         });
     }
+
 </script>
 {% endblock %}

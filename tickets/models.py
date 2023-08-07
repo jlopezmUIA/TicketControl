@@ -85,6 +85,7 @@ class departamentos(models.Model):
     codigoDepartamento = models.CharField(max_length=60)
     siglasDepartamento = models.CharField(max_length=60)
     tramitesDepartamento = models.BooleanField(default=False)
+    citasDepartamento = models.BooleanField(default=False)
 
 class tramites(models.Model):  
     id_tramites = models.AutoField(primary_key=True)
@@ -102,3 +103,15 @@ class tickets(models.Model):
     tramite = models.CharField(max_length=60)
     fecha = models.CharField(max_length=60)
     atendido = models.BooleanField(default=False)
+
+class citas(models.Model): 
+    id_citas = models.AutoField(primary_key=True)
+    codigo = models.CharField(max_length=60)
+    departamento = models.CharField(max_length=60)
+    nombreAgente = models.CharField(max_length=70)
+    identificacion = models.CharField(max_length=60)
+    nombreCliente = models.CharField(max_length=70)
+    telefono = models.CharField(max_length=60)
+    fecha = models.CharField(max_length=60)
+    hora = models.CharField(max_length=60) 
+    estado = models.CharField(max_length=255, null=True, blank=True)

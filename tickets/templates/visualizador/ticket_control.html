@@ -139,19 +139,6 @@
     
     applyFullscreenStyles();
 
-    const recordTable = document.getElementById('record-table');
-
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-        .then(response => response.text())
-        .then(data => {
-            const parser = new DOMParser();
-            const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-            recordTable.innerHTML = newTable.innerHTML;
-            listareproduccion();
-        });
-    }
-
     function listareproduccion() {
         var url = "/reproductor/";
         var request = new XMLHttpRequest();
@@ -209,7 +196,58 @@
         });
     }
 
-    setInterval(fetchRecords, 1000);
+    var tabla = document.getElementById("record-table");
+    function actualizar_tabla() {
+        var url = "/actualizar-tabla/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+    
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla.insertRow();
+                    fila.className = 'colorfilas';
+                    var celdaCodigo = fila.insertCell();
+                    celdaCodigo.className = 'text-center';
+                    var h1Codigo = document.createElement("h1");
+                    h1Codigo.textContent = registro.codigoCaso;
+                    h1Codigo.className = 'mt-3 mb-3 fw-bold';
+                    h1Codigo.style.fontSize = '45px';
+                    celdaCodigo.appendChild(h1Codigo);
+    
+                    var celdaVentanilla = fila.insertCell();
+                    celdaVentanilla.className = 'text-center';
+                    var h1Ventanilla = document.createElement("h1");
+                    h1Ventanilla.textContent = registro.numeroVentanilla;
+                    h1Ventanilla.className = 'mt-3 mb-3 fw-bold';
+                    h1Ventanilla.style.fontSize = '47px';
+                    celdaVentanilla.appendChild(h1Ventanilla);
+
+                    var celdaDepartamento = fila.insertCell();
+                    celdaDepartamento.className = 'text-center';
+                    var h1Departamento = document.createElement("h1");
+                    h1Departamento.textContent = registro.departamento;
+                    h1Departamento.className = 'mt-3 mb-3 fw-bold';
+                    h1Departamento.style.fontSize = '47px';
+                    celdaDepartamento.appendChild(h1Departamento);
+                });
+                listareproduccion();
+            }
+            else{
+                listareproduccion();
+            }
+            
+        };
+    
+        request.send();
+    }
+
+    setInterval(actualizar_tabla, 1000);
 </script>
 {% endblock %}
 

@@ -1,5 +1,8 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+import requests
+from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
 from .models import agentes, atencion, casosAgente, departamentos, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import date
 
@@ -247,13 +250,17 @@ def save_departamento(request, data):
 def update_departamento(request, data):
     try:
         atencion_obj = departamentos.objects.get(id_departamentos=data['id_departamentos'])
-        agentes_cambio = agentes.objects.filter(departamento=atencion_obj.nombre)
-        agentes_cambio.update(departamento=data['nombre'])
+        if atencion_obj.nombre != data['nombre']:
+            agentes_cambio = agentes.objects.filter(departamento=atencion_obj.nombre)
+            agentes_cambio.update(departamento=data['nombre'])
+            ticket = tickets.objects.filter(departamento=atencion_obj.nombre)
+            ticket.update(departamento=data['nombre'])
         atencion_obj.nombre = data['nombre']
         atencion_obj.alias = data['alias']
         atencion_obj.codigoDepartamento = data['codigoDepartamento']
         atencion_obj.siglasDepartamento = data['siglasDepartamento']
         atencion_obj.tramitesDepartamento = data['tramitesDepartamento']
+        atencion_obj.citasDepartamento = data['citasDepartamento']
         atencion_obj.save()
         return True
     except departamentos.DoesNotExist:
@@ -298,6 +305,9 @@ def save_tramite(request, data):
 def update_tramite(request, data):
     try:
         atencion_obj = tramites.objects.get(id_tramites=data['id_tramites'])
+        if atencion_obj.nombre != data['nombre']:
+            ticket = tickets.objects.filter(tramite=atencion_obj.nombre)
+            ticket.update(tramite=data['nombre'])
         atencion_obj.nombre = data['nombre']
         atencion_obj.codigoTramite = data['codigoTramite']
         atencion_obj.save()
@@ -308,7 +318,14 @@ def update_tramite(request, data):
 def eliminar_tramite(request, data):
     try:
         atencion_obj = tramites.objects.get(id_tramites=data['id_tramites'])
+        depart = atencion_obj.departamento
         atencion_obj.delete()
+
+        deparTramite = tramites.objects.filter(departamento=depart).count()
+        if deparTramite == 0:
+            mod = departamentos.objects.get(nombre=depart.nombre)
+            mod.tramitesDepartamento = False
+            mod.save()
         return True
     except tramites.DoesNotExist:
         return False
@@ -382,3 +399,52 @@ def update_agente(request, data):
     except agentes.DoesNotExist:
         return False
     
+def obtener_datos(request):
+    id = request.GET.get("identificacion")
+    if len(id) == 9:
+        url = 'https://api.hacienda.go.cr/fe/ae?identificacion=' + id
+        response = requests.get(url)
+        data_usuario = json.loads(response.text)
+        if response.status_code != 404 and response.status_code != 500:
+            data_nombre = data_usuario["nombre"]
+        else:
+            data_nombre = None
+        if data_nombre is not None:
+            data = [data_nombre]
+            status2 = 200
+        else:
+            data = []
+            status2 = 404
+
+    elif len(id) >= 10 and len(id) <= 12:
+        url = 'https://api.hacienda.go.cr/fe/ae?identificacion=' + id
+        response = requests.get(url)
+
+        data_usuario = json.loads(response.text)
+        if response.status_code != 404 and response.status_code != 500:
+            data_nombre = data_usuario["nombre"]
+        else:
+            data_nombre = None
+        if data_nombre is not None:
+            data = [data_nombre]
+            status2 = 200
+        else:
+            data = []
+            status2 = 404
+    else:
+        data = []
+        status2 = 404
+
+    data_completa = json.dumps(data)
+    return JsonResponse(data_completa, safe=False, status=status2)
+
+def save_cita(request, data):
+    form = FormularioCitas(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+
+
+

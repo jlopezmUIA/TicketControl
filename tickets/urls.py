@@ -48,7 +48,20 @@ from .views import (
     obtener_todos_departamentos,
     eliminaragente,
     modificaragente,
+
+    control_citas,
+
+    actualizar_tabla,
+
+    nuevacita,
+    nuevacitaagente,
+    obtener_departamentos_cita,
+    actualizar_tabla_departamentos,
+    actualizar_tabla_citas_actuales,
+    actualizar_tabla_citas,
 )
+
+from .savedata import obtener_datos
 from django.contrib.auth.views import LogoutView
 
 # Create your models here.
@@ -104,4 +117,16 @@ urlpatterns = [
     path('obtener-todos-departamentos/', obtener_todos_departamentos, name='obtener_todos_departamentos'),
     path('eliminar-agente/', eliminaragente, name='eliminar_agente'),
     path('modificar-agente/', modificaragente, name='modificar_agente'),
+
+    path('obtener-datos/', obtener_datos, name='obtener_datos'),
+    path('control-citas/', control_citas, name='control_citas'),
+
+    path('actualizar-tabla/', actualizar_tabla, name='actualizar_tabla'),
+
+    path('nueva-cita/', nuevacita, name='nueva_cita'),
+    path('nueva-cita-agente/', nuevacitaagente, name='nueva_cita_agente'),
+    path('obtener-departamentos-cita/', obtener_departamentos_cita, name='obtener_departamentos_cita'),
+    path('actualizar-tabla-departamentos/', actualizar_tabla_departamentos, name='actualizar_tabla_departamentos'),
+    path('actualizar-tabla-citas-actuales/', actualizar_tabla_citas_actuales, name='actualizar_tabla_citas_actuales'),
+    path('actualizar-tabla-citas/', actualizar_tabla_citas, name='actualizar_tabla_citas'),
 ]

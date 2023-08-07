@@ -52,6 +52,7 @@
                             <h5 id="dDepartamento" hidden>{{ departamento.id_departamentos }}</h5>
                             <h5 id="dCodigo" hidden>{{ departamento.codigoDepartamento }}</h5>
                             <h5 id="dSiglas" hidden>{{ departamento.siglasDepartamento }}</h5>
+                            <h5 id="dCitas" hidden>{{ departamento.citasDepartamento }}</h5>
                         </td>
                         <td class="text-center align-middle">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#modal_departamento"
@@ -149,6 +150,10 @@
                                 <input type="text" class="roundedInput form-control" id="siglasDepartamento"
                                     placeholder="Siglas" oninput="convertirMayusculas(this)" name="siglasDepartamento"
                                     required>
+                            </div>
+                            <div class="mb-3 ">
+                                <label class="form-check-label" for="citasDepartamento">Manejo de Citas</label>
+                                <input class="form-check-input" type="checkbox" value="True" id="citasDepartamento" name="citasDepartamento">
                             </div>
                             <br>
                             <div class="d-grid mb-2">
@@ -361,6 +366,7 @@
             var malias = document.getElementById("aliasDepartamento");
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
+            var mcitas = document.getElementById("citasDepartamento");
 
             var btnModalDepartamento = document.getElementById("btnModalDepartamento");
             var formDepartamento = document.getElementById("formDepartamento");
@@ -370,6 +376,7 @@
             mnombre.value = "";
             mcodigo.value = "";
             msiglas.value = "";
+            mcitas.checked = false;
             iddepartamento.value = "";
 
             btnModalDepartamento.innerText = "Registrar Departamento";
@@ -412,12 +419,14 @@
             var dnombre = fila.querySelector('#dNombre').textContent;
             var dcodigo = fila.querySelector('#dCodigo').textContent;
             var dsiglas = fila.querySelector('#dSiglas').textContent;
+            var dcitas = fila.querySelector('#dCitas').textContent;
 
             var iddepartamento = document.getElementById("idDepartamento");
             var mnombre = document.getElementById("nombreDepartamento");
             var malias = document.getElementById("aliasDepartamento");
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
+            var mcitas = document.getElementById("citasDepartamento");
 
             var modal_nuevoagenteTitle = document.getElementById("modal_nuevoagenteTitle");
             var btnModalDepartamento = document.getElementById("btnModalDepartamento");
@@ -427,9 +436,23 @@
             malias.value = dalias;
             mcodigo.value = dcodigo;
             msiglas.value = dsiglas;
+
+            if(dcitas === "True"){
+                mcitas.checked = true;
+            }
+            else{
+                mcitas.checked = false;
+            }
+            
             iddepartamento.value = ddepartamento;
 
             if (accion === 'modificar') {
+                mnombre.disabled = false;
+                malias.disabled = false;
+                mcodigo.disabled = false;
+                msiglas.disabled = false;
+                mcitas.disabled = false;
+
                 btnModalDepartamento.innerText = "Modificar Departamento";
 
                 modalTitulo.innerText = "MODIFICACIÓN DE DEPARTAMENTO";
@@ -437,6 +460,12 @@
                 formDepartamento.action = "{% url 'modificar_departamento' %}";
             }
             else if (accion === 'eliminar') {
+                mnombre.disabled = true;
+                malias.disabled = true;
+                mcodigo.disabled = true;
+                msiglas.disabled = true;
+                mcitas.disabled = true;
+
                 btnModalDepartamento.innerText = "Eliminar Departamento";
 
                 modalTitulo.innerText = "ELIMINACIÓN DE DEPARTAMENTO";
@@ -471,6 +500,9 @@
             labelDepartamento.style.display = 'none';
 
             if (accion === 'modificar') {
+                mnombre.disabled = false;
+                mcodigo.disabled = false;
+
                 btnModalTramite.innerText = "Modificar Trámite";
 
                 modalTituloTramite.innerText = "MODIFICACIÓN DE TRÁMITE";
@@ -478,6 +510,9 @@
                 formTramite.action = "{% url 'modificar_tramite' %}";
             }
             else if (accion === 'eliminar') {
+                mnombre.disabled = true;
+                mcodigo.disabled = true;
+
                 btnModalTramite.innerText = "Eliminar Trámite";
 
                 modalTituloTramite.innerText = "ELIMINACIÓN DE TRÁMITE";

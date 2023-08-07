@@ -35,6 +35,21 @@
                         </div>
                         {% endif %}
                         {% endfor %}
+                        {% if citas %}
+                        {% if par %}
+                        <div class="col-md-6 mb-3">
+                            <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
+                            data-bs-toggle="modal"data-bs-target="#modal_citas" type="button" id="loading-indicator" >
+                                <p style="font-size: 30px;" class="mt-3 mb-3">Cita con Asesor</p></button>
+                        </div>
+                        {% else %}
+                        <div class="col-md-12 mb-3" style="text-align: center;">
+                            <button class="btnStyle w-50 btn btn-lg fw-bold pt-2 pb-2"
+                            data-bs-toggle="modal"data-bs-target="#modal_citas" type="button" id="loading-indicator">
+                                <p style="font-size: 30px;" class="mt-3 mb-3">Cita con Asesor</p></button>
+                        </div>
+                        {% endif %}
+                        {% endif %}
                     <div class="row mt-2" style="justify-content: center;">
                         <img src="{% static 'img/uia_logo.png' %}" onclick="toggleFullScreen()" alt="" style="width: 170px; height: 85px;">
                     </div>
@@ -79,6 +94,39 @@
     </div>
 </div>
 {% endblock modal_tramites %}
+
+<!-- Model de Cambio de data -->
+{% block modal_citas %}
+<div class="modal fade" id="modal_citas" tabindex="-1" aria-labelledby="modal_citasTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">CITAS CON ASESORES</h1>
+                            <p style="text-align: center; font-size: 25px; color: #878787; font-weight: bold;">Seleccioná el asesor con el cual tenés la cita.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <select id="departamento_cita" data-placeholder="Seleccione Departamento"
+                            class="roundedInput form-select" name="departamento" required onchange="cargarAgentes()">
+                        </select>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <select id="agente_select" class="roundedInput form-select" name="agente_select"
+                            data-placeholder="Seleccion Agente">
+                            <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
+                        </select>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_citas %}
 
 <style>
     .modal-dialog.custom-modal-lg {
@@ -226,6 +274,58 @@
                     if (data.hasOwnProperty(key)) {
                         var option = document.createElement("option");
                         option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    window.onload = function () {
+        cargarDepartamentosCita();
+    };
+
+    function cargarDepartamentosCita() {
+        var select2 = document.getElementById("departamento_cita");
+
+        var url = "/obtener-departamentos-cita/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+                cargarAgentes();
+            }
+        };
+        request.send();
+    }
+
+    function cargarAgentes() {
+        var select = document.getElementById("departamento_cita").value;
+        var select2 = document.getElementById("agente_select");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
                         option.text = data[key];
                         select2.add(option);
                     }
