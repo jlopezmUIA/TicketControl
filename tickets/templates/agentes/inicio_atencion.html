@@ -233,7 +233,7 @@
             </div>
             <div class="row ">
                 <h4>Citas Generales</h4>
-                <table id="record-table-generales" class="table table-striped-columns">
+                <table id="record-table-generales" class="table table-hover">
                     <thead>
                         <tr>
                             <th>Cliente</th>
@@ -244,9 +244,12 @@
                     <tbody>
                         {% for cita in citas %}
                         <tr>
-                            <td><p>{{ cita.nombreCliente }}</p></td>
-                            <td><p>{{ cita.fecha }}</p></td>
-                            <td><p>{{ cita.hora }}</p></td>
+                            <td>
+                                <p id="tId" hidden>{{ cita.id_citas }}</p>
+                                <p id="tNombre" >{{ cita.nombreCliente }}</p>
+                            </td>
+                            <td><p id="tFecha" >{{ cita.fecha }}</p></td>
+                            <td><p id="tHora" >{{ cita.hora }}</p></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -285,7 +288,61 @@
 </div>
 {% endblock modal_colas %}
 
+{% block modal_citas %}
+<div class="modal fade" id="modal_citas" tabindex="-1" aria-labelledby="modal_citasTitle"
+    style="display: none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitulo">
+                    GESTOR DE CITA
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <div class="row ">
+                            <div class=" mb-3">
+                                <input type="text" class="roundedInput form-control" id="idCita"
+                                    name="idCita" style="display: none;">
+                                <label for="">Nombre del Asesor:</label>
+                                <input type="text" class="roundedInput form-control" id="cAsesor"
+                                        placeholder="Nombre" name="cAsesor" readonly>
+                            </div>
+                            <div class="mb-3 ">
+                                <label for="">Fecha de Cita:</label>
+                                <input type="date" class="roundedInput form-control" id="cfecha" name="cfecha"
+                                    required>
+                            </div>
+                            <div class="mb-3 ">
+                                <label for="">Hora de Cita:</label>
+                                <input type="time" class="roundedInput form-control" id="chora" name="chora" required>
+                            </div>
+                            <br>
+                            <div class="d-flex justify-content-between mb-2">
+                                <button type="button" class="btn btnStyle fw-bold"
+                                    id="btnModalCita" onclick="modificarcita()">Modificar Cita</button>
+
+                                <button type="button" class="btn btnStyle fw-bold"
+                                    id="btnModalCita" onclick="eliminarcita()">Eliminar Cita</button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_citas %}
+
 <style>
+    .modal-header {
+        background-color: #000000;
+        color: white;
+    }
     .dropdown-menu li {
         position: relative;
     }
@@ -347,8 +404,6 @@
     window.onload = function () {
         estados();
         actualizar_tabla();
-        actualizar_tabla_citas_actuales();
-        actualizar_tabla_citas_dia();
     };
 
     function crearcita() {
@@ -394,6 +449,8 @@
             div_vercita.style.display = 'block';
             div_crearcita.style.display = 'none';
         }
+        actualizar_tabla_citas_actuales();
+        actualizar_tabla_citas_dia();
     }
 
     function datacedula() {
@@ -700,7 +757,7 @@
                     var fila = tabla_generales.insertRow();
 
                     var cliente = fila.insertCell();
-                    cliente.className = '';
+                    cliente.className = 'table-hover';
                     var pCliente = document.createElement("p");
                     pCliente.textContent = registro.nombreCliente;
                     pCliente.className = '';
@@ -708,7 +765,7 @@
                     cliente.appendChild(pCliente);
     
                     var fecha = fila.insertCell();
-                    fecha.className = '';
+                    fecha.className = 'table-hover';
                     var pFecha = document.createElement("p");
                     pFecha.textContent = registro.fecha;
                     pFecha.className = '';
@@ -716,18 +773,30 @@
                     fecha.appendChild(pFecha);
 
                     var hora = fila.insertCell();
-                    hora.className = '';
+                    hora.className = 'table-hover';
                     var pHora = document.createElement("p");
                     pHora.textContent = registro.hora;
                     pHora.className = '';
                     pHora.style.fontSize = '';
                     hora.appendChild(pHora);
 
+                    fila.addEventListener("click", function () {
+                        var id = document.getElementById('idCita');
+                        var nombre = document.getElementById('cAsesor');
+                        var fecha = document.getElementById('cfecha');
+                        var hora = document.getElementById('chora');
+
+                        id.value = registro.id_citas;
+                        nombre.value = registro.nombreCliente;
+                        fecha.value = registro.fecha;
+                        hora.value = registro.hora;
+                            
+                        $("#modal_citas").modal("show");
+                    });
                 });
             }
             
         };
-    
         request.send();
     }
 
@@ -775,11 +844,6 @@
         numeroSiguiente();
         actualizar_tabla();
     }, 1000);
-
-    setInterval(function() {
-        actualizar_tabla_citas_actuales();
-        actualizar_tabla_citas_dia();
-    }, 10000);
 
     var offcanvasElement = document.getElementById('offcanvasExample2');
     offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
@@ -835,5 +899,53 @@
         document.getElementById('record-table-generales_length').style.display = 'none';
         document.getElementById('record-table-generales_info').style.display = 'none';
     });
+
+
+    function modificarcita() {
+        var id = document.getElementById("idCita");
+        var fecha = document.getElementById("cfecha");
+        var hora = document.getElementById("chora");
+        var url = "/modificar-cita/?id=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(id.value) + "&fecha=" + encodeURIComponent(fecha.value) 
+        + "&hora=" + encodeURIComponent(hora.value), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                id.value = "";
+                fecha.value = "";
+                hora.value = "";
+                $('#offcanvasExample2').offcanvas('hide');
+                $("#modal_citas").modal("hide");
+            }
+            else{
+                pAviso.style.display = 'block';
+                console.log('error');
+            }
+        };
+        request.send();
+
+    }
+
+    function eliminarcita() {
+        var id = document.getElementById("idCita");
+        var url = "/eliminar-cita/?id=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(id.value), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                id.value = "";
+                $('#offcanvasExample2').offcanvas('hide');
+                $("#modal_citas").modal("hide");
+            }
+            else{
+                pAviso.style.display = 'block';
+                console.log('error');
+            }
+        };
+        request.send();
+
+    }
 </script>
 {% endblock %}

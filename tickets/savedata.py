@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
 from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
-from .models import agentes, atencion, casosAgente, departamentos, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import date
 
 def save_configuration(request, visualizador_id, campo, nuevo_valor):
@@ -450,5 +450,20 @@ def save_cita(request, data):
     else:
         return False
 
+def eliminar_cita(id_cita):
+    try:
+        atencion_obj = citas.objects.get(id_citas=id_cita)
+        atencion_obj.delete()
+        return True
+    except citas.DoesNotExist:
+        return False
 
-
+def update_cita(request, data):
+    try:
+        atencion_obj = citas.objects.get(id_citas=data['id_cita'])
+        atencion_obj.fecha = data['fecha']
+        atencion_obj.hora = data['hora']
+        atencion_obj.save()
+        return True
+    except citas.DoesNotExist:
+        return False

@@ -63,6 +63,9 @@ from .views import (
 
     terminar_ticket,
     siguiente_ticket,
+
+    modificarcita,
+    eliminarcita,
 )
 
 from .savedata import obtener_datos
@@ -137,4 +140,7 @@ urlpatterns = [
 
     path('terminar-ticket/', terminar_ticket, name='terminar_ticket'),
     path('siguiente-ticket/', siguiente_ticket, name='siguiente_ticket'),
+
+    path('modificar-cita/', modificarcita, name='modificar_cita'),
+    path('eliminar-cita/', eliminarcita, name='eliminar_cita'),
 ]

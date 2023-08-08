@@ -15,7 +15,7 @@ import threading
 from .impresion import imprimir
 from django.db.models import F
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+from tickets.savedata import delete_agente, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def home(request):
     request.session.flush() 
@@ -799,6 +799,9 @@ def modificardepartamento(request):
     siglasdepartamento = request.POST.get('siglasDepartamento')
     citasDepartamento = request.POST.get('citasDepartamento')
 
+    if citasDepartamento is None:
+        citasDepartamento = False
+
     departamentoSelected = departamentos.objects.get(id_departamentos=iddepartamento)
 
     data = {
@@ -1080,6 +1083,32 @@ def nuevacitaagente(request):
     }
     return JsonResponse(dict, safe=False, status=status)
 
+def modificarcita(request):
+    dict = {}
+    status = 200
+    id = request.GET.get('id')
+    fecha = request.GET.get('fecha')
+    hora = request.GET.get('hora')
+
+    data = {
+        'id_cita': id,
+        'fecha': fecha,
+        'hora': hora
+    }
+
+    save = update_cita(request, data)
+
+    return JsonResponse(dict, safe=False, status=status)
+
+def eliminarcita(request):
+    dict = {}
+    status = 200
+    id = request.GET.get('id')
+
+    save = eliminar_cita(id)
+
+    return JsonResponse(dict, safe=False, status=status)
+
 def obtener_departamentos_cita(request):
     departamentos_dict = {}
     departamentos_queryset = departamentos.objects.filter(citasDepartamento=True)
@@ -1136,15 +1165,17 @@ def actualizar_tabla_citas_actuales(request):
 
     dict = {}
     if departamento.citasDepartamento:
-        cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente)
+        cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente).order_by('-fecha')
         citas_filtradas = []
         for cita in cita_obt:
             cita_fecha = datetime.strptime(cita.fecha, "%Y-%m-%d").date()
             if cita_fecha >= fecha:
                 citas_filtrada = {
-                    'nombreCliente': cita.nombreAgente,
+                    'id_citas': cita.id_citas,
+                    'nombreCliente': cita.nombreCliente,
                     'fecha': cita.fecha,
-                    'hora': cita.hora
+                    'hora': cita.hora,
+                    'estado':cita.estado
                 }
                 citas_filtradas.append(citas_filtrada)
     

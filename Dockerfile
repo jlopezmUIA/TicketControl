@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 COPY ./ ./
 
 # Ejecuta el comando para iniciar el servidor Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN ["python", "manage.py", "makemigrations"]
