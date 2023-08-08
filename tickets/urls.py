@@ -59,6 +59,10 @@ from .views import (
     actualizar_tabla_departamentos,
     actualizar_tabla_citas_actuales,
     actualizar_tabla_citas,
+    crear_ticket_cita,
+
+    terminar_ticket,
+    siguiente_ticket,
 )
 
 from .savedata import obtener_datos
@@ -129,4 +133,8 @@ urlpatterns = [
     path('actualizar-tabla-departamentos/', actualizar_tabla_departamentos, name='actualizar_tabla_departamentos'),
     path('actualizar-tabla-citas-actuales/', actualizar_tabla_citas_actuales, name='actualizar_tabla_citas_actuales'),
     path('actualizar-tabla-citas/', actualizar_tabla_citas, name='actualizar_tabla_citas'),
+    path('crear-ticket-cita/', crear_ticket_cita, name='crear_ticket_cita'),
+
+    path('terminar-ticket/', terminar_ticket, name='terminar_ticket'),
+    path('siguiente-ticket/', siguiente_ticket, name='siguiente_ticket'),
 ]

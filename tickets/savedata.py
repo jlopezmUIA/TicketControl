@@ -340,12 +340,16 @@ def save_ticket(request, data):
     
 def obtener_primero_dato(departamentoNombre, tramiteNombre):
     try:
+        cita = departamentos.objects.get(nombre=departamentoNombre)
         fecha_actual = date.today().strftime('%Y-%m-%d')
         if tramiteNombre == 'N/A':
             ultimo_dato = tickets.objects.filter(atendido=False, fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
             return ultimo_dato
         else:
             tramiteNombre = tramiteNombre.split(",")
+            if cita.citasDepartamento:
+                tramiteNombre.append('Cita')
+                
             ultimo_dato = None
 
             for tramite in tramiteNombre:

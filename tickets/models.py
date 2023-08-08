@@ -115,3 +115,4 @@ class citas(models.Model):
     fecha = models.CharField(max_length=60)
     hora = models.CharField(max_length=60) 
     estado = models.CharField(max_length=255, null=True, blank=True)
+

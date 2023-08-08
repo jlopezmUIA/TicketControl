@@ -1,5 +1,6 @@
 import base64
 import json
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -38,6 +39,8 @@ class Logueo(FormView):
             login(self.request, user)
             if user.username == 'mercadeo':
                 return redirect('configuracion')
+            elif user.username == 'recepcion':
+                return redirect('control_citas')
             else:
                 return redirect('admin_side')
         else:
@@ -259,6 +262,10 @@ def atencion_agentes(request):
     fecha_actual = date.today().strftime('%Y-%m-%d')
     fecha = datetime.now().date()
     cola = obtener_cola(agente_id)
+
+    request.session['cita'] = False
+    request.session['cliente'] = 'N/C'
+
     if 'departamentoAgente' in request.session:
         depart = request.session.get('departamentoAgente')
         departamento = departamentos.objects.get(nombre=depart)
@@ -274,7 +281,7 @@ def atencion_agentes(request):
             dict[tr.nombre] = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
         
         if departamento.citasDepartamento:
-            cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente)
+            cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente).order_by('-fecha')
             citas_filtradas = []
             for cita in cita_obt:
                 cita_fecha = datetime.strptime(cita.fecha, "%Y-%m-%d").date()
@@ -288,7 +295,7 @@ def atencion_agentes(request):
         dict = {}
         dict[departamento.nombre] = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
         if departamento.citasDepartamento:
-            cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente)
+            cita_obt = citas.objects.filter(nombreAgente=agente.nombreAgente).order_by('-fecha')
             citas_filtradas = []
             for cita in cita_obt:
                 cita_fecha = datetime.strptime(cita.fecha, "%Y-%m-%d").date()
@@ -357,6 +364,8 @@ def estados_reporte(request):
     return JsonResponse(data_completa, safe=False)
 
 def numero_agente(request):
+    data = {}
+    status=302
     cola = obtener_cola(request.session.get('id_agente'))
     ventanilla = obtener_ventanilla(request.session.get('id_agente'))
     departamento = obtener_departamento(request.session.get('id_agente'))
@@ -369,61 +378,136 @@ def numero_agente(request):
     agente_departamento  = agentes.objects.get(id_agente=request.session.get('id_agente'))
     deparData = departamentos.objects.get(nombre=agente_departamento.departamento)
 
-    if deparData.tramitesDepartamento:
-        numero = obtener_primero_dato(deparData.nombre, cola)
-    else: 
-        numero = obtener_primero_dato(deparData.nombre, 'N/A')
+    nuevo =  request.session.get('cliente')
 
-    if "000" in numero.codigo:
-        data = {'codigo': 'N/C'}
+    if deparData.citasDepartamento:
+        try:
+            cita = citas.objects.exclude(codigo='').get(
+                fecha=fecha_actual,
+                departamento=deparData.nombre,
+                estado='Recibido'
+            )
+            if cita is not None:
+                ticketCita = tickets.objects.get(fecha=fecha_actual, codigo=cita.codigo, atendido=False)
+                citaNueva = True
+                
+        except ObjectDoesNotExist:
+            citaNueva = False
     else:
-        data = {'codigo': numero.codigo}
-        marcar_ticket(numero.pk)
-        caso = True
+        citaNueva = False
 
-    if caso:
-        data_caso = {
-            'agente': request.session.get('id_agente'),
-            'codigoCaso': numero.codigo,
-            'fecha': str(fecha_actual),
-            'tiempoInicio': str(hora_actual_str),
-            'tiempoFinal': None
-        }
-        data_ticket = {
-            'codigoCaso': numero.codigo,
-            'numeroVentanilla': ventanilla,
-            'departamento': departamento,
-            'fecha': str(fecha_actual)
-        }
+    if citaNueva:
+        if cita.estado == 'Recibido' and cita.nombreAgente != 'N/A':
+            data_caso = {
+                'agente': request.session.get('id_agente'),
+                'codigoCaso': cita.codigo,
+                'fecha': str(fecha_actual),
+                'tiempoInicio': str(hora_actual_str),
+                'tiempoFinal': None
+            }
 
-        if 'idtiempo' in request.session:
-            save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
-            del request.session['idtiempo']
             idtiempo = save_tiempos_agente(request, data_caso)
             request.session['idtiempo'] = idtiempo.id_tiemposagente
+            request.session.save()
+
+            ticket = tickets.objects.get(codigo=cita.codigo, fecha=fecha_actual)
+
+            request.session['cliente'] = ticket.pk
+            request.session.save()
+
+            status=200
+
+            data = {'codigo': cita.codigo}
+            marcar_ticket(ticket.pk)
+
+            cita.estado = 'Completado'
+            cita.save()
+
+            if 'idcasos' in request.session:
+                save = update_casos_agente(
+                    request, request.session.get('idcasos'), "caso")
+
+    if nuevo == 'N/D':
+
+        if deparData.tramitesDepartamento:
+            numero = obtener_primero_dato(deparData.nombre, cola)
+        else: 
+            numero = obtener_primero_dato(deparData.nombre, 'N/A')
+
+        if "000" in numero.codigo:
+            data = {'codigo': 'N/C'}
+            request.session['cliente'] = 'N/C'
+            request.session.save()
         else:
+            data = {'codigo': numero.codigo}
+            marcar_ticket(numero.pk)
+            if numero.tramite == 'Cita':
+                cita = citas.objects.get(codigo=numero.codigo, estado='Asesor no disponible')
+                cita.estado = 'Recibido de otro asesor'
+                cita.nombreAgente = agente_departamento.nombreAgente
+                cita.save()
+            caso = True
+
+        if caso:
+            data_caso = {
+                'agente': request.session.get('id_agente'),
+                'codigoCaso': numero.codigo,
+                'fecha': str(fecha_actual),
+                'tiempoInicio': str(hora_actual_str),
+                'tiempoFinal': None
+            }
+            data_ticket = {
+                'codigoCaso': numero.codigo,
+                'numeroVentanilla': ventanilla,
+                'departamento': departamento,
+                'fecha': str(fecha_actual)
+            }
+
             idtiempo = save_tiempos_agente(request, data_caso)
             request.session['idtiempo'] = idtiempo.id_tiemposagente
 
-        request.session['cliente'] = numero.pk
+            request.session['cliente'] = numero.pk
+            request.session.save()
 
-        save_ticket = save_ticketcontrol(request, data_ticket)
+            save_ticket = save_ticketcontrol(request, data_ticket)
 
-        if 'idcasos' in request.session:
-            save = update_casos_agente(
-                request, request.session.get('idcasos'), "caso")
-    else:
-        if 'idtiempo' in request.session:
-            save = update_tiempos_agente(
-                request, request.session.get('idtiempo'), str(hora_actual_str))
-            del request.session['idtiempo']
+            status=200
 
-    return JsonResponse(data, safe=False)
+            if 'idcasos' in request.session:
+                save = update_casos_agente(
+                    request, request.session.get('idcasos'), "caso")
+
+    return JsonResponse(data, safe=False, status=status)
+
+def siguiente_ticket(request):
+    data = {}
+    del request.session['cliente']
+    request.session['cliente'] = 'N/D'
+    request.session.save()
+    return JsonResponse(data, status=200, safe=False)
+
+def terminar_ticket(request):
+    data = {}
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
+
+    if 'idtiempo' in request.session:
+        save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
+        del request.session['idtiempo']
+
+    request.session['cliente'] = 'N/A'
+    request.session.save()
+
+    return JsonResponse(data, status=200, safe=False)
 
 def transferencia(request):
     departamento = request.GET.get("departamento")
     codigo = request.session.get('cliente')
     fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    request.session['cliente'] = 'N/A'
+    request.session.save()
 
     departamento = departamento.split('/')
 
@@ -910,7 +994,7 @@ def modificaragente(request):
 
 @login_required
 def control_citas(request):
-    records = citas.objects.all()
+    records = citas.objects.all().order_by('-fecha')
     return render(request, 'administracion/citas.html', {'records': records})
 
 @login_required
@@ -1018,6 +1102,13 @@ def actualizar_tabla_departamentos(request):
         tabular_records = []
         for tr in tramite:
             cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
+            cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual).count() 
+            if cant_cita > 0:
+                tabular_record_citas = {
+                    'nombreDepartamento':'Citas',
+                    'cantidad': cant_cita
+                }
+                tabular_records.append(tabular_record_citas)
             if cant > 0:
                 tabular_record = {
                     'nombreDepartamento':tr.nombre,
@@ -1085,3 +1176,82 @@ def actualizar_tabla_citas(request):
     
     dict['tabla'] = citas_filtradas
     return JsonResponse(dict, safe=False, status=200)
+
+def crear_ticket_cita(request):
+    dato = request.GET.get("departamento")
+    identificacion = request.GET.get("identificacion")
+
+    departamentoData = departamentos.objects.get(id_departamentos=dato)
+
+    ultimoTicket = obtener_ultimo_dato(departamentoData.nombre, 'N/A')
+    codigo = ultimoTicket.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data = {
+        'codigo': departamentoData.codigoDepartamento+'-'+numero_siguiente,
+        'departamento': departamentoData.nombre,
+        'tramite': 'Cita',
+        'fecha': fecha_actual,
+        'atentido': False
+    }
+    save_ticket(request, data)
+    codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
+    departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
+    
+    try:
+        cita = citas.objects.get(identificacion=identificacion, fecha=fecha_actual, estado='Pendiente')
+        agente = agentes.objects.get(nombreAgente=cita.nombreAgente)
+        info = atencion.objects.get(agente=agente.pk)
+        estado = estadosAgente.objects.filter(agente=agente.pk, fecha=fecha_actual).last()
+        data_ticket = {
+            'codigoCaso': codigo,
+            'numeroVentanilla': info.numeroVentanilla,
+            'departamento': departamentoData.siglasDepartamento,
+            'fecha': str(fecha_actual)
+        }
+        if estado.estado == 'Disponible':
+            cita.estado = 'Recibido'
+            cita.codigo = codigo
+            cita.save()
+        
+            imprimir(codigo, departamento)
+            save_ticket_control = save_ticketcontrol(request, data_ticket)
+        else:
+            cita.estado = 'Asesor no disponible'
+            cita.codigo = codigo
+            cita.nombreAgente = 'N/A'
+            cita.save()
+            imprimir(codigo, departamento) 
+    except:
+        cita = citas.objects.get(identificacion=identificacion, estado='Pendiente')
+        agente = agentes.objects.get(nombreAgente=cita.nombreAgente)
+        info = atencion.objects.get(agente=agente.pk)
+        estado = estadosAgente.objects.filter(agente=agente.pk, fecha=fecha_actual).last()
+        data_ticket = {
+            'codigoCaso': codigo,
+            'numeroVentanilla': info.numeroVentanilla,
+            'departamento': departamentoData.siglasDepartamento,
+            'fecha': str(fecha_actual)
+        }
+        if estado.estado == 'Disponible':
+            cita.estado = 'Recibido'
+            cita.codigo = codigo
+            cita.fecha = fecha_actual
+            cita.save()
+        
+            imprimir(codigo, departamento)
+            save_ticket_control = save_ticketcontrol(request, data_ticket)
+        else:
+            cita.estado = 'Asesor no disponible'
+            cita.codigo = codigo
+            cita.nombreAgente = 'N/A'
+            cita.fecha = fecha_actual
+            cita.save()
+            imprimir(codigo, departamento)
+
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)

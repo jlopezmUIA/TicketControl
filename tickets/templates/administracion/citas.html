@@ -59,12 +59,19 @@
                             <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal"
                                 data-bs-target="#modal_cita" onclick="cargarDepartamentosCita();">Crear Nueva
                                 Cita</button>
+
+                            <button type="button" class="btn btn-outline-dark mb-2"
+                            onclick="exportToExcel();">Exportar a Excel</button>
+
                             <table id="record-table" style="height: 100px;"
                                 class="table table-borderless table-hover table-fixed-height">
                                 <thead class="table-dark1">
                                     <tr>
                                         <th>
                                             <h5 id="" class="mt-2 text-center fw-bold">FECHA</h5>
+                                        </th>
+                                        <th>
+                                            <h5 id="" class="mt-2 text-center fw-bold">IDENTIFICACION</h5>
                                         </th>
                                         <th>
                                             <h5 id="" class="mt-2 text-center fw-bold">NOMBRE DEL CLIENTE</h5>
@@ -87,6 +94,9 @@
                                             <h5 id="cId" hidden>{{ record.id_citas }}</h5>
                                             <h5 id="cCodigo" hidden>{{ record.codigo }}</h5>
                                             <h5 id="cFecha">{{ record.fecha }}</h5>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <h5 id="cIdentificacion">{{ record.identificacion }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
                                             <h5 id="cCliente">{{ record.nombreCliente }}</h5>
@@ -161,7 +171,7 @@
                                 </div>
                                 <div class="mb-3 ">
                                     <label for="">Hora de Cita</label>
-                                    <input type="time" class="roundedInput form-control" id="hora" name="hora" required>
+                                    <input type="time" class="roundedInput form-control" step="900" id="hora" name="hora" required>
                                 </div>
                             </div>
                             <br>
@@ -431,7 +441,7 @@
             });
     }
 
-    setInterval(fetchRecords, 15000); 
+    setInterval(fetchRecords, 30000); 
 
     // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
