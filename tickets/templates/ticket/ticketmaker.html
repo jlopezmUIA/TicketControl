@@ -11,7 +11,7 @@
                 <main class="form-signin">
                     <div class="row">
                         {% for departamento in departamentos %}
-                        {% if forloop.last and par %}
+                        {% if forloop.last and par and citas == False %}
                         <div class="col-md-12 mb-3" style="text-align: center;">
                                 <button class="btnStyle w-50 btn btn-lg fw-bold pt-2 pb-2"
                                 type="button" id="loading-indicator" 
@@ -38,13 +38,13 @@
                         {% if citas %}
                         {% if par %}
                         <div class="col-md-6 mb-3">
-                            <button class="btnStyle w-100 btn btn-lg fw-bold pt-2 pb-2"
+                            <button class="btnStyleCita w-100 btn btn-lg fw-bold pt-2 pb-2"
                             data-bs-toggle="modal"data-bs-target="#modal_citas" type="button" id="loading-indicator" >
                                 <p style="font-size: 30px;" class="mt-3 mb-3">Cita con Asesor</p></button>
                         </div>
                         {% else %}
                         <div class="col-md-12 mb-3" style="text-align: center;">
-                            <button class="btnStyle w-50 btn btn-lg fw-bold pt-2 pb-2"
+                            <button class="btnStyleCita w-50 btn btn-lg fw-bold pt-2 pb-2"
                             data-bs-toggle="modal"data-bs-target="#modal_citas" type="button" id="loading-indicator">
                                 <p style="font-size: 30px;" class="mt-3 mb-3">Cita con Asesor</p></button>
                         </div>
@@ -116,9 +116,10 @@
                         </select>
                     </div>
                     <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <label id="labelIdent" style="color: red; font-size: 20px; text-align: center; font-weight: bold; display: none;">No existen citas pendientes con este número de identificación.</label>
                         <input type="text" class="roundedInput form-control" id="identificacion"
                             placeholder="Digitá tu número de identificación" name="identificacion" onkeyup="datacedula()"
-                            required>
+                            required oninput="normalizar()">
                     </div>
                     <div class="row mb-3" style="align-items: center; justify-content: center;">
                         <button class="btnStyle2 btn btn-lg fw-bold pt-1 pb-1 mb-5 mt-1"
@@ -164,6 +165,18 @@
         border-radius: 30px;
         border-color: #000000;
         font-size: 15px;
+    }
+    .btnStyleCita {
+        background-color: #005151  ;
+        color: #ffffff;
+        border-radius: 30px;
+        border-color: #005151  ;
+        font-size: 15px;
+    }
+    .btnStyleCita:hover{
+        background-color: #005151;
+        color: #ffd142;
+        border-color: #005151;
     }
     .btnStyle:hover, .btnStyle2:hover {
         background-color: #000000;
@@ -236,9 +249,18 @@
         }
     }
 
+    function normalizar(){
+        var ident = document.getElementById("identificacion")
+        var label = document.getElementById("labelIdent")
+        ident.classList.remove('is-invalid');
+        label.style.display = 'none';
+
+    }
+
     function crear_ticket_cita() {
         var select = document.getElementById("departamento_cita").value;
         var ident = document.getElementById("identificacion")
+        var label = document.getElementById("labelIdent")
         var identificacion = document.getElementById("identificacion").value;
         var url = "/crear-ticket-cita/?departamento=";
         var request = new XMLHttpRequest();
@@ -248,6 +270,10 @@
                 var data = JSON.parse(request.responseText);
                 $('#modal_citas').modal('hide');
                 ident.value = '';
+            }
+            else if (request.status === 302){
+                ident.className = 'roundedInput form-control is-invalid';
+                label.style.display = 'block';
             }
         };
         request.send();

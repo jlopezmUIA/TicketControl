@@ -1131,7 +1131,7 @@ def actualizar_tabla_departamentos(request):
         tabular_records = []
         for tr in tramite:
             cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
-            cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual).count() 
+            cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
             if cant_cita > 0:
                 tabular_record_citas = {
                     'nombreDepartamento':'Citas',
@@ -1199,7 +1199,7 @@ def actualizar_tabla_citas(request):
             cita_fecha = datetime.strptime(cita.fecha, "%Y-%m-%d").date()
             if cita_fecha == fecha:
                 citas_filtrada = {
-                    'nombreCliente': cita.nombreAgente,
+                    'nombreCliente': cita.nombreCliente,
                     'fecha': cita.fecha,
                     'hora': cita.hora
                 }
@@ -1218,6 +1218,8 @@ def crear_ticket_cita(request):
     codigo = ultimoTicket.split('-')
     numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
     fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    status=200
 
     data = {
         'codigo': departamentoData.codigoDepartamento+'-'+numero_siguiente,
@@ -1255,34 +1257,37 @@ def crear_ticket_cita(request):
             cita.save()
             imprimir(codigo, departamento) 
     except:
-        cita = citas.objects.get(identificacion=identificacion, estado='Pendiente')
-        agente = agentes.objects.get(nombreAgente=cita.nombreAgente)
-        info = atencion.objects.get(agente=agente.pk)
-        estado = estadosAgente.objects.filter(agente=agente.pk, fecha=fecha_actual).last()
-        data_ticket = {
-            'codigoCaso': codigo,
-            'numeroVentanilla': info.numeroVentanilla,
-            'departamento': departamentoData.siglasDepartamento,
-            'fecha': str(fecha_actual)
-        }
-        if estado.estado == 'Disponible':
-            cita.estado = 'Recibido'
-            cita.codigo = codigo
-            cita.fecha = fecha_actual
-            cita.save()
-        
-            imprimir(codigo, departamento)
-            save_ticket_control = save_ticketcontrol(request, data_ticket)
-        else:
-            cita.estado = 'Asesor no disponible'
-            cita.codigo = codigo
-            cita.nombreAgente = 'N/A'
-            cita.fecha = fecha_actual
-            cita.save()
-            imprimir(codigo, departamento)
+        try:
+            cita = citas.objects.get(identificacion=identificacion, estado='Pendiente')
+            agente = agentes.objects.get(nombreAgente=cita.nombreAgente)
+            info = atencion.objects.get(agente=agente.pk)
+            estado = estadosAgente.objects.filter(agente=agente.pk, fecha=fecha_actual).last()
+            data_ticket = {
+                'codigoCaso': codigo,
+                'numeroVentanilla': info.numeroVentanilla,
+                'departamento': departamentoData.siglasDepartamento,
+                'fecha': str(fecha_actual)
+            }
+            if estado.estado == 'Disponible':
+                cita.estado = 'Recibido'
+                cita.codigo = codigo
+                cita.fecha = fecha_actual
+                cita.save()
+            
+                imprimir(codigo, departamento)
+                save_ticket_control = save_ticketcontrol(request, data_ticket)
+            else:
+                cita.estado = 'Asesor no disponible'
+                cita.codigo = codigo
+                cita.nombreAgente = 'N/A'
+                cita.fecha = fecha_actual
+                cita.save()
+                imprimir(codigo, departamento)
+        except:
+            status=302
 
     dic = {
         'success': True
     }
 
-    return JsonResponse(dic, safe=False)
+    return JsonResponse(dic, safe=False, status=status)
