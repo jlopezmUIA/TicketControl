@@ -1009,7 +1009,7 @@ def nuevacita(request):
     fecha = request.POST.get('fecha')
     hora = request.POST.get('hora')
 
-    departamentoSelected = departamentos.objects.get(nombre=departamento_cita)
+    departamentoSelected = departamentos.objects.get(alias=departamento_cita)
 
     cita = citas.objects.filter(fecha=fecha, hora=hora, departamento=departamentoSelected.nombre)
     agente = agentes.objects.filter(departamento=departamentoSelected.nombre)
@@ -1114,7 +1114,7 @@ def obtener_departamentos_cita(request):
     departamentos_queryset = departamentos.objects.filter(citasDepartamento=True)
 
     for departamento in departamentos_queryset:
-        departamentos_dict[departamento.id_departamentos] = departamento.nombre
+        departamentos_dict[departamento.id_departamentos] = departamento.alias
 
     return JsonResponse(departamentos_dict, safe=False)
 
