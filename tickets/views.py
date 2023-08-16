@@ -1052,7 +1052,7 @@ def crear_ticket(request):
         departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
     else:
         data = {
-            'codigo': departamentoData.codigoDepartamento+'-'+numero_siguiente,
+            'codigo': tramitesData.codigoTramite+'-'+numero_siguiente,
             'departamento': departamentoData.nombre,
             'tramite': tramite,
             'fecha': fecha_actual,
@@ -1060,8 +1060,8 @@ def crear_ticket(request):
             'estado': 'N/A'
         }
         save_ticket(request, data)
-        codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
-        departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre+' - '+tramitesData.nombre
+        codigo = tramitesData.codigoTramite+'-'+numero_siguiente
+        departamento = tramitesData.codigoTramite+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre+' - '+tramitesData.nombre
 
     imprimir(codigo, departamento)
     dic = {

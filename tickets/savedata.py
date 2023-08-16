@@ -374,7 +374,7 @@ def obtener_ultimo_dato(departamentoNombre, tramiteNombre):
         if tramiteNombre == 'N/A':
             ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
         else:
-            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
+            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre, tramite=tramiteNombre).latest('id_ticket')
 
         pr = ultimo_dato.codigo.split('-')
         if pr[1] == "999":
