@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i069jc(7$e$yb^m3t9w$w@%3le-_*r$*=1h+t@5pf=+pqi@3k2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['example.com','localhost','192.168.8.203', '127.0.0.1']
+ALLOWED_HOSTS = ['example.com','localhost','192.168.8.209', '127.0.0.1']
 
 
 # Application definition
@@ -81,10 +81,10 @@ ASGI_APPLICATION = 'TicketsControl.routing.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'TicketControl',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '1502',
-        'HOST': 'localhost',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
