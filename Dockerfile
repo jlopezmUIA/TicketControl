@@ -18,3 +18,6 @@ COPY ./ ./
 
 # Ejecuta el comando para iniciar el servidor Django
 RUN ["python", "manage.py", "makemigrations"]
+
+RUN apk add --no-cache tzdata
+ENV TZ=America/Costa_Rica
