@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.models import agentes, citas, departamentos, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from tickets.models import agentes, citas, departamentos, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
@@ -15,7 +15,7 @@ import threading
 from .impresion import imprimir
 from django.db.models import F
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+from tickets.savedata import delete_agente, eliminar_llamado, marcar_estado_ticket, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def home(request):
     request.session.flush() 
@@ -40,7 +40,7 @@ class Logueo(FormView):
             if user.username == 'mercadeo':
                 return redirect('configuracion')
             elif user.username == 'recepcion':
-                return redirect('control_citas')
+                return redirect('recepcion')
             else:
                 return redirect('admin_side')
         else:
@@ -163,6 +163,14 @@ def ticketsagente(request):
     return render(request, 'administracion/ticketsagente.html', {'records':records, 'departamento': departamento, 'ticket': ticket})
 
 @login_required
+def recepcion(request):
+    departamento = departamentos.objects.all()
+    ticket = tickets.objects.all()
+    records = ticketControl.objects.all()
+    cita = citas.objects.all().order_by('-fecha')
+    return render(request, 'administracion/recepcion.html', {'records':records, 'citas':cita, 'departamento': departamento, 'ticket': ticket})
+
+@login_required
 def datosagente(request):
     agente = agentes.objects.all()
     records = tiemposAgente.objects.all()
@@ -226,6 +234,7 @@ def inicio_atencion(request):
             pass
         else:
             request.session['id_agente'] = agente
+            request.session['agente_ventanilla'] = numeroVentanilla
 
         fecha_actual = date.today().strftime('%Y-%m-%d')
 
@@ -236,6 +245,8 @@ def inicio_atencion(request):
             'estadoAtencion': 'Activo'
         }
         request.session['departamentoAgente'] = departamento
+        request.session['cantCitas'] = 0
+        request.session['cantClientes'] = 0
         delete = eliminar_atencion(agente)
         save = save_atencion(request, data_atencion)
 
@@ -388,7 +399,7 @@ def numero_agente(request):
                 estado='Recibido'
             )
             if cita is not None:
-                ticketCita = tickets.objects.get(fecha=fecha_actual, codigo=cita.codigo, atendido=False)
+                ticketCita = tickets.objects.get(fecha=fecha_actual, codigo=cita.codigo, atendido=False, estado='N/A')
                 citaNueva = True
                 
         except ObjectDoesNotExist:
@@ -501,6 +512,25 @@ def terminar_ticket(request):
 
     return JsonResponse(data, status=200, safe=False)
 
+def no_presente(request):
+    data = {}
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
+    
+    idticket = request.session.get('cliente')
+    
+    save = marcar_estado_ticket(idticket)
+
+    if 'idtiempo' in request.session and save:
+        save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
+        del request.session['idtiempo']
+
+    request.session['cliente'] = 'N/A'
+    request.session.save()
+
+    return JsonResponse(data, status=200, safe=False)
+
 def transferencia(request):
     departamento = request.GET.get("departamento")
     codigo = request.session.get('cliente')
@@ -537,7 +567,7 @@ def transferencia(request):
 def ticketcontrol(request):
     fecha_actual = date.today().strftime('%Y-%m-%d')
     registro = visualizador.objects.first() 
-    records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:5]
+    records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:6]
     noticia = registro.text
     tipovisual = registro.tipo_visor
 
@@ -559,7 +589,26 @@ def actualizar_tabla(request):
         global previous_thread
         recordscant = ticketControl.objects.count()
         cantrecord = request.session.get('cantrecords')
-
+        
+        llamado_cant = llamado.objects.count()
+        
+        if llamado_cant > 0:
+            mi_lista2 = []
+            request.session['listaRC'] = mi_lista2
+            llamado_cliente = llamado.objects.all()
+            for ll_cl in llamado_cliente:
+                request.session['listaRC'].append(ll_cl.texto)
+                eliminar_llamado(ll_cl.pk)
+                
+                # Crear hilo y esperar a que el hilo anterior termine
+                if previous_thread:
+                    previous_thread.join()
+                
+                t = threading.Thread(target=reproductor_cliente, args=(request,))
+                t.start()
+                request.session['estadoRC'] = True
+                previous_thread = t
+        
         if int(recordscant) > cantrecord:
             cantregistro = request.session.get('reproduccion')
             # Cantidad de veces que se ha sobrepasado el valor
@@ -586,7 +635,7 @@ def actualizar_tabla(request):
                 request.session['reproduccion'] = cantregistro
                 request.session['estadoR'] = True
                 
-                records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:5]
+                records = ticketControl.objects.filter(fecha=fecha_actual).order_by('-id_ticketcontrol')[:6]
         
                 # Crear una lista para almacenar los registros en formato tabular
                 tabular_records = []
@@ -638,6 +687,50 @@ def reproductor(request):
 
     return JsonResponse(dic, safe=False)
 
+def reproductor_cliente(request):
+    dic = {}
+    list = request.session.get('listaRC', [])
+    status = request.session.get('estadoRC')
+    if status:
+        dic = {
+            'estado': True,
+            'list': list
+        }
+    else:
+        dic = {
+            'estado': False,
+            'list': list
+        }
+    request.session['estadoRC'] = False
+    # mi_lista = request.session.get('listaRC', [])
+    # mi_lista.clear()
+    # request.session['listaRC'] = mi_lista
+
+    return JsonResponse(dic, safe=False)
+
+def llamar_ticket(request):
+    dic = {}
+    idagente = request.session.get('id_agente')
+    agente = agentes.objects.get(id_agente=idagente)
+    ventanilla = request.session.get('agente_ventanilla')
+    codigoCliente = request.GET.get('codigo')
+    codigo = str(codigoCliente).split('-')
+    numero = int(codigo[1].lstrip("0"))
+    letras = insertar_comas(codigo[0])
+    
+    texto = letras+", "+str(numero) + ", dirigirse a la Ventanilla número " + ventanilla +" del área de "+ agente.departamento
+    
+    data = {
+        'texto':texto
+    }
+    
+    save = save_llamado(request, data)
+    
+    dic = {
+        'success': False
+    }
+    return JsonResponse(dic, safe=False, status=200)
+
 def cambiar_cola(request):
     cola = request.GET.get("cola")
     agente = request.GET.get("agente")
@@ -668,8 +761,15 @@ def inicio_encuesta(request):
     return redirect('ticket_control_encuesta')
 
 def ticketcontrolEncuesta(request):
-    ventanilla = request.session['ventanillaEncuesta']
-    departamentoAgente = request.session['departamentoEncuesta']
+    ventanilla = request.session.get('ventanillaEncuesta')
+    departamentoAgente = request.session.get('departamentoEncuesta')
+    return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente})
+
+def ticket_encuesta(request):
+    ventanilla = request.session.get('ventanillaEncuesta')
+    departamentoAgente = request.session.get('departamentoEncuesta')
+    
+    status=200
 
     if 'last_ticket_id' in request.session:
         last_ticket_id = request.session.get('last_ticket_id')
@@ -679,7 +779,9 @@ def ticketcontrolEncuesta(request):
             new_last_ticket = ticketControl(pk = 0)
 
         if new_last_ticket.pk == last_ticket_id:
-            return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': 'N/C'})
+            dic = {
+                'codigo': 'N/C'
+            }
         elif new_last_ticket.pk > last_ticket_id:
             times = new_last_ticket.pk - last_ticket_id
             for vfc in range(times):
@@ -687,7 +789,9 @@ def ticketcontrolEncuesta(request):
                 ticket = ticketControl.objects.get(id_ticketcontrol=last_ticket_id)
                 if ticket.numeroVentanilla == ventanilla and ticket.departamento == departamentoAgente:
                     request.session['last_ticket_id'] = new_last_ticket.pk
-                    return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': ticket.codigoCaso})
+                    dic = {
+                        'codigo': ticket.codigoCaso
+                    }
     else:
         try:
             last_ticket_id = ticketControl.objects.latest('id_ticketcontrol')
@@ -695,7 +799,12 @@ def ticketcontrolEncuesta(request):
         except:
             last_ticket_id = 0
             request.session['last_ticket_id'] = last_ticket_id
-        return render(request, 'encuestas/encuesta_visor.html', {'ventanilla': ventanilla, 'departamento': departamentoAgente, 'codigo': 'N/C'})
+            
+        dic = {
+            'codigo': 'N/C'
+        }
+
+    return JsonResponse(dic, safe=False, status=status)
 
 def metricas_guardado(request):
     estado = request.GET.get("estado")
@@ -777,6 +886,7 @@ def nuevodepartamento(request):
     codigodepartamento = request.POST.get('codigoDepartamento')
     siglasdepartamento = request.POST.get('siglasDepartamento')
     citasDepartamento = request.POST.get('citasDepartamento')
+    notiDepartamento = request.POST.get('notiDepartamento')
 
     data_agente = {
         'nombre': nombredepartamento,
@@ -785,6 +895,7 @@ def nuevodepartamento(request):
         'siglasDepartamento': siglasdepartamento,
         'tramitesDepartamento': False,
         'citasDepartamento': citasDepartamento,
+        'notiDepartamento': notiDepartamento
     }
 
     save = save_departamento(request, data_agente)
@@ -798,6 +909,7 @@ def modificardepartamento(request):
     codigodepartamento = request.POST.get('codigoDepartamento')
     siglasdepartamento = request.POST.get('siglasDepartamento')
     citasDepartamento = request.POST.get('citasDepartamento')
+    notiDepartamento = request.POST.get('notiDepartamento')
 
     if citasDepartamento is None:
         citasDepartamento = False
@@ -811,7 +923,8 @@ def modificardepartamento(request):
         'codigoDepartamento': codigodepartamento,
         'siglasDepartamento': siglasdepartamento,
         'tramitesDepartamento': departamentoSelected.tramitesDepartamento,
-        'citasDepartamento': citasDepartamento
+        'citasDepartamento': citasDepartamento,
+        'notiDepartamento': notiDepartamento
     }
 
     save = update_departamento(request, data)
@@ -853,6 +966,7 @@ def nuevotramite(request):
         'siglasDepartamento': departamentoSelected.siglasDepartamento,
         'tramitesDepartamento': True,
         'citasDepartamento': departamentoSelected.citasDepartamento,
+        'notiDepartamento': departamentoSelected.notiDepartamento
     }
 
     saveDepartamento = update_departamento(request, dataDepartamento)
@@ -930,22 +1044,24 @@ def crear_ticket(request):
             'departamento': departamentoData.nombre,
             'tramite': tramite,
             'fecha': fecha_actual,
-            'atentido': False
+            'atentido': False,
+            'estado': 'N/A'
         }
         save_ticket(request, data)
         codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
         departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
     else:
         data = {
-            'codigo': tramitesData.codigoTramite+'-'+numero_siguiente,
+            'codigo': departamentoData.codigoDepartamento+'-'+numero_siguiente,
             'departamento': departamentoData.nombre,
             'tramite': tramite,
             'fecha': fecha_actual,
-            'atentido': False
+            'atentido': False,
+            'estado': 'N/A'
         }
         save_ticket(request, data)
-        codigo = tramitesData.codigoTramite+'-'+numero_siguiente
-        departamento = tramitesData.codigoTramite+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre+' - '+tramitesData.nombre
+        codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
+        departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre+' - '+tramitesData.nombre
 
     imprimir(codigo, departamento)
     dic = {
@@ -1120,7 +1236,10 @@ def obtener_departamentos_cita(request):
 
 def actualizar_tabla_departamentos(request):
     fecha_actual = date.today().strftime('%Y-%m-%d')
-
+    
+    cantCitas = request.session.get('cantCitas')
+    cantClientes = request.session.get('cantClientes')
+    
     if 'departamentoAgente' in request.session:
         depart = request.session.get('departamentoAgente')
         departamento = departamentos.objects.get(nombre=depart)
@@ -1129,30 +1248,56 @@ def actualizar_tabla_departamentos(request):
     tramite = tramites.objects.filter(departamento=departamento.pk)
     if departamento.tramitesDepartamento:
         tabular_records = []
-        for tr in tramite:
-            cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
-            cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+        cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+        cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
+        if cantCitas != cant_cita or cantClientes != cant_cliente:
+            
             if cant_cita > 0:
                 tabular_record_citas = {
                     'nombreDepartamento':'Citas',
                     'cantidad': cant_cita
                 }
                 tabular_records.append(tabular_record_citas)
-            if cant > 0:
-                tabular_record = {
-                    'nombreDepartamento':tr.nombre,
-                    'cantidad': cant
-                }
-                tabular_records.append(tabular_record)
+            
+            for tr in tramite:
+                cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
+                if cant > 0:
+                    tabular_record = {
+                        'nombreDepartamento':tr.nombre,
+                        'cantidad': cant
+                    }
+                    tabular_records.append(tabular_record)
+            
+            if cant_cita < cantCitas:  
+                status=202
+            else:
+                status=200
+                
+            request.session['cantCitas'] = cant_cita
+            
+        else:
+            status=302
     else:
         tabular_records = []
-        tabular_record = {
-            'nombreDepartamento':departamento.nombre,
-            'cantidad': tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
-        }
-        tabular_records.append(tabular_record)
+        cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
+        if cantClientes != cant_cliente:
+            
+            tabular_record = {
+                'nombreDepartamento':departamento.nombre,
+                'cantidad': tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
+            }
+            tabular_records.append(tabular_record)
+            
+            if cant_cliente < cantClientes:  
+                status=202
+            else:
+                status=200
+                
+            request.session['cantClientes'] = cant_cliente
+        else:
+            status=302
     dict['tabla'] = tabular_records
-    return JsonResponse(dict, safe=False, status=200)
+    return JsonResponse(dict, safe=False, status=status)
 
 def actualizar_tabla_citas_actuales(request):
     agente_id = request.session.get('id_agente')
@@ -1226,9 +1371,9 @@ def crear_ticket_cita(request):
         'departamento': departamentoData.nombre,
         'tramite': 'Cita',
         'fecha': fecha_actual,
-        'atentido': False
+        'atentido': False,
+        'estado': 'N/A'
     }
-    save_ticket(request, data)
     codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
     departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
     
@@ -1247,7 +1392,7 @@ def crear_ticket_cita(request):
             cita.estado = 'Recibido'
             cita.codigo = codigo
             cita.save()
-        
+            save_ticket(request, data)
             imprimir(codigo, departamento)
             save_ticket_control = save_ticketcontrol(request, data_ticket)
         else:
@@ -1255,6 +1400,7 @@ def crear_ticket_cita(request):
             cita.codigo = codigo
             cita.nombreAgente = 'N/A'
             cita.save()
+            save_ticket(request, data)
             imprimir(codigo, departamento) 
     except:
         try:
@@ -1273,7 +1419,7 @@ def crear_ticket_cita(request):
                 cita.codigo = codigo
                 cita.fecha = fecha_actual
                 cita.save()
-            
+                save_ticket(request, data)
                 imprimir(codigo, departamento)
                 save_ticket_control = save_ticketcontrol(request, data_ticket)
             else:
@@ -1282,6 +1428,7 @@ def crear_ticket_cita(request):
                 cita.nombreAgente = 'N/A'
                 cita.fecha = fecha_actual
                 cita.save()
+                save_ticket(request, data)
                 imprimir(codigo, departamento)
         except:
             status=302

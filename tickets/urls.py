@@ -63,9 +63,16 @@ from .views import (
 
     terminar_ticket,
     siguiente_ticket,
+    no_presente,
+    llamar_ticket,
 
     modificarcita,
     eliminarcita,
+    
+    ticket_encuesta,
+    reproductor_cliente,
+    
+    recepcion,
 )
 
 from .savedata import obtener_datos
@@ -79,6 +86,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('admin-side/', adminside, name='admin_side'),
     path('reproductor/', reproductor, name='reproductor'),
+    path('reproductor-cliente/', reproductor_cliente, name='reproductor_cliente'),
     path('cambiar-link-text/', cambiar_link_text, name='cambiar_link_text'),
     path('cambiar-imagen/', cambiar_imagen, name='cambiar_imagen'),
     path('cambiar-visual/', cambiar_visual, name='cambiar_visual'),
@@ -140,7 +148,13 @@ urlpatterns = [
 
     path('terminar-ticket/', terminar_ticket, name='terminar_ticket'),
     path('siguiente-ticket/', siguiente_ticket, name='siguiente_ticket'),
+    path('no-presente/', no_presente, name='no_presente'),
+    path('llamar-ticket/', llamar_ticket, name='llamar_ticket'),
 
     path('modificar-cita/', modificarcita, name='modificar_cita'),
     path('eliminar-cita/', eliminarcita, name='eliminar_cita'),
+    
+    path('ticket-encuesta/', ticket_encuesta, name='ticket_encuesta'),
+    
+    path('recepcion/', recepcion, name='recepcion'),
 ]

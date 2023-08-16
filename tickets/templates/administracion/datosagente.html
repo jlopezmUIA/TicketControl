@@ -735,7 +735,6 @@
 
             // Formatear la fecha como "aaaa-mm-dd"
             var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
             if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
                 row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
             } else {

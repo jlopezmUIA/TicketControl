@@ -2,8 +2,8 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
-from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioLlamado, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, llamado, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import date
 
 def save_configuration(request, visualizador_id, campo, nuevo_valor):
@@ -261,6 +261,7 @@ def update_departamento(request, data):
         atencion_obj.siglasDepartamento = data['siglasDepartamento']
         atencion_obj.tramitesDepartamento = data['tramitesDepartamento']
         atencion_obj.citasDepartamento = data['citasDepartamento']
+        atencion_obj.notiDepartamento = data['notiDepartamento']
         atencion_obj.save()
         return True
     except departamentos.DoesNotExist:
@@ -343,7 +344,7 @@ def obtener_primero_dato(departamentoNombre, tramiteNombre):
         cita = departamentos.objects.get(nombre=departamentoNombre)
         fecha_actual = date.today().strftime('%Y-%m-%d')
         if tramiteNombre == 'N/A':
-            ultimo_dato = tickets.objects.filter(atendido=False, fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
+            ultimo_dato = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
             return ultimo_dato
         else:
             tramiteNombre = tramiteNombre.split(",")
@@ -353,7 +354,7 @@ def obtener_primero_dato(departamentoNombre, tramiteNombre):
             ultimo_dato = None
 
             for tramite in tramiteNombre:
-                ticket = tickets.objects.filter(atendido=False, fecha=fecha_actual, departamento=departamentoNombre, tramite=tramite)
+                ticket = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre, tramite=tramite)
                 if ticket.exists():
                     ultimo_registro = ticket.earliest('id_ticket')
                     if ultimo_dato is None or ultimo_registro.fecha > ultimo_dato.fecha:
@@ -373,7 +374,7 @@ def obtener_ultimo_dato(departamentoNombre, tramiteNombre):
         if tramiteNombre == 'N/A':
             ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
         else:
-            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre, tramite=tramiteNombre).latest('id_ticket')
+            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
 
         pr = ultimo_dato.codigo.split('-')
         if pr[1] == "999":
@@ -388,6 +389,16 @@ def marcar_ticket(id):
         fecha_actual = date.today().strftime('%Y-%m-%d')
         admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
         admision_obj.atendido = True
+        admision_obj.save()
+        return True
+    except tickets.DoesNotExist:
+        return False 
+
+def marcar_estado_ticket(id):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
+        admision_obj.estado = 'CnP'
         admision_obj.save()
         return True
     except tickets.DoesNotExist:
@@ -466,4 +477,20 @@ def update_cita(request, data):
         atencion_obj.save()
         return True
     except citas.DoesNotExist:
+        return False
+    
+def save_llamado(request, data):
+    form = FormularioLlamado(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def eliminar_llamado(id_llamado):
+    try:
+        atencion_obj = llamado.objects.get(id_llamado=id_llamado)
+        atencion_obj.delete()
+        return True
+    except llamado.DoesNotExist:
         return False

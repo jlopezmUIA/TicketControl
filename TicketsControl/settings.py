@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i069jc(7$e$yb^m3t9w$w@%3le-_*r$*=1h+t@5pf=+pqi@3k2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['example.com','localhost','192.168.8.163', '127.0.0.1']
+ALLOWED_HOSTS = ['example.com','localhost','192.168.8.203', '127.0.0.1']
 
 
 # Application definition
@@ -82,7 +82,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'TicketControl',
-        'USER': 'odoo',
+        'USER': 'postgres',
         'PASSWORD': '1502',
         'HOST': 'localhost',
         'PORT': 5432,
@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Costa_Rica'
 
 USE_I18N = True
 

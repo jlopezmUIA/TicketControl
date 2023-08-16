@@ -57,9 +57,9 @@
                         <tr class="colorfilas">
                             <td class="text-center">
                                 {% if record.codigoCaso|length > 7 %}
-                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 35px;">{{ record.codigoCaso }}</h1>
+                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 55px;">{{ record.codigoCaso }}</h1>
                                 {% else %}
-                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 45px;">{{ record.codigoCaso }}</h1>
+                                <h1 class="mt-3 mb-3 fw-bold" style="font-size: 55px;">{{ record.codigoCaso }}</h1>
                                 {% endif %}
                                     
                             </td>
@@ -177,6 +177,40 @@
         };
         request.send();
     }
+
+    function reproductorcliente(){
+        var url = "/reproductor-cliente/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                if (data.list.length !== 0 && data.estado === true){
+                    if (data.list.length >= 1){
+                        for (let i = 0; i < data.list.length; i++) {
+                            const datoEntrante = data.list[i];
+                            if (!playlist.includes(datoEntrante)) {
+                              playlist.push(datoEntrante);
+                              console.log("dato entrante: " + datoEntrante);
+                            }
+                        }
+                    }else {
+                        playlist.push(data.list[0]);
+                        console.log('datos repetido');
+                    }
+
+                    if(responsiveVoice.isPlaying()) {
+                        console.log("Reproduciendo")
+                    }
+                    else{
+                        reproducirLista();
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
     var indiceActual = 0;
     function reproducirLista() {
         var textoActual = ""
@@ -237,9 +271,11 @@
                     celdaDepartamento.appendChild(h1Departamento);
                 });
                 listareproduccion();
+                reproductorcliente();
             }
             else{
                 listareproduccion();
+                reproductorcliente();
             }
             
         };

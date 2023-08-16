@@ -53,6 +53,7 @@
                             <h5 id="dCodigo" hidden>{{ departamento.codigoDepartamento }}</h5>
                             <h5 id="dSiglas" hidden>{{ departamento.siglasDepartamento }}</h5>
                             <h5 id="dCitas" hidden>{{ departamento.citasDepartamento }}</h5>
+                            <h5 id="dNoti" hidden>{{ departamento.notificacionDepartamento }}</h5>
                         </td>
                         <td class="text-center align-middle">
                             <button type="button" data-bs-toggle="modal" data-bs-target="#modal_departamento"
@@ -154,6 +155,10 @@
                             <div class="mb-3 ">
                                 <label class="form-check-label" for="citasDepartamento">Manejo de Citas</label>
                                 <input class="form-check-input" type="checkbox" value="True" id="citasDepartamento" name="citasDepartamento">
+                            </div>
+                            <div class="mb-3 ">
+                                <label class="form-check-label" for="notiDepartamento">Notificación de Tickets</label>
+                                <input class="form-check-input" type="checkbox" value="True" id="notiDepartamento" name="notiDepartamento">
                             </div>
                             <br>
                             <div class="d-grid mb-2">
@@ -367,6 +372,7 @@
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
             var mcitas = document.getElementById("citasDepartamento");
+            var mnoti = document.getElementById("notiDepartamento");
 
             var btnModalDepartamento = document.getElementById("btnModalDepartamento");
             var formDepartamento = document.getElementById("formDepartamento");
@@ -377,6 +383,7 @@
             mcodigo.value = "";
             msiglas.value = "";
             mcitas.checked = false;
+            mnoti.checked = false;
             iddepartamento.value = "";
 
             btnModalDepartamento.innerText = "Registrar Departamento";
@@ -420,6 +427,7 @@
             var dcodigo = fila.querySelector('#dCodigo').textContent;
             var dsiglas = fila.querySelector('#dSiglas').textContent;
             var dcitas = fila.querySelector('#dCitas').textContent;
+            var dnoti = fila.querySelector('#dNoti').textContent;
 
             var iddepartamento = document.getElementById("idDepartamento");
             var mnombre = document.getElementById("nombreDepartamento");
@@ -427,6 +435,7 @@
             var mcodigo = document.getElementById("codigoDepartamento");
             var msiglas = document.getElementById("siglasDepartamento");
             var mcitas = document.getElementById("citasDepartamento");
+            var mnoti = document.getElementById("notiDepartamento");
 
             var modal_nuevoagenteTitle = document.getElementById("modal_nuevoagenteTitle");
             var btnModalDepartamento = document.getElementById("btnModalDepartamento");
@@ -443,6 +452,13 @@
             else{
                 mcitas.checked = false;
             }
+
+            if(dnoti === "True"){
+                mnoti.checked = true;
+            }
+            else{
+                mnoti.checked = false;
+            }
             
             iddepartamento.value = ddepartamento;
 
@@ -452,6 +468,7 @@
                 mcodigo.disabled = false;
                 msiglas.disabled = false;
                 mcitas.disabled = false;
+                mnoti.disabled = false;
 
                 btnModalDepartamento.innerText = "Modificar Departamento";
 
@@ -465,6 +482,7 @@
                 mcodigo.disabled = true;
                 msiglas.disabled = true;
                 mcitas.disabled = true;
+                mnoti.disabled = true;
 
                 btnModalDepartamento.innerText = "Eliminar Departamento";
 
