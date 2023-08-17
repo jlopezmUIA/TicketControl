@@ -1274,7 +1274,27 @@ def actualizar_tabla_departamentos(request):
                 status=200
                 
             request.session['cantCitas'] = cant_cita
+        elif cantClientes == 0:
+            if cant_cita > 0:
+                tabular_record_citas = {
+                    'nombreDepartamento':'Citas',
+                    'cantidad': cant_cita
+                }
+                tabular_records.append(tabular_record_citas)
             
+            for tr in tramite:
+                cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
+                if cant > 0:
+                    tabular_record = {
+                        'nombreDepartamento':tr.nombre,
+                        'cantidad': cant
+                    }
+                    tabular_records.append(tabular_record)
+            
+            if cant_cita < cantCitas:  
+                status=202
+            else:
+                status=200
         else:
             status=302
     else:
@@ -1282,6 +1302,19 @@ def actualizar_tabla_departamentos(request):
         cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
         if cantClientes != cant_cliente:
             
+            tabular_record = {
+                'nombreDepartamento':departamento.nombre,
+                'cantidad': tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
+            }
+            tabular_records.append(tabular_record)
+            
+            if cant_cliente < cantClientes:  
+                status=202
+            else:
+                status=200
+                
+            request.session['cantClientes'] = cant_cliente
+        elif cant_cliente == 0:
             tabular_record = {
                 'nombreDepartamento':departamento.nombre,
                 'cantidad': tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()

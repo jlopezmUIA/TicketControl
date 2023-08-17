@@ -316,6 +316,7 @@
     }
 
     function cargar_tramites(id_departamento) {
+        
         var select2 = document.getElementById("tramites_select");
         var url = "/cargar-tramites/?departamento=";
         var request = new XMLHttpRequest();
@@ -332,6 +333,7 @@
                         select2.add(option);
                     }
                 }
+                
             }
         };
         request.send();

@@ -353,12 +353,12 @@ def obtener_primero_dato(departamentoNombre, tramiteNombre):
                 
             ultimo_dato = None
 
-            for tramite in tramiteNombre:
-                ticket = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre, tramite=tramite)
-                if ticket.exists():
-                    ultimo_registro = ticket.earliest('id_ticket')
-                    if ultimo_dato is None or ultimo_registro.fecha > ultimo_dato.fecha:
-                        ultimo_dato = ultimo_registro
+            ticket = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).order_by('id_ticket')   
+            for tk in ticket:
+                for tramite in tramiteNombre:
+                    if tramite == tk.tramite:
+                        ultimo_dato = tk
+                        return ultimo_dato
             if ultimo_dato is None:
                 dato = tickets(codigo = '000')
                 return dato
