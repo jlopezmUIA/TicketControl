@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.models import agentes, citas, departamentos, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from tickets.models import agentes, citas, departamentos, ley700, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
@@ -15,7 +15,7 @@ import threading
 from .impresion import imprimir
 from django.db.models import F
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_llamado, marcar_estado_ticket, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+from tickets.savedata import delete_agente, eliminar_ley, eliminar_llamado, marcar_estado_ticket, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def home(request):
     request.session.flush() 
@@ -71,13 +71,15 @@ class RegistroAdmin(FormView):
 def adminside(request):
     departamento = departamentos.objects.all()
     tramite = tramites.objects.all()
+    ley = ley700.objects.all()
     records = atencion.objects.all()
-    return render(request, 'administracion/admin.html', {'records':records, 'departamentos': departamento, 'tramites': tramite})
+    return render(request, 'administracion/admin.html', {'ley': ley, 'records':records, 'departamentos': departamento, 'tramites': tramite})
 
 @login_required
 def colasatencion(request):
     records = atencion.objects.all()
-    return render(request, 'administracion/colasatencion.html', {'records': records})
+    agente = agentes.objects.all()
+    return render(request, 'administracion/colasatencion.html', {'records': records, 'agentes':agente})
 
 @login_required
 def configuracion(request):
@@ -147,34 +149,37 @@ def cambiar_link_text(request):
 
 @login_required
 def estadosagente(request):
-    records = estadosAgente.objects.all()
-    return render(request, 'administracion/estadosagente.html', {'records': records})
+    records = estadosAgente.objects.all().order_by('-fecha')
+    agente = agentes.objects.all()
+    return render(request, 'administracion/estadosagente.html', {'records': records, 'agentes':agente})
 
 @login_required
 def casosagente(request):
-    records = casosAgente.objects.all()
-    return render(request, 'administracion/casosagente.html', {'records': records})
+    records = casosAgente.objects.all().order_by('-fecha')
+    agente = agentes.objects.all()
+    return render(request, 'administracion/casosagente.html', {'records': records, 'agentes':agente})
 
 @login_required
 def ticketsagente(request):
     departamento = departamentos.objects.all()
-    ticket = tickets.objects.all()
-    records = ticketControl.objects.all()
+    ticket = tickets.objects.all().order_by("-id_ticket")
+    records = ticketControl.objects.all().order_by('-id_ticketcontrol')
     return render(request, 'administracion/ticketsagente.html', {'records':records, 'departamento': departamento, 'ticket': ticket})
 
 @login_required
 def recepcion(request):
+    agente = agentes.objects.all()
     departamento = departamentos.objects.all()
     ticket = tickets.objects.all()
     records = ticketControl.objects.all()
     cita = citas.objects.all().order_by('-fecha')
-    return render(request, 'administracion/recepcion.html', {'records':records, 'citas':cita, 'departamento': departamento, 'ticket': ticket})
+    return render(request, 'administracion/recepcion.html', {'agentes':agente, 'records':records, 'citas':cita, 'departamento': departamento, 'ticket': ticket})
 
 @login_required
 def datosagente(request):
     agente = agentes.objects.all()
-    records = tiemposAgente.objects.all()
-    encuestas = metricas.objects.all()
+    records = tiemposAgente.objects.all().order_by('-fecha')
+    encuestas = metricas.objects.all().order_by('-fecha')
     return render(request, 'administracion/datosagente.html', {'records':records, 'agentes': agente, 'encuestas': encuestas})
 
 @login_required
@@ -276,6 +281,8 @@ def atencion_agentes(request):
 
     request.session['cita'] = False
     request.session['cliente'] = 'N/C'
+    
+    ventanilla = request.session.get('agente_ventanilla')
 
     if 'departamentoAgente' in request.session:
         depart = request.session.get('departamentoAgente')
@@ -299,9 +306,9 @@ def atencion_agentes(request):
                 if cita_fecha >= fecha:
                     citas_filtradas.append(cita)
 
-            return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict, 'citas':citas_filtradas, 'fecha': fecha_actual})
+            return render(request, 'agentes/inicio_atencion.html', {'ventanilla':ventanilla, 'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict, 'citas':citas_filtradas, 'fecha': fecha_actual})
         else:
-            return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
+            return render(request, 'agentes/inicio_atencion.html', {'ventanilla':ventanilla, 'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tramites':tramite, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
     else:
         dict = {}
         dict[departamento.nombre] = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
@@ -312,9 +319,9 @@ def atencion_agentes(request):
                 cita_fecha = datetime.strptime(cita.fecha, "%Y-%m-%d").date()
                 if cita_fecha >= fecha:
                     citas_filtradas.append(cita)
-            return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict, 'citas':citas_filtradas, 'fecha': fecha_actual})
+            return render(request, 'agentes/inicio_atencion.html', {'ventanilla':ventanilla, 'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict, 'citas':citas_filtradas, 'fecha': fecha_actual})
         else:
-            return render(request, 'agentes/inicio_atencion.html', {'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
+            return render(request, 'agentes/inicio_atencion.html', {'ventanilla':ventanilla, 'agente':agente_id, 'cola': cola, 'departamento':departamento, 'tranferDepartamentos':tranferDepartamentos, 'tranferTramites':tranferTramites, 'tickets':dict})
         
 def digital_ticket_maker(request):
     request.session.flush() 
@@ -441,9 +448,9 @@ def numero_agente(request):
     if nuevo == 'N/D':
 
         if deparData.tramitesDepartamento:
-            numero = obtener_primero_dato(deparData.nombre, cola)
+            numero = obtener_primero_dato(request, deparData.nombre, cola)
         else: 
-            numero = obtener_primero_dato(deparData.nombre, 'N/A')
+            numero = obtener_primero_dato(request, deparData.nombre, 'N/A')
 
         if "000" in numero.codigo:
             data = {'codigo': 'N/C'}
@@ -1017,7 +1024,7 @@ def ticket_maker(request):
     citaDepartamento = departamentos.objects.filter(citasDepartamento=True).exists()
 
     tramite = tramites.objects.all()
-
+    
     return render(request, 'ticket/ticketmaker.html', {'departamentos': departamento, 'tramites': tramite, 'par':par, 'citas':citaDepartamento})
 
 def crear_ticket(request):
@@ -1114,7 +1121,8 @@ def modificaragente(request):
 @login_required
 def control_citas(request):
     records = citas.objects.all().order_by('-fecha')
-    return render(request, 'administracion/citas.html', {'records': records})
+    agente = agentes.objects.all()
+    return render(request, 'administracion/citas.html', {'records': records, 'agentes': agente})
 
 @login_required
 def nuevacita(request):
@@ -1246,19 +1254,31 @@ def actualizar_tabla_departamentos(request):
 
     dict = {}
     tramite = tramites.objects.filter(departamento=departamento.pk)
+    
+    cant_ley = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual).count()
+        
     if departamento.tramitesDepartamento:
         tabular_records = []
         cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
         cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
         if cantCitas != cant_cita or cantClientes != cant_cliente:
             
+            if cant_ley > 0:
+                ley_tk = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+                if ley_tk > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':'Ley 7600',
+                        'cantidad': ley_tk
+                    }
+                    tabular_records.append(tabular_record_citas)
+                    
             if cant_cita > 0:
                 tabular_record_citas = {
                     'nombreDepartamento':'Citas',
                     'cantidad': cant_cita
                 }
                 tabular_records.append(tabular_record_citas)
-            
+                
             for tr in tramite:
                 cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
                 if cant > 0:
@@ -1281,6 +1301,15 @@ def actualizar_tabla_departamentos(request):
                     'cantidad': cant_cita
                 }
                 tabular_records.append(tabular_record_citas)
+                
+            if cant_ley > 0:
+                ley_tk = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+                if ley_tk > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':'Ley 7600',
+                        'cantidad': ley_tk
+                    }
+                    tabular_records.append(tabular_record_citas)
             
             for tr in tramite:
                 cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
@@ -1294,13 +1323,22 @@ def actualizar_tabla_departamentos(request):
             if cant_cita < cantCitas:  
                 status=202
             else:
-                status=200
+                status=202
         else:
             status=302
     else:
         tabular_records = []
         cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()
         if cantClientes != cant_cliente:
+            
+            if cant_ley > 0:
+                ley_tk = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+                if ley_tk > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':'Ley 7600',
+                        'cantidad': ley_tk
+                    }
+                    tabular_records.append(tabular_record_citas)
             
             tabular_record = {
                 'nombreDepartamento':departamento.nombre,
@@ -1321,10 +1359,19 @@ def actualizar_tabla_departamentos(request):
             }
             tabular_records.append(tabular_record)
             
+            if cant_ley > 0:
+                ley_tk = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual, departamento=departamento.nombre).count() 
+                if ley_tk > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':'Ley 7600',
+                        'cantidad': ley_tk
+                    }
+                    tabular_records.append(tabular_record_citas)
+            
             if cant_cliente < cantClientes:  
                 status=202
             else:
-                status=200
+                status=202
                 
             request.session['cantClientes'] = cant_cliente
         else:
@@ -1471,3 +1518,126 @@ def crear_ticket_cita(request):
     }
 
     return JsonResponse(dic, safe=False, status=status)
+
+def actualizar_tabla_departamentos_control(request):
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    cantClientes = request.session.get('cantClientes')
+    
+    dict = {}
+    tabular_records = []
+    cant_cita = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual).count() 
+    cant_ley = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual).count()
+    cant_cliente = tickets.objects.filter( atendido=False, fecha=fecha_actual).count()
+    departamento = departamentos.objects.all()
+    for depart in departamento:
+        if cantClientes != cant_cliente:
+            
+            if cant_ley > 0:
+                ley_tk = tickets.objects.filter(tramite='7600', atendido=False, fecha=fecha_actual, departamento=depart.nombre).count() 
+                if ley_tk > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':depart.nombre+' - Ley 7600',
+                        'cantidad': ley_tk
+                    }
+                    tabular_records.append(tabular_record_citas)
+            
+            if cant_cita > 0:
+                citas_depart = tickets.objects.filter(tramite='Cita', atendido=False, fecha=fecha_actual, departamento=depart.nombre).count() 
+                if citas_depart > 0:
+                    tabular_record_citas = {
+                        'nombreDepartamento':'Citas de '+depart.nombre,
+                        'cantidad': citas_depart
+                    }
+                    tabular_records.append(tabular_record_citas)
+                    
+                    
+            if depart.tramitesDepartamento:    
+                tramite = tramites.objects.filter(departamento=depart.pk)
+                for tr in tramite:
+                    cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
+                    if cant > 0:
+                        tabular_record = {
+                            'nombreDepartamento':tr.nombre,
+                            'cantidad': cant
+                        }
+                        tabular_records.append(tabular_record)
+            else:
+                cant = tickets.objects.filter(departamento=depart.nombre, atendido=False, fecha=fecha_actual).count()
+                tabular_record = {
+                    'nombreDepartamento':depart.nombre,
+                    'cantidad': cant
+                }
+                tabular_records.append(tabular_record)
+                
+    status=200
+    
+    dict['tabla'] = tabular_records
+    return JsonResponse(dict, safe=False, status=status)
+
+def ventanillas_disponibles(request):
+    status=200
+    agente_ventanillas_no = atencion.objects.exclude(estadoAtencion="Desconectado")
+    agente_ventanillas_si = atencion.objects.filter(estadoAtencion="Desconectado")
+    
+    list_si = []
+    list_no = []
+    for ventanilla in agente_ventanillas_no:
+        list_si.append(ventanilla.numeroVentanilla)
+        
+    for ventanilla2 in agente_ventanillas_si:
+        list_no.append(ventanilla2.numeroVentanilla)
+        
+    response_data = {
+        'list_si': list_si,
+        'list_no': list_no
+    }
+    
+    return JsonResponse(response_data, safe=False, status=status)
+
+@login_required
+def nueva_ley7600(request):
+    departamento = request.POST.get("ley_select")
+    ventanilla = request.POST.get("ventanilla")
+    data = {
+        'departamento': departamento,
+        'ventanilla' : ventanilla
+    }
+    save = save_ley(request, data)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def eliminar_ley7600(request):
+    id_ley = request.GET.get("id")
+    save = eliminar_ley(id_ley)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def crear_ticket_ley(request):
+    dato = request.GET.get("departamento")
+
+    departamentoData = departamentos.objects.get(id_departamentos=dato)
+    tramite = '7600'
+
+    ultimoTicket = obtener_ultimo_dato(departamentoData.nombre, tramite)
+    codigo = ultimoTicket.split('-')
+    numero_siguiente = str(int(codigo[1]) + 1).zfill(3)
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+
+    data = {
+        'codigo': 'L-'+numero_siguiente,
+        'departamento': departamentoData.nombre,
+        'tramite': tramite,
+        'fecha': fecha_actual,
+        'atentido': False,
+        'estado': 'N/A'
+    }
+    save_ticket(request, data)
+    codigo = departamentoData.codigoDepartamento+'-'+numero_siguiente
+    departamento = departamentoData.codigoDepartamento+', '+departamentoData.siglasDepartamento+' = '+departamentoData.nombre
+    
+    imprimir(codigo, departamento)
+    dic = {
+        'success': True
+    }
+
+    return JsonResponse(dic, safe=False)

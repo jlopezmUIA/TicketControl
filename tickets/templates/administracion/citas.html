@@ -48,11 +48,6 @@
 
                     </div>
                 </div>
-                <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
-                    <div class=" mb-3 date col">
-                        <input type="date" class="roundedInput form-control" id="date" />
-                    </div>
-                </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                     <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
@@ -105,7 +100,13 @@
                                             <h5 id="cTelefono">{{ record.telefono }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
+                                            {% for agente in agentes %}
+                                            {% if agente.nombreAgente == record.nombreAgente %}
                                             <h5 id="cAsesor">{{ record.nombreAgente }}</h5>
+                                            <h5 id="id_agente" hidden>{{ agente.pk }}</h5>
+                                            <h5 id="departamente_agente" hidden>{{ agente.departamento }}</h5>
+                                            {% endif %}
+                                            {% endfor %}
                                         </td>
                                         <td class="text-center align-middle">
                                             <h5 id="cEstado">{{ record.estado }}</h5>
@@ -244,7 +245,7 @@
     $(document).ready(function () {
         $('#record-table').DataTable({
             select: true,
-            searching: false,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -428,49 +429,8 @@
         request.send();
     }
 
-
-    const recordTable = document.getElementById('record-table');
-
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-            });
-    }
-
-    setInterval(fetchRecords, 30000); 
-
     // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
-    var fechaSelect = document.getElementById("date");
-
-    fechaSelect.addEventListener("change", function () {
-        var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
-        // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table tbody tr");
-
-        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
-        rows.forEach(function (row) {
-            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#cFecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
-                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
-            } else {
-                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
-            }
-        });
-    });
 
     // Agregar un evento de escucha para capturar el cambio de opción
     agenteSelect.addEventListener("click", function () {
@@ -480,17 +440,27 @@
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#cFecha").textContent;
-            var dateInput = document.getElementById("date");
+            var agente = row.querySelector("#cAsesor").textContent;
+            if ((selectedAgenteId === "" || agente === selectedAgenteId)) {
+                row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
+            } else {
+                row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
+            }
+        });
+    });
 
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
+    var departamentoSelect = document.getElementById("departamento");
 
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+    departamentoSelect.addEventListener("click", function () {
+        var selectedAgenteId = departamentoSelect.value; // Obtener el ID del agente seleccionado
+        // Obtener todas las filas de la tabla
+        var rows = document.querySelectorAll("#record-table tbody tr");
+
+        // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
+        rows.forEach(function (row) {
+            var agente = row.querySelector("#departamente_agente").textContent; // Obtener el ID del agente en la fila
+
+            if ((selectedAgenteId === "" || agente === selectedAgenteId)) {
                 row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
             } else {
                 row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado

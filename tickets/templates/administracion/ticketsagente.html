@@ -31,12 +31,98 @@
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
             <h5 class="titulo">CONTROL DE TICKETS</h5>
             <div class="row p-2">
-                <div class="col-12 mb-4 p-2">
-                    <div class="date col-6">
-                        <h3 class="titulo2" style="text-align: justify;">Fecha:</h3>
-                        <input type="date" class="form-control roundedInput" id="date"/>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <div class=" table-responsive px-md-4 px-2 pt-1">
+                            <div class="col-12 col-sm-10 col-md-12 mt-4">
+                                <div class="table-responsive-sm mt-5">
+                                    <h4 class="titulo2 text-center" style="text-transform: uppercase;"></h4>
+                                    <table id="record-table-control" class="table dataTable table-hover table-fixed-height">
+                                        <thead class="table-dark1">
+                                            <tr>
+                                                <th style="text-align: center;">
+                                                    <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
+                                                </th>
+                                                <th style="text-align: center;">
+                                                    <h5 class="mt-2 text-center fw-bold">CANTIDAD</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="colorfilas">
+                                                <td class="text-center align-middle"><h5></h5></td>
+                                                <td class="text-center align-middle"><h5></h5></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo">TICKETS NO PRESENTES</h5>
+            <div class="row p-2">
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <div class=" table-responsive px-md-4 px-2 pt-1">
+                            <div class="col-12 col-sm-10 col-md-12  mt-4">
+                                <div class="table-responsive-sm mt-5">
+                                    <h4 class="titulo2 text-center" style="text-transform: uppercase;"></h4>
+                                    <table id="record-table-presente" class="table dataTable table-hover table-fixed-height">
+                                        <thead class="table-dark1">
+                                            <tr>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">TRÁMITE</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">FECHA</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">ESTADO</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ticketDepart in ticket %}
+                                                {% if ticketDepart.estado == 'CnP' %}
+                                                <tr class="colorfilas">
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="id_agente">{{ ticketDepart.codigo }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 class="">{{ ticketDepart.tramite }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="fecha" class="">{{ ticketDepart.fecha }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="" class="">NO PRESENTE</h5>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo">TICKETS POR DEPARTAMENTO</h5>
+            <div class="row p-2">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                         <div class=" table-responsive px-md-4 px-2 pt-1">
@@ -53,7 +139,7 @@
                                                         <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DPTO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">TRÁMITE</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">FECHA</h5>
@@ -71,7 +157,7 @@
                                                         <h5 id="id_agente">{{ ticketDepart.codigo }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ ticketDepart.departamento }}</h5>
+                                                        <h5 class="">{{ ticketDepart.tramite }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
                                                         <h5 id="fecha" class="">{{ ticketDepart.fecha }}</h5>
@@ -120,6 +206,7 @@
                                 {% for record in records %}
                                 <tr class="colorfilas">
                                     <td class="text-center align-middle">
+                                        <h5 id="" hidden>{{ record.pk }}</h5>
                                         <h5 id="id_agente">{{ record.codigoCaso }}</h5>
                                     </td>
                                     <td class="text-center align-middle">
@@ -198,7 +285,7 @@
     function configurarTabla(tablaId) {
         $(tablaId).DataTable({
             select: true,
-            searching: false,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -271,37 +358,6 @@
         request.send();
     }
 
-    // Obtener la referencia al select del agente
-    var fechaInput = document.getElementById("date");
-
-    // Agregar un evento de escucha para capturar el cambio de opción
-    fechaInput.addEventListener("change", function () {
-        var cantidadDepartamentos = document.getElementById('cantidadDepartamentos').value;
-        for (let i = 0; i <= parseInt(cantidadDepartamentos); i++) {
-            var row33 = document.querySelectorAll("#record-table"+i+" tbody tr");
-            filtrado(row33);
-        }
-        var row = document.querySelectorAll("#record-table-ventana tbody tr");
-        filtrado(row);
-    });
-
-    function filtrado(rows){
-        rows.forEach(function(row) {
-            var fecha = row.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            var selectedDate = dateInput.value;
-
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
     function exportToExcel() {
         // Obtener la tabla por su ID
         const table = document.getElementById('record-table');
@@ -347,7 +403,43 @@
 
         $('#record-table-ventana').DataTable({
             select: true,
-            searching: false,
+            searching: true,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+
+        $('#record-table-presente').DataTable({
+            select: true,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -381,5 +473,49 @@
             }
         });
     });
+
+    var tabla_control = document.getElementById("record-table-control");
+    function actualizar_tabla() {
+        var url = "/actualizar-tabla-departamentos-control/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+    
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla_control.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla_control.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla_control.insertRow();
+                    fila.className = 'colorfilas';
+
+                    var depart = fila.insertCell();
+                    depart.className = 'text-center align-middle';
+                    var pDepart = document.createElement("h5");
+                    pDepart.textContent = registro.nombreDepartamento;
+                    pDepart.className = 'mt-2 text-center fw-bold';
+                    pDepart.style.color = 'black';
+                    depart.appendChild(pDepart);
+
+                    var cant = fila.insertCell();
+                    cant.className = 'text-center align-middle';
+                    var pCant = document.createElement("h5");
+                    pCant.textContent = registro.cantidad;
+                    pCant.className = 'mt-2 text-center fw-bold';
+                    pCant.style.color = 'black';
+                    cant.appendChild(pCant);
+
+                });
+            }
+        };
+    
+        request.send();
+    }
+
+    setInterval(function() {
+        actualizar_tabla();
+    }, 1000);
 </script>
 {% endblock %}

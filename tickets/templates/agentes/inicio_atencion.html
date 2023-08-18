@@ -13,6 +13,7 @@
                     <div class="col-12 col-sm-12 col-md-12 col-lg-6 mb-2">
                         <div class="">
                             <div class="" style="align-items: center;">
+                                <h4 class="fw-light fw-bold" style="text-align: center;">VENTANILLA {{ ventanilla }}</h4>
                                 <h5 class="fw-light fw-bold">Estado:&nbsp;&nbsp;</h5>
                                 <select style="width: 135px; height: 35px;"
                                     class="roundedInput form-select form-select-sm" aria-label=".form-select-sm example"
@@ -87,7 +88,7 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <a class="btnStyle3 btn btn-md btn-login fw-bold" type="button" id="btnSalir"
-                                href="{% url 'registro_agente' %}" onclick="initializeWebChannel();">Salir</a>
+                                href="{% url 'registro_agente' %}" onclick="initializeWebChannel();">Salir <span id="contador" style="display: none;"></span></a>
                         </div>
                     </div>
                 </div>
@@ -592,8 +593,10 @@
         var boton3 = document.getElementById("btnSalir");
         var numero = document.getElementById("txtNumero");
         var cola = document.getElementById("btnAsignar");
+        var contador = document.getElementById("contador");
 
         if (estadoactual == 'Activo' || estadoactual == 'Inactivo') {
+            detenerContador();
             select.disabled = false;
             boton.disabled = true;
             boton.style.display = 'block';
@@ -602,9 +605,11 @@
             boton2.disabled = true;
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
+            contador.style.display = 'none';
             cola.disabled = false;
         }
         else if (estadoactual == 'Desconectado') {
+            iniciarContador();
             select.disabled = false;
             boton.disabled = true;
             boton.style.display = 'block';
@@ -613,9 +618,11 @@
             boton2.disabled = true;
             boton3.classList.remove("disabled");
             numero.innerHTML = 'N/C';
+            contador.style.display = 'block';
             cola.disabled = true;
         }
         else if (estadoactual == 'Disponible') {
+            detenerContador();
             select.disabled = false;
             boton.disabled = false;
             boton.style.display = 'block';
@@ -624,9 +631,11 @@
             boton2.disabled = true;
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
+            contador.style.display = 'none';
             cola.disabled = true;
         }
         else if (estadoactual == 'Ocupado') {
+            detenerContador();
             select.disabled = true;
             boton.disabled = false;
             boton.style.display = 'none';
@@ -634,6 +643,7 @@
             botonT.style.display = 'block';
             boton2.disabled = false;
             boton3.classList.add("disabled");
+            contador.style.display = 'none';
             cola.disabled = true;
         }
     }
@@ -1049,6 +1059,26 @@
                 }
             });
         }
+    }
+
+    var interval;
+    var i = 11;
+
+    function iniciarContador() {
+        
+        interval = setInterval(function() {
+            i = i - 1;
+            document.getElementById('contador').innerText = i;
+            if (i === 0) {
+                document.getElementById('btnSalir').click();
+                detenerContador();
+            }
+        }, 1000);
+    }
+
+    function detenerContador() {
+        i = 11;
+        clearInterval(interval);
     }
 </script>
 {% endblock %}

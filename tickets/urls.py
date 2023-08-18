@@ -57,6 +57,7 @@ from .views import (
     nuevacitaagente,
     obtener_departamentos_cita,
     actualizar_tabla_departamentos,
+    actualizar_tabla_departamentos_control,
     actualizar_tabla_citas_actuales,
     actualizar_tabla_citas,
     crear_ticket_cita,
@@ -73,6 +74,10 @@ from .views import (
     reproductor_cliente,
     
     recepcion,
+    ventanillas_disponibles,
+    nueva_ley7600,
+    eliminar_ley7600,
+    crear_ticket_ley,
 )
 
 from .savedata import obtener_datos
@@ -142,6 +147,7 @@ urlpatterns = [
     path('nueva-cita-agente/', nuevacitaagente, name='nueva_cita_agente'),
     path('obtener-departamentos-cita/', obtener_departamentos_cita, name='obtener_departamentos_cita'),
     path('actualizar-tabla-departamentos/', actualizar_tabla_departamentos, name='actualizar_tabla_departamentos'),
+    path('actualizar-tabla-departamentos-control/', actualizar_tabla_departamentos_control, name='actualizar_tabla_departamentos_control'),
     path('actualizar-tabla-citas-actuales/', actualizar_tabla_citas_actuales, name='actualizar_tabla_citas_actuales'),
     path('actualizar-tabla-citas/', actualizar_tabla_citas, name='actualizar_tabla_citas'),
     path('crear-ticket-cita/', crear_ticket_cita, name='crear_ticket_cita'),
@@ -157,4 +163,10 @@ urlpatterns = [
     path('ticket-encuesta/', ticket_encuesta, name='ticket_encuesta'),
     
     path('recepcion/', recepcion, name='recepcion'),
+    
+    path('ventanillas-disponibles/', ventanillas_disponibles, name='ventanillas_disponibles'),
+    
+    path('nueva-ley/', nueva_ley7600, name='nueva_ley'),
+    path('eliminar-ley/', eliminar_ley7600, name='eliminar_ley'),
+    path('crear-ticket-ley/', crear_ticket_ley, name='crear_ticket_ley'),
 ]

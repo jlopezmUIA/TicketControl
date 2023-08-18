@@ -34,19 +34,7 @@
                 <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
                     <div class="mb-3 col">
                         <select id="departamento" data-placeholder="Seleccione Departamento" class="roundedInput form-select"
-                            name="departamento" required onchange="cargarAgentes()">
-                            <option value="Admisiones">Admisiones</option>
-                            <option value="Registro">Registro</option>
-                            <option value="Cursos Libres">Cursos Libres</option>
-                            <option value="Cajas">Cajas</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-10 col-md-12 col-lg-6 mx-auto mb-4 p-2">
-                    <div class="mb-3 col">
-                        <select id="agente_select" class="roundedInput form-select" name="agente_select"
-                            data-placeholder="Seleccion Agente">
-                            <option style="opacity: 0.65" value="" disabled selected hidden>Seleccione Agente</option>
+                            name="departamento" required>
                         </select>
                     </div>
                 </div>
@@ -74,7 +62,12 @@
                                     {% for record in records %}
                                     <tr class="colorfilas">
                                         <td class="text-center align-middle">
-                                            <h5 id="id_agente">{{ record.agente_id }}</h5>
+                                            {% for agente in agentes %}
+                                            {% if agente.pk == record.agente_id %}
+                                            <h5 id="id_agente">{{ agente.nombreAgente }}</h5>
+                                            <h5 id="departamente_agente" hidden>{{ agente.departamento }}</h5>
+                                            {% endif %}
+                                            {% endfor %}
                                         </td>
                                         <td class="text-center align-middle">
                                             <h5 class="">{{ record.numeroVentanilla }}</h5>
@@ -205,29 +198,6 @@
         request.send();
     }
 
-    function cargarAgentes() {
-        var select = document.getElementById("departamento").value;
-        var select2 = document.getElementById("agente_select");
-
-        var url = "/obtener-agentes/?departamento=";
-        var request = new XMLHttpRequest();
-        request.open('GET', url + encodeURIComponent(select), true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                select2.options.length = 0;
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var option = document.createElement("option");
-                        option.value = key;
-                        option.text = data[key];
-                        select2.add(option);
-                    }
-                }
-            }
-        };
-        request.send();
-    }
 
     function cola() {
         var cola = document.getElementById("cola_select").value;
@@ -245,31 +215,16 @@
 
     const recordTable = document.getElementById('record-table');
     
-    function fetchRecords() {
-        fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const newTable = parser.parseFromString(data, 'text/html').getElementById('record-table');
-                recordTable.innerHTML = newTable.innerHTML;
-            });
-    }
+    var departamentoSelect = document.getElementById("departamento");
 
-    setInterval(fetchRecords, 120000);  // Realiza una solicitud AJAX periódica para mantener la tabla actualizada
-
-
-    // Obtener la referencia al select del agente
-    var agenteSelect = document.getElementById("agente_select");
-
-    // Agregar un evento de escucha para capturar el cambio de opción
-    agenteSelect.addEventListener("click", function () {
-        var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
+    departamentoSelect.addEventListener("click", function () {
+        var selectedAgenteId = departamentoSelect.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
         var rows = document.querySelectorAll("#record-table tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#id_agente").textContent; // Obtener el ID del agente en la fila
+            var agente = row.querySelector("#departamente_agente").textContent; // Obtener el ID del agente en la fila
 
             if ((selectedAgenteId === "" || agente === selectedAgenteId)) {
                 row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado

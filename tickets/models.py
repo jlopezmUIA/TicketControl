@@ -121,3 +121,11 @@ class citas(models.Model):
 class llamado(models.Model):
     id_llamado = models.AutoField(primary_key=True)
     texto = models.CharField(max_length=300)
+
+class ley700(models.Model):
+    id_ley = models.AutoField(primary_key=True)
+    departamento = models.ForeignKey(departamentos,
+                            on_delete=models.CASCADE,
+                            null=True,
+                            blank=True)
+    ventanilla = models.CharField(max_length=60) 

@@ -12,12 +12,43 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <form class="d-flex" style="padding-right: 30px;">
+                <button class="btnStyleLey fw-bold pt-2 pb-2"
+                            data-bs-toggle="modal"data-bs-target="#modal_ley" type="button" 
+                            id="loading-indicator"  onclick="cargarDepartamentosLey()">
+                            <img src="../../static/img/wheelchair.png" class="imgLey"></button>
+            </form>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="d-flex" style="padding-right: 30px;">
                 <a class="btn" href="{% url 'logout' %}" type="button">CERRAR SESIÓN</a>
             </form>
         </div>
     </div>
 </nav>
 <style>
+    .imgLey{
+        width: 50px;
+        height: 50px;
+    }
+
+    .btnStyleLey {
+        background-color: #003e87  ;
+        color: #ffffff;
+        border-radius: 30px;
+        border-color: #003e87  ;
+        font-size: 15px;
+        align-items: center;
+        align-content: center;
+        text-align: center;
+        width: 350px;
+        margin-left: 400px;
+    }
+    .btnStyleLey:hover{
+        background-color: #002756;
+        color: #ffffff;
+        border-color: #002756;
+    }
+
     .navbar-dark .navbar-nav .nav-link {
         color: rgb(255, 255, 255);
     }
@@ -59,7 +90,7 @@
         width: 100%;
     }
     .imgFondo{
-        background: url('{% static "img/iStock7.jpg" %}') no-repeat;
+        background: url('{% static "img/iStock6.jpg" %}') no-repeat;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
@@ -76,12 +107,42 @@
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
             <h5 class="titulo">CONTROL DE TICKETS</h5>
             <div class="row p-2">
-                <div class="col-12 mb-4 p-2">
-                    <div class="date col-6">
-                        <h3 class="titulo2" style="text-align: justify;">Fecha:</h3>
-                        <input type="date" class="form-control roundedInput" id="date"/>
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <div class=" table-responsive px-md-4 px-2 pt-1">
+                            <div class="col-12 col-sm-10 col-md-12  mt-4">
+                                <div class="table-responsive-sm mt-5">
+                                    <h4 class="titulo2 text-center" style="text-transform: uppercase;"></h4>
+                                    <table id="record-table-control" class="table dataTable table-hover table-fixed-height">
+                                        <thead class="table-dark1">
+                                            <tr>
+                                                <th style="text-align: center;">
+                                                    <h5 class="mt-2 text-center fw-bold">DEPARTAMENTO</h5>
+                                                </th>
+                                                <th style="text-align: center;">
+                                                    <h5 class="mt-2 text-center fw-bold">CANTIDAD</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="colorfilas">
+                                                <td class="text-center align-middle"><h5></h5></td>
+                                                <td class="text-center align-middle"><h5></h5></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo">TICKETS POR DEPARTAMENTO</h5>
+            <div class="row p-2">
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
                     <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                         <div class=" table-responsive px-md-4 px-2 pt-1">
@@ -98,7 +159,7 @@
                                                         <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
                                                     </th>
                                                     <th>
-                                                        <h5 class="mt-2 text-center fw-bold">DPTO</h5>
+                                                        <h5 class="mt-2 text-center fw-bold">TRÁMITE</h5>
                                                     </th>
                                                     <th>
                                                         <h5 class="mt-2 text-center fw-bold">FECHA</h5>
@@ -116,7 +177,7 @@
                                                         <h5 id="id_agente">{{ ticketDepart.codigo }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
-                                                        <h5 class="">{{ ticketDepart.departamento }}</h5>
+                                                        <h5 class="">{{ ticketDepart.tramite }}</h5>
                                                     </td>
                                                     <td class="text-center align-middle">
                                                         <h5 id="fecha" class="">{{ ticketDepart.fecha }}</h5>
@@ -143,7 +204,6 @@
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12" style="margin-top: 80px;">
                     <div class="table-responsive-sm">
                         <h4 class="titulo2 text-center">CLIENTES EN VENTANILLA</h4>
-                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                         <table id="record-table-ventana" style="height: 100px;" class="table  table-hover table-fixed-height">
                             <thead class="table-dark1">
                                 <tr>
@@ -165,6 +225,7 @@
                                 {% for record in records %}
                                 <tr class="colorfilas">
                                     <td class="text-center align-middle">
+                                        <h5 id="" hidden>{{ record.pk }}</h5>
                                         <h5 id="id_agente">{{ record.codigoCaso }}</h5>
                                     </td>
                                     <td class="text-center align-middle">
@@ -180,6 +241,62 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto ">
+            <h5 class="titulo">TICKETS NO PRESENTES</h5>
+            <div class="row p-2">
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4 p-2">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <div class=" table-responsive px-md-4 px-2 pt-1">
+                            <div class="col-12 col-sm-10 col-md-12  mt-4">
+                                <div class="table-responsive-sm mt-5">
+                                    <h4 class="titulo2 text-center" style="text-transform: uppercase;"></h4>
+                                    <table id="record-table-presente" class="table dataTable table-hover table-fixed-height">
+                                        <thead class="table-dark1">
+                                            <tr>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">CÓDIGO</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">TRÁMITE</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">FECHA</h5>
+                                                </th>
+                                                <th>
+                                                    <h5 class="mt-2 text-center fw-bold">ESTADO</h5>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ticketDepart in ticket %}
+                                                {% if ticketDepart.estado == 'CnP' %}
+                                                <tr class="colorfilas">
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="id_agente">{{ ticketDepart.codigo }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 class="">{{ ticketDepart.tramite }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="fecha" class="">{{ ticketDepart.fecha }}</h5>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <h5 id="" class="">NO PRESENTE</h5>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,22 +322,10 @@
 
                     </div>
                 </div>
-                <div class="col-12 col-sm-10 col-md-12 col-lg-4 mx-auto mb-4 p-2">
-                    <div class=" mb-3 date col">
-                        <input type="date" class="roundedInput form-control" id="date2" />
-                    </div>
-                </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
                     <div class="card-body table-responsive px-md-4 px-2 pt-3">
                         <div class="table-responsive-sm">
-                            <button type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal"
-                                data-bs-target="#modal_cita" onclick="cargarDepartamentosCita2();">Crear Nueva
-                                Cita</button>
-
-                            <button type="button" class="btn btn-outline-dark mb-2"
-                            onclick="exportToExcel2();">Exportar a Excel</button>
-
-                            <table id="record-table-citas" style="height: 100px;"
+                            <table id="record-table" style="height: 100px;"
                                 class="table table-borderless table-hover table-fixed-height">
                                 <thead class="table-dark1">
                                     <tr>
@@ -262,7 +367,13 @@
                                             <h5 id="cTelefono">{{ cita.telefono }}</h5>
                                         </td>
                                         <td class="text-center align-middle">
+                                            {% for agente in agentes %}
+                                            {% if agente.nombreAgente == cita.nombreAgente %}
                                             <h5 id="cAsesor">{{ cita.nombreAgente }}</h5>
+                                            <h5 id="id_agente" hidden>{{ agente.pk }}</h5>
+                                            <h5 id="departamente_agente" hidden>{{ agente.departamento }}</h5>
+                                            {% endif %}
+                                            {% endfor %}
                                         </td>
                                         <td class="text-center align-middle">
                                             <h5 id="cEstado">{{ cita.estado }}</h5>
@@ -280,93 +391,41 @@
     </div>
 </div>
 
-{% block modal_cita %}
-<div class="modal fade" id="modal_cita" tabindex="-1" aria-labelledby="modal_citaTitle" style="display: none"
+<!-- Model de Cambio de data -->
+{% block modal_ley %}
+<div class="modal fade" id="modal_ley" tabindex="-1" aria-labelledby="modal_leyTitle" style="display: none"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitulo">
-                    CREACIÓN DE NUEVA CITA
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
-                </button>
-            </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <main class="form-signin">
-                    <div class="row mb-3" style="align-items: center; justify-content: center;">
-                        <form method="POST" id="formCita" action="{% url 'nueva_cita' %}">
-                            {% csrf_token %}
-                            <div class="row ">
-                                <div class="mb-3">
-                                    <select id="departamento_cita" data-placeholder="Seleccione Departamento"
-                                        class="roundedInput form-select" name="departamento_cita" required>
-                                    </select>
-                                </div>
-                                <div class=" mb-3">
-                                    <label for="">Número Identificación</label>
-                                    <input type="text" class="roundedInput form-control" id="identificacion"
-                                        placeholder="Identificación" name="identificacion" onkeyup="datacedula()"
-                                        required>
-                                </div>
-                                <div class="mb-3 ">
-                                    <label for="">Nombre Completo del Cliente</label>
-                                    <input type="text" class="roundedInput form-control" id="nombre"
-                                        placeholder="Nombre Completo" name="nombre" oninput="convertirTitulo(this)"
-                                        required>
-                                </div>
-                                <div class="mb-3 ">
-                                    <label for="">Teléfono</label>
-                                    <input type="text" class="roundedInput form-control" id="telefono"
-                                        placeholder="Teléfono" name="telefono" required>
-                                </div>
-                                <div class="mb-3 ">
-                                    <label for="">Fecha de Cita</label>
-                                    <input type="date" class="roundedInput form-control" id="fecha" name="fecha"
-                                        required>
-                                </div>
-                                <div class="mb-3 ">
-                                    <label for="">Hora de Cita</label>
-                                    <input type="time" class="roundedInput form-control" id="hora" name="hora" required>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="d-grid mb-2">
-                                <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
-                                    id="btnModalDepartamento"> Registrar Cita</button>
-
-                                <div id="loading-indicator" class="hidden">
-                                    <div class="spinner"></div>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h3 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">TIQUETE PREFERENCIAL</h3>
+                            <p style="text-align: center; font-size: 25px; color: #878787; font-weight: bold;">Seleccioná el departamento al que deseas dirigirte.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3 mt-3" style="align-items: center; justify-content: center;">
+                        <select id="departamento_ley" data-placeholder="Seleccione Departamento"
+                            class="roundedInputSelect form-select" name="departamento_ley" required>
+                        </select>
+                    </div>
+                    <div class="row" style="align-items: center; justify-content: center;">
+                        <button class="btnStyleG btn btn-lg fw-bold"
+                        type="button" id="btnGenerar" onclick="crear_ticket_ley()"><p style="font-size: 25px;" class="mt-3 mb-3">Generar Ticket</p></button>
                     </div>
                 </main>
             </div>
         </div>
     </div>
 </div>
-{% endblock modal_cita %}
+{% endblock modal_ley %}
+
 <style>
-    .btn{
-        border-radius: 50px;
-        background-color: #ffd142;
-        color: #000000;
-        font-weight: bold;
-        border-color: #ffd142;
+    .modal-dialog.custom-modal-lg {
+        max-width: 35%; /* Puedes ajustar el porcentaje según tus necesidades */
     }
-    .btn:hover {
-        background-color: #000000;
-        color: #ffd142;
-        border-color: #000000;
-    }
-
-    .modal-header {
-        background-color: #000000;
-        color: white;
-    }
-
     .table-dark1{
         background-color: black;
         color: white;
@@ -379,6 +438,25 @@
         padding-left: 30px;
         font-family: 'Abrade';
         font-weight: 600;
+    }
+
+    .btnStyleG {
+        background-color: #000000;
+        color: white;
+        border-radius: 30px;
+        border-color: #000000;
+        font-size: 15px;
+    }
+
+    .roundedInputSelect {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 30px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+        width: 100%;
     }
     .titulo{
         text-align: end;
@@ -423,7 +501,7 @@
     function configurarTabla(tablaId) {
         $(tablaId).DataTable({
             select: true,
-            searching: false,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -473,61 +551,6 @@
         dateInput.value = formattedDate;
     };
 
-    function cargarAgentes() {
-        var select = document.getElementById("departamento").value;
-        var select2 = document.getElementById("agente_select");
-
-        var url = "/obtener-agentes/?departamento=";
-        var request = new XMLHttpRequest();
-        request.open('GET', url + encodeURIComponent(select), true);
-        request.onload = function () {
-            if (request.status === 200) {
-                var data = JSON.parse(request.responseText);
-                select2.options.length = 0;
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var option = document.createElement("option");
-                        option.value = key;
-                        option.text = data[key];
-                        select2.add(option);
-                    }
-                }
-            }
-        };
-        request.send();
-    }
-
-    // Obtener la referencia al select del agente
-    var fechaInput = document.getElementById("date");
-
-    // Agregar un evento de escucha para capturar el cambio de opción
-    fechaInput.addEventListener("change", function () {
-        var cantidadDepartamentos = document.getElementById('cantidadDepartamentos').value;
-        for (let i = 0; i <= parseInt(cantidadDepartamentos); i++) {
-            var row33 = document.querySelectorAll("#record-table"+i+" tbody tr");
-            filtrado(row33);
-        }
-        var row = document.querySelectorAll("#record-table-ventana tbody tr");
-        filtrado(row);
-    });
-
-    function filtrado(rows){
-        rows.forEach(function(row) {
-            var fecha = row.querySelector("#fecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            var selectedDate = dateInput.value;
-
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((formattedDate === "" || fecha === formattedDate)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
     function cargarDepartamentos() {
         var select2 = document.getElementById("departamento");
 
@@ -552,12 +575,13 @@
         request.send();
     }
 
-    function cargarDepartamentosCita2() {
-        var select2 = document.getElementById("departamento_cita");
+    function cargarAgentes() {
+        var select = document.getElementById("departamento").value;
+        var select2 = document.getElementById("agente_select");
 
-        var url = "/obtener-departamentos-cita/";
+        var url = "/obtener-agentes/?departamento=";
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', url + encodeURIComponent(select), true);
         request.onload = function () {
             if (request.status === 200) {
                 var data = JSON.parse(request.responseText);
@@ -575,156 +599,47 @@
         request.send();
     }
 
-    function datacedula() {
-        var input = document.getElementById("identificacion");
-        var input2 = document.getElementById("nombre");
-
-        if (input.value.length >= 10 && input.value.length <= 12) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var datos = this.responseText;
-                    const datos_usuario = datos.split(",");
-
-                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
-                    input2.readOnly = true;
-                    convertirTitulo();
-
-                } else if (this.status == 404) {
-                    input2.value = "";
-                    input2.readOnly = false;
-                }
-            };
-            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
-            xhttp.send();
-
-        } else {
-            input2.value = "";
-            input2.readOnly = false;
-        }
-
-        if (input.value.length === 9) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    var datos = this.responseText;
-                    const datos_usuario = datos.split(",");
-
-                    input2.value = datos_usuario[0].replace(/[\\\[\]"]/g, "").replace(/u00f1/g, 'ñ').replace(/u00D1/g, 'Ñ');
-                    input2.readOnly = true;
-                    convertirTitulo();
-
-                } else if (this.status == 404) {
-                    input2.value = "";
-                    input2.readOnly = false;
-                }
-            };
-            xhttp.open("GET", "/obtener-datos/?identificacion=" + encodeURIComponent(input.value), true);
-            xhttp.send();
-        } else {
-            input2.value = "";
-            input2.readOnly = false;
-        }
-    }
-
-    function convertirTitulo() {
-        var input = document.getElementById("nombre");
-        var palabras = input.value.toLowerCase().split(' ');
-
-        for (var i = 0; i < palabras.length; i++) {
-            palabras[i] = palabras[i].charAt(0).toUpperCase() + palabras[i].slice(1);
-        }
-
-        input.value = palabras.join(' ');
-    }
-
-    function exportToExcel2() {
-        // Obtener la tabla por su ID
-        const table = document.getElementById('record-table');
-
-        // Crear un objeto de libro de Excel
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Datos');
-
-        // Recorrer las filas y celdas de la tabla
-        const rows = table.querySelectorAll('tr');
-        rows.forEach((row, rowIndex) => {
-            const cells = row.querySelectorAll('td, th');
-            cells.forEach((cell, cellIndex) => {
-                // Obtener el contenido de la celda
-                const cellData = cell.innerText;
-                // Agregar el contenido a la hoja de Excel
-                worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
-            });
-        });
-
-        // Crear un archivo Excel
-        workbook.xlsx.writeBuffer().then((buffer) => {
-            // Convertir el buffer a un blob
-            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-            // Crear un objeto URL para el blob
-            const url = URL.createObjectURL(blob);
-
-            // Crear un enlace de descarga
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'tabla_citas.xlsx';
-
-            // Simular un clic en el enlace de descarga
-            link.click();
-
-            // Liberar el objeto URL
-            URL.revokeObjectURL(url);
-        });
-    }
-
-    function exportToExcel() {
-        // Obtener la tabla por su ID
-        const table = document.getElementById('record-table');
-      
-        // Crear un objeto de libro de Excel
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Datos');
-      
-        // Recorrer las filas y celdas de la tabla
-        const rows = table.querySelectorAll('tr');
-        rows.forEach((row, rowIndex) => {
-          const cells = row.querySelectorAll('td, th');
-          cells.forEach((cell, cellIndex) => {
-            // Obtener el contenido de la celda
-            const cellData = cell.innerText;
-            // Agregar el contenido a la hoja de Excel
-            worksheet.getCell(rowIndex + 1, cellIndex + 1).value = cellData;
-          });
-        });
-      
-        // Crear un archivo Excel
-        workbook.xlsx.writeBuffer().then((buffer) => {
-          // Convertir el buffer a un blob
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      
-          // Crear un objeto URL para el blob
-          const url = URL.createObjectURL(blob);
-      
-          // Crear un enlace de descarga
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = 'tabla_solicitudes.xlsx';
-      
-          // Simular un clic en el enlace de descarga
-          link.click();
-      
-          // Liberar el objeto URL
-          URL.revokeObjectURL(url);
-        });
-    }
-
     $(document).ready(function () {
+
+        $('#record-table').DataTable({
+            select: true,
+            searching: true,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
 
         $('#record-table-ventana').DataTable({
             select: true,
-            searching: false,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -758,9 +673,9 @@
             }
         });
 
-        $('#record-table-citas').DataTable({
+        $('#record-table-presente').DataTable({
             select: true,
-            searching: false,
+            searching: true,
             language: {
                 "sProcessing": "Procesando...",
                 "sLengthMenu": "Mostrar _MENU_ registros",
@@ -795,25 +710,19 @@
         });
     });
 
+    // Obtener la referencia al select del agente
     var agenteSelect = document.getElementById("agente_select");
+
+    // Agregar un evento de escucha para capturar el cambio de opción
     agenteSelect.addEventListener("click", function () {
         var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table-citas tbody tr");
+        var rows = document.querySelectorAll("#record-table tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#cFecha").textContent;
-            var dateInput = document.getElementById("date");
-
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+            var agente = row.querySelector("#cAsesor").textContent;
+            if ((selectedAgenteId === "" || agente === selectedAgenteId)) {
                 row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
             } else {
                 row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
@@ -821,31 +730,105 @@
         });
     });
 
-    var fechaSelect2 = document.getElementById("date2");
+    var departamentoSelect = document.getElementById("departamento");
 
-    fechaSelect2.addEventListener("change", function () {
-        var selectedAgenteId = agenteSelect.value; // Obtener el ID del agente seleccionado
+    departamentoSelect.addEventListener("click", function () {
+        var selectedAgenteId = departamentoSelect.value; // Obtener el ID del agente seleccionado
         // Obtener todas las filas de la tabla
-        var rows = document.querySelectorAll("#record-table-citas tbody tr");
+        var rows = document.querySelectorAll("#record-table tbody tr");
 
         // Iterar sobre cada fila y ocultar aquellas que no coincidan con el agente seleccionado
         rows.forEach(function (row) {
-            var agente = row.querySelector("#cAsesor").textContent; // Obtener el ID del agente en la fila
-            var fecha = row.querySelector("#cFecha").textContent;
-            var dateInput = document.getElementById("date2");
+            var agente = row.querySelector("#departamente_agente").textContent; // Obtener el ID del agente en la fila
 
-            // Agregar un evento de escucha para capturar el cambio de fecha
-            var selectedDate = dateInput.value; // Obtener la fecha seleccionada en formato "yyyy-mm-dd"
-
-            // Formatear la fecha como "aaaa-mm-dd"
-            var formattedDate = selectedDate.split("-").join("-");
-            console.log(formattedDate);
-            if ((selectedAgenteId === "" || agente === selectedAgenteId) && (formattedDate === "" || fecha === formattedDate)) {
+            if ((selectedAgenteId === "" || agente === selectedAgenteId)) {
                 row.style.display = ""; // Mostrar la fila si no se seleccionó ningún agente o si coincide con el agente seleccionado
             } else {
                 row.style.display = "none"; // Ocultar la fila si no coincide con el agente seleccionado
             }
         });
     });
+
+    var tabla_control = document.getElementById("record-table-control");
+    function actualizar_tabla() {
+        var url = "/actualizar-tabla-departamentos-control/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+    
+        request.onload = function () {
+            if (request.status === 200) {
+                var response = JSON.parse(request.responseText);
+                var rowCount = tabla_control.rows.length;
+                for (var i = rowCount - 1; i > 0; i--) {
+                    tabla_control.deleteRow(i);
+                }
+                response.tabla.forEach(function (registro) {
+                    var fila = tabla_control.insertRow();
+                    fila.className = 'colorfilas';
+
+                    var depart = fila.insertCell();
+                    depart.className = 'text-center align-middle';
+                    var pDepart = document.createElement("h5");
+                    pDepart.textContent = registro.nombreDepartamento;
+                    pDepart.className = 'mt-2 text-center fw-bold';
+                    pDepart.style.color = 'black';
+                    depart.appendChild(pDepart);
+
+                    var cant = fila.insertCell();
+                    cant.className = 'text-center align-middle';
+                    var pCant = document.createElement("h5");
+                    pCant.textContent = registro.cantidad;
+                    pCant.className = 'mt-2 text-center fw-bold';
+                    pCant.style.color = 'black';
+                    cant.appendChild(pCant);
+
+                });
+            }
+        };
+    
+        request.send();
+    }
+
+    setInterval(function() {
+        actualizar_tabla();
+    }, 1000);
+
+    function cargarDepartamentosLey() {
+        var select2 = document.getElementById("departamento_ley");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_ley(departamento) {
+        var departamento_select = document.getElementById('departamento_ley');
+        var url = "/crear-ticket-ley/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(departamento_select.value), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);3
+                $('#modal_ley').modal('hide');
+            }
+        };
+        request.send();
+        
+    }
 </script>
 {% endblock %}

@@ -2,8 +2,8 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioLlamado, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
-from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, llamado, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioLey, FormularioLlamado, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, ley700, llamado, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import date
 
 def save_configuration(request, visualizador_id, campo, nuevo_valor):
@@ -339,31 +339,41 @@ def save_ticket(request, data):
     else:
         return False
     
-def obtener_primero_dato(departamentoNombre, tramiteNombre):
+def obtener_primero_dato(request, departamentoNombre, tramiteNombre):
     try:
         cita = departamentos.objects.get(nombre=departamentoNombre)
         fecha_actual = date.today().strftime('%Y-%m-%d')
-        if tramiteNombre == 'N/A':
-            ultimo_dato = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
-            return ultimo_dato
-        else:
-            tramiteNombre = tramiteNombre.split(",")
-            if cita.citasDepartamento:
-                tramiteNombre.append('Cita')
-                
-            ultimo_dato = None
-
-            ticket = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).order_by('id_ticket')   
-            for tk in ticket:
-                for tramite in tramiteNombre:
-                    if tramite == tk.tramite:
-                        ultimo_dato = tk
-                        return ultimo_dato
-            if ultimo_dato is None:
-                dato = tickets(codigo = '000')
-                return dato
-            else:
+        try:
+            departamento = departamentos.objects.get(nombre=departamentoNombre)
+            ventanilla_actual = request.session.get('agente_ventanilla')
+            ley = ley700.objects.get(departamento=departamento.pk, ventanilla=ventanilla_actual)
+            ley_tk = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre, tramite='7600').earliest('id_ticket')
+            return ley_tk
+        except:
+            ley_tk = False
+        
+        if ley_tk == False:
+            if tramiteNombre == 'N/A':
+                ultimo_dato = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).earliest('id_ticket')
                 return ultimo_dato
+            else:
+                tramiteNombre = tramiteNombre.split(",")
+                if cita.citasDepartamento:
+                    tramiteNombre.append('Cita')
+                    
+                ultimo_dato = None
+
+                ticket = tickets.objects.filter(atendido=False, estado='N/A', fecha=fecha_actual, departamento=departamentoNombre).order_by('id_ticket')   
+                for tk in ticket:
+                    for tramite in tramiteNombre:
+                        if tramite == tk.tramite:
+                            ultimo_dato = tk
+                            return ultimo_dato
+                if ultimo_dato is None:
+                    dato = tickets(codigo = '000')
+                    return dato
+                else:
+                    return ultimo_dato
     except tickets.DoesNotExist:
         dato = tickets(codigo = '000')
         return dato
@@ -373,6 +383,8 @@ def obtener_ultimo_dato(departamentoNombre, tramiteNombre):
         fecha_actual = date.today().strftime('%Y-%m-%d')
         if tramiteNombre == 'N/A':
             ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre).latest('id_ticket')
+        elif tramiteNombre == '7600':
+            ultimo_dato = tickets.objects.filter(fecha=fecha_actual, tramite=tramiteNombre).latest('id_ticket')
         else:
             ultimo_dato = tickets.objects.filter(fecha=fecha_actual, departamento=departamentoNombre, tramite=tramiteNombre).latest('id_ticket')
 
@@ -493,4 +505,29 @@ def eliminar_llamado(id_llamado):
         atencion_obj.delete()
         return True
     except llamado.DoesNotExist:
+        return False
+    
+def save_ley(request, data):
+    form = FormularioLey(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+
+def update_ley(request, data):
+    try:
+        atencion_obj = ley700.objects.get(id_ley=data['id_ley'])
+        atencion_obj.ventanilla = data['ventanilla']
+        atencion_obj.save()
+        return True
+    except ley700.DoesNotExist:
+        return False
+
+def eliminar_ley(id_ley):
+    try:
+        atencion_obj = ley700.objects.get(id_ley=id_ley)
+        atencion_obj.delete()
+        return True
+    except ley700.DoesNotExist:
         return False

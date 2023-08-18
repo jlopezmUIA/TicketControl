@@ -1,7 +1,7 @@
 from django import forms
 
 import tickets
-from .models import agentes, atencion, citas, departamentos, llamado, metricas, estadosAgente, casosAgente, ticketControl, tiemposAgente, tramites, tickets
+from .models import agentes, atencion, citas, departamentos, ley700, llamado, metricas, estadosAgente, casosAgente, ticketControl, tiemposAgente, tramites, tickets
 
 class FormularioAgente(forms.ModelForm):
     class Meta:
@@ -67,3 +67,8 @@ class FormularioLlamado(forms.ModelForm):
     class Meta:
         model = llamado
         fields = ('texto', )
+        
+class FormularioLey(forms.ModelForm):
+    class Meta:
+        model = ley700
+        fields = ('departamento', 'ventanilla' )

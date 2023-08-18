@@ -115,6 +115,7 @@
 <script>
     window.onload = function () {
         cargarDepartamentos();
+        //ventanilla();
     };
 
     function cargarDepartamentos() {
@@ -175,5 +176,43 @@
             });
         }
     }
+
+    function ventanilla() {
+        var url = "/ventanillas-disponibles/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                deshabilitarOpciones(data.list_si);
+                habilitarOpciones(data.list_no);
+            }
+        };
+        request.send();
+    }
+
+    function deshabilitarOpciones(listaNumeros) {
+        const select = document.getElementById('ventanilla');
+        const opciones = select.options;
+    
+        for (let i = 0; i < opciones.length; i++) {
+            if (listaNumeros.includes(opciones[i].value)) {
+                opciones[i].disabled = true;
+            }
+        }
+    }
+
+    function habilitarOpciones(listaNumeros) {
+        const select = document.getElementById('ventanilla');
+        const opciones = select.options;
+    
+        for (let i = 0; i < opciones.length; i++) {
+            if (listaNumeros.includes(opciones[i].value)) {
+                opciones[i].disabled = false;
+            }
+        }
+    }
+
+    //setInterval(ventanilla(), 600000);
 </script>
 {% endblock %}

@@ -132,6 +132,37 @@
 </div>
 {% endblock modal_citas %}
 
+<!-- Model de Cambio de data -->
+{% block modal_ley %}
+<div class="modal fade" id="modal_ley" tabindex="-1" aria-labelledby="modal_leyTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">TIQUETE PREFERENCIAL</h1>
+                            <p style="text-align: center; font-size: 25px; color: #878787; font-weight: bold;">Seleccioná el departamento al que deseas dirigirte.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3 mt-3" style="align-items: center; justify-content: center;">
+                        <select id="departamento_ley" data-placeholder="Seleccione Departamento"
+                            class="roundedInput form-select" name="departamento_ley" required>
+                        </select>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <button class="btnStyle2 btn btn-lg fw-bold pt-1 pb-1 mb-5 mt-1"
+                        type="button" id="btnGenerar" onclick="crear_ticket_ley()"><p style="font-size: 30px;" class="mt-3 mb-3">Generar Ticket</p></button>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_ley %}
+
 <style>
     .modal-dialog.custom-modal-lg {
         max-width: 75%; /* Puedes ajustar el porcentaje según tus necesidades */
@@ -366,5 +397,42 @@
         request.send();
     }
 
+    function cargarDepartamentos() {
+        var select2 = document.getElementById("departamento_ley");
+
+        var url = "/obtener-departamentos/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = key;
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    function crear_ticket_ley(departamento) {
+        var departamento_select = document.getElementById('departamento_ley');
+        var url = "/crear-ticket-ley/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(departamento_select.value), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);3
+                $('#modal_ley').modal('hide');
+            }
+        };
+        request.send();
+        
+    }
 </script>
 {% endblock %}
