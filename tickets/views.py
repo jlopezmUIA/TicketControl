@@ -1030,6 +1030,9 @@ def ticket_maker(request):
 def crear_ticket(request):
     dato = request.GET.get("departamento")
     ticket = dato.split(",")
+    
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
 
     if len(ticket) > 1:
         tramitesData = tramites.objects.get(id_tramites=ticket[1])
@@ -1051,6 +1054,7 @@ def crear_ticket(request):
             'departamento': departamentoData.nombre,
             'tramite': tramite,
             'fecha': fecha_actual,
+            'hora': hora_actual_str,
             'atentido': False,
             'estado': 'N/A'
         }
@@ -1063,6 +1067,7 @@ def crear_ticket(request):
             'departamento': departamentoData.nombre,
             'tramite': tramite,
             'fecha': fecha_actual,
+            'hora': hora_actual_str,
             'atentido': False,
             'estado': 'N/A'
         }
@@ -1436,6 +1441,9 @@ def actualizar_tabla_citas(request):
 def crear_ticket_cita(request):
     dato = request.GET.get("departamento")
     identificacion = request.GET.get("identificacion")
+    
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
 
     departamentoData = departamentos.objects.get(id_departamentos=dato)
 
@@ -1451,6 +1459,7 @@ def crear_ticket_cita(request):
         'departamento': departamentoData.nombre,
         'tramite': 'Cita',
         'fecha': fecha_actual,
+        'hora': hora_actual_str,
         'atentido': False,
         'estado': 'N/A'
     }
@@ -1614,6 +1623,9 @@ def eliminar_ley7600(request):
 
 def crear_ticket_ley(request):
     dato = request.GET.get("departamento")
+    
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
 
     departamentoData = departamentos.objects.get(id_departamentos=dato)
     tramite = '7600'
@@ -1628,6 +1640,7 @@ def crear_ticket_ley(request):
         'departamento': departamentoData.nombre,
         'tramite': tramite,
         'fecha': fecha_actual,
+        'hora': hora_actual_str,
         'atentido': False,
         'estado': 'N/A'
     }

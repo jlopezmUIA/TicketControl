@@ -103,6 +103,7 @@ class tickets(models.Model):
     departamento = models.CharField(max_length=60)
     tramite = models.CharField(max_length=60)
     fecha = models.CharField(max_length=60)
+    hora = models.CharField(max_length=60)
     atendido = models.BooleanField(default=False)
     estado = models.CharField(max_length=60)
 

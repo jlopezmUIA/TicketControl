@@ -56,7 +56,7 @@ class FormularioTramites(forms.ModelForm):
 class FormularioTickets(forms.ModelForm):
     class Meta:
         model = tickets
-        fields = ('codigo', 'departamento', 'tramite', 'fecha', 'atendido', 'estado')
+        fields = ('codigo', 'departamento', 'tramite', 'fecha', 'hora', 'atendido', 'estado')
 
 class FormularioCitas(forms.ModelForm):
     class Meta:
