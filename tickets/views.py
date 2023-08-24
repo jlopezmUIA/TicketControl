@@ -14,8 +14,16 @@ from django.contrib.auth.forms import UserCreationForm
 import threading
 from .impresion import imprimir
 from django.db.models import F
+from django.template import RequestContext
+from django.http import HttpResponseServerError
 from django.contrib.auth.forms import AuthenticationForm
 from tickets.savedata import delete_agente, eliminar_ley, eliminar_llamado, marcar_estado_ticket, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+
+def error_404(request, exception):
+    return render(request, '404.html', status=404)
+
+def error_500(request):
+    return render(request, '500.html', status=500)
 
 def home(request):
     request.session.flush() 

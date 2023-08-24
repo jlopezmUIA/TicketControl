@@ -78,6 +78,9 @@ from .views import (
     nueva_ley7600,
     eliminar_ley7600,
     crear_ticket_ley,
+    
+    error_500,
+    error_404,
 )
 
 from .savedata import obtener_datos
@@ -169,4 +172,7 @@ urlpatterns = [
     path('nueva-ley/', nueva_ley7600, name='nueva_ley'),
     path('eliminar-ley/', eliminar_ley7600, name='eliminar_ley'),
     path('crear-ticket-ley/', crear_ticket_ley, name='crear_ticket_ley'),
+    
+    path('500/', error_500, name='error_500'),
+    path('404/', error_404, name='error_404'),
 ]
