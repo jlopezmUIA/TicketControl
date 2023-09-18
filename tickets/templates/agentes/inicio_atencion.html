@@ -48,16 +48,15 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6">
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
-                            <div class="col-md-6 justify-content-center">
-                                <button class="btnStyle btn btn-md btn-login mb-2 mr-2" type="button"
-                                    id="btnSiguiente" onclick="siguienteNumero()">Siguiente</button>
-                                <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button"
-                                    id="btnTerminar" onclick="terminar()">Terminar</button>
+                            <div class="d-flex justify-content-between mx-auto">
+                                <button class="btnStyle btn btn-md btn-login mb-2" type="button"
+                                id="btnSiguiente" onclick="siguienteNumero()" style="display: none;">Siguiente</button>
+                                <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button" id="btnTerminar" onclick="terminar()">Terminar</button>
+                                <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button" id="btnTerminarVarios" onclick="terminar_varios()">Terminar Varios</button>
                             </div>
-
-                            <button id="btnTransferir" type="button" class="btnStyle btn btn-md mb-2"
-                            type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Transferir</button>
-              
+                            <div class="row d-flex justify-content-center mx-auto">
+                                <button id="btnTransferir" type="button" class="btnStyle btn btn-md mb-2" style="display: none;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">Transferir</button>
+                            </div>
                         </div>
                         <div class="justify-content-center flex-wrap mx-auto " id="divCliente" style="display: none;">
                             <div class="d-flex justify-content-center">
@@ -588,7 +587,8 @@
         var select = document.getElementById("status_select");
         var estadoactual = document.getElementById("status_select").value;
         var boton = document.getElementById("btnSiguiente");
-        var botonT = document.getElementById("btnTerminar")
+        var botonT = document.getElementById("btnTerminar");
+        var botonTV = document.getElementById("btnTerminarVarios");
         var boton2 = document.getElementById("btnTransferir");
         var boton3 = document.getElementById("btnSalir");
         var numero = document.getElementById("txtNumero");
@@ -599,10 +599,13 @@
             detenerContador();
             select.disabled = false;
             boton.disabled = true;
-            boton.style.display = 'block';
+            boton.style.display = 'none';
             botonT.disabled = true;
             botonT.style.display = 'none';
+            botonTV.disabled = true;
+            botonTV.style.display = 'none';
             boton2.disabled = true;
+            boton2.style.display = 'none';
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
             contador.style.display = 'none';
@@ -612,10 +615,13 @@
             iniciarContador();
             select.disabled = false;
             boton.disabled = true;
-            boton.style.display = 'block';
+            boton.style.display = 'none';
             botonT.disabled = true;
             botonT.style.display = 'none';
+            botonTV.disabled = true;
+            botonTV.style.display = 'none';
             boton2.disabled = true;
+            boton2.style.display = 'none';
             boton3.classList.remove("disabled");
             numero.innerHTML = 'N/C';
             contador.style.display = 'block';
@@ -628,7 +634,10 @@
             boton.style.display = 'block';
             botonT.disabled = true;
             botonT.style.display = 'none';
+            botonTV.disabled = true;
+            botonTV.style.display = 'none';
             boton2.disabled = true;
+            boton2.style.display = 'none';
             boton3.classList.add("disabled");
             numero.innerHTML = 'N/C';
             contador.style.display = 'none';
@@ -641,7 +650,10 @@
             boton.style.display = 'none';
             botonT.disabled = false;
             botonT.style.display = 'block';
+            botonTV.disabled = false;
+            botonTV.style.display = 'block';
             boton2.disabled = false;
+            boton2.style.display = 'block';
             boton3.classList.add("disabled");
             contador.style.display = 'none';
             cola.disabled = true;
@@ -699,6 +711,23 @@
         var cliente = document.getElementById("divCliente");
         var estadoactual = document.getElementById("status_select");
         var url = "/terminar-ticket/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                estadoactual.selectedIndex = 1;
+                cliente.style.display = 'none';
+                estados();
+            }
+        };
+        request.send();
+    }
+
+    function terminar_varios(){
+        var cliente = document.getElementById("divCliente");
+        var estadoactual = document.getElementById("status_select");
+        var url = "/terminar-ticket-varios/";
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.onload = function () {
@@ -789,6 +818,8 @@
                 }
                 response.tabla.forEach(function (registro) {
                     var fila = tabla.insertRow();
+                    fila.className = 'registro-tramite';
+                    fila.setAttribute('data-nombre', registro.nombreDepartamento);
 
                     var depart = fila.insertCell();
                     depart.className = '';
@@ -807,6 +838,14 @@
                     cant.appendChild(pCant);
 
                 });
+                if (response.cola) {
+                    var colaNoAgente = []
+                    response.cola.forEach(function (colaName) {
+                        SinAgenteCola(colaName.nombreDepartamento);
+                        colaNoAgente.push(colaName.nombreDepartamento);
+                    });
+                    notificacionColaAtencion(colaNoAgente);
+                }
                 if (noti === 'True'){
                     notificacion();
                 }
@@ -1058,6 +1097,32 @@
                     resizeObj.show_notification("Ha llegado un nuevo cliente.");
                 }
             });
+        }
+    }
+
+    function notificacionColaAtencion(cola) {
+        if (typeof QWebChannel !== 'undefined') {
+            new QWebChannel(qt.webChannelTransport, function (channel) {
+                var resizeObj = channel.objects.resizeObj;
+                if (resizeObj) {
+                    resizeObj.show_notification("Ha llegado un nuevo cliente para trámite: \n"+cola+".\nNo hay agentes asignados para la atencion.");
+                }
+            });
+        }
+    }
+
+    function SinAgenteCola(cola) {
+        for (var j = 0; j < 20; j++) {
+            setTimeout(function () {
+                var filas = document.querySelectorAll(".registro-tramite");
+                for (var i = 0; i < filas.length; i++) {
+                    var fila = filas[i];
+                    var nombreTramite = fila.getAttribute("data-nombre");
+                    if (nombreTramite === cola) {
+                        fila.style.backgroundColor = "#ffd142";
+                    }
+                }
+            }, j * 1000);
         }
     }
 

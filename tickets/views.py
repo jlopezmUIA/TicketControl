@@ -17,7 +17,7 @@ from django.db.models import F
 from django.template import RequestContext
 from django.http import HttpResponseServerError
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_ley, eliminar_llamado, marcar_estado_ticket, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+from tickets.savedata import delete_agente, eliminar_ley, eliminar_llamado, marcar_estado_ticket, marcar_estado_ticket_unico, marcar_estado_ticket_varios, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
@@ -224,7 +224,6 @@ def registroAgente(request):
         save = save_estados_agente(request, data_estados_agente)
         if save is not None:
             request.session['estadoactual'] = save.id_estado
-
     request.session.flush() 
     return render(request, 'agentes/registro_agente.html')
 
@@ -260,6 +259,7 @@ def inicio_atencion(request):
         request.session['departamentoAgente'] = departamento
         request.session['cantCitas'] = 0
         request.session['cantClientes'] = 0
+        request.session["colaNoAtendida"] = {}
         delete = eliminar_atencion(agente)
         save = save_atencion(request, data_atencion)
 
@@ -517,6 +517,29 @@ def terminar_ticket(request):
     fecha_actual = date.today().strftime('%Y-%m-%d')
     hora_actual = datetime.now()
     hora_actual_str = hora_actual.strftime('%H:%M:%S')
+    
+    idticket = request.session.get('cliente')
+    
+    save = marcar_estado_ticket_unico(idticket)
+
+    if 'idtiempo' in request.session:
+        save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
+        del request.session['idtiempo']
+
+    request.session['cliente'] = 'N/A'
+    request.session.save()
+
+    return JsonResponse(data, status=200, safe=False)
+
+def terminar_ticket_varios(request):
+    data = {}
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
+    
+    idticket = request.session.get('cliente')
+    
+    save = marcar_estado_ticket_varios(idticket)
 
     if 'idtiempo' in request.session:
         save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
@@ -1140,39 +1163,40 @@ def control_citas(request):
 @login_required
 def nuevacita(request):
     departamento_cita = request.POST.get('departamento_cita')
+    agentes_cita = request.POST.get('agente_cita')
     identificacion = request.POST.get('identificacion')
     nombre = request.POST.get('nombre')
     telefono = request.POST.get('telefono')
     fecha = request.POST.get('fecha')
     hora = request.POST.get('hora')
 
-    departamentoSelected = departamentos.objects.get(alias=departamento_cita)
+    departamentoSelected = departamentos.objects.get(nombre=departamento_cita)
 
-    cita = citas.objects.filter(fecha=fecha, hora=hora, departamento=departamentoSelected.nombre)
-    agente = agentes.objects.filter(departamento=departamentoSelected.nombre)
+    # cita = citas.objects.filter(fecha=fecha, hora=hora, departamento=departamentoSelected.nombre)
+    # agente = agentes.objects.filter(departamento=departamentoSelected.nombre)
     
-    while True:
-        agente_aleatorio = agente.order_by('?').first()
-        n = 0
-        while True:
-            try:
-                if agente_aleatorio.nombreAgente != cita[n].nombreAgente:
-                    n+=1
-                    agente_diferente = True
-                else:
-                    agente_diferente = False
-                    break
-            except:
-                agente_diferente = True
-                break
+    # while True:
+    #     agente_aleatorio = agente.order_by('?').first()
+    #     n = 0
+    #     while True:
+    #         try:
+    #             if agente_aleatorio.nombreAgente != cita[n].nombreAgente:
+    #                 n+=1
+    #                 agente_diferente = True
+    #             else:
+    #                 agente_diferente = False
+    #                 break
+    #         except:
+    #             agente_diferente = True
+    #             break
 
-        if agente_diferente:
-            break
+    #     if agente_diferente:
+    #         break
                 
     cita_list = {
         'departamento': departamentoSelected.nombre,
-        'nombreAgente': agente_aleatorio.nombreAgente,
-         'identificacion': identificacion,
+        'nombreAgente': agentes_cita,
+        'identificacion': identificacion,
         'nombreCliente': nombre,
         'telefono': telefono,
         'fecha': str(fecha),
@@ -1260,6 +1284,7 @@ def actualizar_tabla_departamentos(request):
     
     cantCitas = request.session.get('cantCitas')
     cantClientes = request.session.get('cantClientes')
+    colaNoAtendida = request.session.get("colaNoAtendida")
     
     if 'departamentoAgente' in request.session:
         depart = request.session.get('departamentoAgente')
@@ -1291,16 +1316,30 @@ def actualizar_tabla_departamentos(request):
                     'cantidad': cant_cita
                 }
                 tabular_records.append(tabular_record_citas)
-                
+            tabular_colas = []
+            tabular_cola = {}
+            colas_filtradas = atencion.objects.exclude(estadoAtencion='Desconectado')
             for tr in tramite:
                 cant = tickets.objects.filter(tramite=tr.nombre, atendido=False, fecha=fecha_actual).count()
                 if cant > 0:
+                    #Analisis de colas
+                    colas_exist = colas_filtradas.filter(colaAtencion__icontains=tr.nombre).exists()
+                    if colas_exist:
+                        pass
+                    else:
+                        tabular_cola = {
+                            'nombreDepartamento':tr.nombre
+                        }
+                        request.session["colaNoAtendida"] = tabular_cola
+                        tabular_colas.append(tabular_cola)
                     tabular_record = {
                         'nombreDepartamento':tr.nombre,
                         'cantidad': cant
                     }
                     tabular_records.append(tabular_record)
-            
+            if tabular_cola and colaNoAtendida != tabular_cola:
+                dict['cola'] = tabular_colas
+                
             if cant_cita < cantCitas:  
                 status=202
             else:
@@ -1333,12 +1372,13 @@ def actualizar_tabla_departamentos(request):
                     }
                     tabular_records.append(tabular_record)
             
-            if cant_cita < cantCitas:  
+            if cant_cita < cantCitas:   
                 status=202
             else:
                 status=202
         else:
             status=302
+            
     else:
         tabular_records = []
         cant_cliente = tickets.objects.filter(departamento=departamento.nombre, atendido=False, fecha=fecha_actual).count()

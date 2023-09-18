@@ -410,7 +410,27 @@ def marcar_estado_ticket(id):
     try:
         fecha_actual = date.today().strftime('%Y-%m-%d')
         admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
-        admision_obj.estado = 'CnP'
+        admision_obj.estado = 'N/P'
+        admision_obj.save()
+        return True
+    except tickets.DoesNotExist:
+        return False 
+    
+def marcar_estado_ticket_varios(id):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
+        admision_obj.estado = 'VariosTramites/A'
+        admision_obj.save()
+        return True
+    except tickets.DoesNotExist:
+        return False 
+    
+def marcar_estado_ticket_unico(id):
+    try:
+        fecha_actual = date.today().strftime('%Y-%m-%d')
+        admision_obj = tickets.objects.get(pk=id, fecha=fecha_actual)
+        admision_obj.estado = 'UnicoTramite/A'
         admision_obj.save()
         return True
     except tickets.DoesNotExist:

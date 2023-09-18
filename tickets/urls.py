@@ -63,6 +63,7 @@ from .views import (
     crear_ticket_cita,
 
     terminar_ticket,
+    terminar_ticket_varios,
     siguiente_ticket,
     no_presente,
     llamar_ticket,
@@ -156,6 +157,7 @@ urlpatterns = [
     path('crear-ticket-cita/', crear_ticket_cita, name='crear_ticket_cita'),
 
     path('terminar-ticket/', terminar_ticket, name='terminar_ticket'),
+    path('terminar-ticket-varios/', terminar_ticket_varios, name='terminar_ticket_varios'),
     path('siguiente-ticket/', siguiente_ticket, name='siguiente_ticket'),
     path('no-presente/', no_presente, name='no_presente'),
     path('llamar-ticket/', llamar_ticket, name='llamar_ticket'),

@@ -29,7 +29,7 @@
                           <span class="image-text">Neutral</span>
                         </div>
                         <div id="img3" class="col text-center pulse-animation hide-elements">
-                          <a onclick="metricas('Insatisfecho');"><img src="{% static 'img/depressed.png' %}" width="120px" height="120px"></a>
+                          <a data-bs-toggle="modal" data-bs-target="#modal_insatisfecho"><img src="{% static 'img/depressed.png' %}" width="120px" height="120px"></a>
                           <span class="image-text">Insatisfecho</span>
                         </div>
                     </div>
@@ -43,6 +43,42 @@
 </div>
 </div>
 
+<!-- Model de Cambio de data -->
+{% block modal_insatisfecho %}
+<div class="modal fade" id="modal_insatisfecho" tabindex="-1" aria-labelledby="modal_insatisfechoTitle" style="display: none"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered custom-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <main class="form-signin">
+                    <div class="row">
+                        <div class="form-floating" style="margin-bottom: 1px;">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h2 class="modal-title" style="text-align: center; font-weight: 900; color: #000000;" id="modal_tramitesTitle">DETALLE DE ENCUESTA</h2>
+                            <p style="text-align: center; font-size: 20px; color: #878787; font-weight: bold;">Seleccioná motivo de tu insatisfacción.</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="align-items: center; justify-content: center;">
+                        <select ontouchstart="" onchange="obtenerValorSelect();" id="tramites_select" class="form-select form-select-lg mb-3 mt-3 roundedInput" name="tramites_select" >
+                            <option selected disabled>Abrir para seleccionar.</option>
+                            <option value="Tiempo de espera.">Tiempo de espera.</option>
+                            <option value="Trámites lentos en ventanilla.">Trámites lentos en ventanilla.</option>
+                            <option value="Mala atencion brindada.">Mala atencion brindada.</option>
+                            <option value="No resolución del caso.">No resolución del caso.</option>
+                            <option value="Información incompleta.">Información incompleta.</option>
+                            <option value="Mal manejo de la información.">Mal manejo de la información.</option>
+                        </select>
+                    </div>
+                    <div class="row mt-2" style="justify-content: center;">
+                        <img src="{% static 'img/uia_logo.png' %}" alt="" style="width: 130px; height: 70px;">
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock modal_insatisfecho %}
+
 <style>
     @keyframes pulse {
         0% {
@@ -54,6 +90,23 @@
         100% {
           transform: scale(1);
         }
+    }
+
+    .roundedInput {
+        border-radius: 50px;
+        text-align: justify;
+        font-size: 25px;
+        padding: 10px;
+        padding-left: 30px;
+        font-family: 'Abrade';
+        font-weight: 600;
+        width: 70%;
+    }
+
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
     }
       
     .pulse-animation {
@@ -187,6 +240,13 @@
         txtPregunta.hidden = false;
         txtGracias.hidden = true;
         txtGracias2.hidden = true;
+    }
+
+    function obtenerValorSelect(){
+        var tramites_select = document.getElementById('tramites_select');
+        metricas(tramites_select.value);
+        $('#modal_insatisfecho').modal('hide');
+        tramites_select.selectedIndex = 0;
     }
 
     function metricas(metrica) {

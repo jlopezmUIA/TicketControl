@@ -145,7 +145,12 @@
                             <div class="row ">
                                 <div class="mb-3">
                                     <select id="departamento_cita" data-placeholder="Seleccione Departamento"
-                                        class="roundedInput form-select" name="departamento_cita" required>
+                                        class="roundedInput form-select" name="departamento_cita" onchange="cargarAgentesCita()" required>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <select id="agente_cita" data-placeholder="Seleccione Agente"
+                                        class="roundedInput form-select" name="agente_cita" required>
                                     </select>
                                 </div>
                                 <div class=" mb-3">
@@ -361,7 +366,7 @@
     function cargarDepartamentosCita() {
         var select2 = document.getElementById("departamento_cita");
 
-        var url = "/obtener-departamentos-cita/";
+        var url = "/obtener-departamentos/";
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.onload = function () {
@@ -376,6 +381,7 @@
                         select2.add(option);
                     }
                 }
+                cargarAgentesCita();
             }
         };
         request.send();
@@ -408,6 +414,30 @@
     function cargarAgentes() {
         var select = document.getElementById("departamento").value;
         var select2 = document.getElementById("agente_select");
+
+        var url = "/obtener-agentes/?departamento=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(select), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                select2.options.length = 0;
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        var option = document.createElement("option");
+                        option.value = data[key];
+                        option.text = data[key];
+                        select2.add(option);
+                    }
+                }
+            }
+        };
+        request.send();
+    }
+
+    function cargarAgentesCita() {
+        var select = document.getElementById("departamento_cita").value;
+        var select2 = document.getElementById("agente_cita");
 
         var url = "/obtener-agentes/?departamento=";
         var request = new XMLHttpRequest();
