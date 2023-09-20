@@ -1,12 +1,18 @@
 version: "3"
 
+networks:
+    mynetwork:
+      driver: bridge
+
 services:
+  
   db:
     image: postgres
     ports:
       - "5432:5432"
+    networks:
+      - mynetwork
     environment:
-      - DATABASE_HOST=127.0.0.1
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -21,6 +27,7 @@ services:
     depends_on:
       - db
     environment:
+      - DATABASE_HOST=db
       - TZ=America/Costa_Rica
   pgadmin:
     image: dpage/pgadmin4

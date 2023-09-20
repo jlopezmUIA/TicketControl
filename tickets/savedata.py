@@ -623,8 +623,7 @@ def procesador_datos_crm(request):
                             agente_depart = agentes.objects.filter(departamento=depart_cita.nombre)
                             for agente_d in agente_depart:
                                 agente_normalizado = agente_d.nombreAgente
-                                if unidecode(info['Owner']['name']) in unidecode(agente_normalizado):
-                                    print(unidecode(agente_normalizado))
+                                if unidecode(info['Owner']['name']) in unidecode(agente_normalizado): 
                                     agente_departamento = agente_d
                                     break
                     except agentes.DoesNotExist:
@@ -655,7 +654,7 @@ def procesador_datos_crm(request):
                             'id_crm': info['id'],
                             'departamento': agente_departamento.departamento,
                             'nombreAgente': agente_departamento.nombreAgente,
-                            'identificacion': '117580049',
+                            'identificacion': '117580049', # Debe ser corregido, con CEDULA en API
                             'nombreCliente': info['Who_Id']['name'],
                             'telefono': info['Tel_fono'],
                             'fecha': tiempo_fecha[0],
