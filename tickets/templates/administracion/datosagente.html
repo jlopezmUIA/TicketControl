@@ -79,6 +79,48 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto "  style="margin-top: 80px;">
+            <h5 class="titulo">AGENTES CREADORES DE CITAS</h5>
+            <div class="row">
+                <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto mb-4">
+                    <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
+                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" data-bs-toggle="modal"
+                        data-bs-target="#modal_nuevoagente_cita">Nuevo Agente de Citas</button>
+                        <div class=" table-responsive">
+                            <div class="table-responsive-sm">
+                                <table id="record-table-citas" style="height: 100px;"
+                                    class="table  table-hover table-fixed-height">
+                                    <thead class="table-dark1">
+                                        <tr>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">NOMBRE DE AGENTE</h5>
+                                            </th>
+                                            <th>
+                                                <h5 class="mt-2 text-center fw-bold">ACCIONES</h5>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for a_cita in agente_cita %}
+                                        <tr class="colorfilas">
+                                            <td class="text-center align-middle">
+                                                <h5 id="agente_cita_id" hidden>{{ a_cita.id_agente_cita }}</h5>
+                                                <h5 id="agente_cita_nombre">{{ a_cita.nombreAgente }}</h5>
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente_cita"
+                                                    onclick="modalModificarAgenteCita('eliminar')" class="btn">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto" style="margin-top: 80px;">
             <h5 class="titulo">MÉTRICAS POR AGENTE</h5>
             <div class="row">
@@ -301,9 +343,67 @@
         color: white;
     }
 </style>
-
 {% endblock modal_nuevoagente %}
 
+{% block modal_nuevoagente_cita %}
+<div class="modal fade" id="modal_nuevoagente_cita" tabindex="-1" aria-labelledby="modal_nuevoagente_citaTitle"
+    style="display: none" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-4">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_nuevoagente_citaTitle">
+                    CREACIÓN DE NUEVO AGENTE
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><span class="bi bi-x-lg" style="color: white;"></span></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formModalCita" method="POST" action="{% url 'nuevo_agente_cita' %}">
+                    {% csrf_token %}
+                    <div class="row ">
+                        <div class=" mb-3">
+                            <div class="mb-3">
+                                <input type="text" class="roundedInput form-control" id="id_agente_cita_modal"
+                                    name="id_agente_cita_modal" style="display: none;">
+                                <label for="">Nombre del Agente</label>
+                                <input type="text" class="roundedInput form-control" id="nombre_agente_cita" placeholder="Nombre de Agente"
+                                    name="nombre_agente_cita" required>
+                            </div>
+
+                        </div>
+                        <br>
+                        <div class="d-grid mb-2">
+                            <button type="submit" class="w-100 btn btn-lg btn-primary btn-login fw-bold"
+                                id="btnModalCita">Registrar Agente</button>
+
+                            <div id="loading-indicator" class="hidden">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .roundedInput:focus{
+        outline: 1px solid #ffd142;
+        border-color: #ffd142;
+        box-shadow: 0 0 1px #ffd142;
+    }
+    .modal-header{
+        background-color: #000000;
+        color: white;
+    }
+    .btn-close{
+        color: white;
+    }
+</style>
+
+{% endblock modal_nuevoagente_cita %}
 
 <style>
     .table-dark1{
@@ -496,6 +596,7 @@
         var formDepartamento = document.getElementById("formModal");
 
         nombre_agente.value = "";
+        nombre_agente.disabled = false;
 
         btnModalDepartamento.innerText = "Registrar Agente";
 
@@ -553,8 +654,57 @@
 
             tramite_select.style.display = "none";
             labelDepartamento.style.display = "none";
+            nombre_agente.disabled = true;
         }
 
+    }
+
+    var modal_citas = document.getElementById('modal_nuevoagente_cita');
+
+    modal_citas.addEventListener('hidden.bs.modal', function () {
+        var nombre_agente_cita = document.getElementById("nombre_agente_cita");
+
+        var modal_nuevoagente_citaTitle = document.getElementById("modal_nuevoagente_citaTitle");
+        var btnModalCita = document.getElementById("btnModalCita");
+        var formCita = document.getElementById("formModalCita");
+
+        nombre_agente_cita.value = "";
+        nombre_agente_cita.disabled = false;
+
+        btnModalCita.innerText = "Registrar Agente";
+
+        modal_nuevoagente_citaTitle.innerText = "CREACIÓN DE NUEVO AGENTE";
+
+        formCita.action = "{% url 'nuevo_agente_cita' %}";
+    });
+
+    function modalModificarAgenteCita(accion) {
+        var fila = event.target.closest('tr');
+
+        var agente_cita_id = fila.querySelector('#agente_cita_id').textContent;
+        var agente_cita_nombre = fila.querySelector('#agente_cita_nombre').textContent;
+
+        var id_agente_cita_modal = document.getElementById("id_agente_cita_modal");
+        var nombre_agente_cita = document.getElementById("nombre_agente_cita");
+
+        var modal_nuevoagente_citaTitle = document.getElementById("modal_nuevoagente_citaTitle");
+        var btnModalCita = document.getElementById("btnModalCita");
+        var formModalCita = document.getElementById("formModalCita");
+
+        id_agente_cita_modal.value = agente_cita_id;
+        nombre_agente_cita.value = agente_cita_nombre;
+
+        if (accion === 'eliminar') {
+            btnModalCita.innerText = "Eliminar Agente";
+
+            modal_nuevoagente_citaTitle.innerText = "ELIMINACIÓN DE AGENTE";
+
+            formModalCita.action = "{% url 'eliminar_agente_cita' %}";
+
+            tramite_select.style.display = "none";
+
+            nombre_agente_cita.disabled = true;
+        }
     }
 
     $(document).ready(function () { 
@@ -629,6 +779,41 @@
             }
         });
         $('#record-table3').DataTable({
+            select: true,
+            searching: true,
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "select": {
+                    "rows": {
+                        "_": "Seleccionado %d filas",
+                        "0": "Haga clic en una fila para seleccionarla",
+                        "1": "Seleccionado 1 fila"
+                    }
+                }
+            }
+        });
+        $('#record-table-citas').DataTable({
             select: true,
             searching: true,
             language: {

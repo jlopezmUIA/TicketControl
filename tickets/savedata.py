@@ -1,10 +1,12 @@
+import datetime
 import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import requests
-from tickets.forms import FormularioAgente, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioLey, FormularioLlamado, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
-from .models import agentes, atencion, casosAgente, citas, departamentos, estadosAgente, ley700, llamado, ticketControl, tickets, tiemposAgente, tramites, visualizador
-from datetime import date
+from tickets.forms import FormularioAgente, FormularioAgentesCitas, FormularioAtencion, FormularioCasosAgente, FormularioCasosAgenteP, FormularioCitas, FormularioDepartamentos, FormularioEstadosAgente, FormularioLey, FormularioLlamado, FormularioMetricas, FormularioTicketControl, FormularioTickets, FormularioTiemposAgente, FormularioTramites
+from .models import agentes, agentes_citas, atencion, casosAgente, citas, departamentos, estadosAgente, ley700, llamado, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from datetime import date, datetime
+from unidecode import unidecode
 
 def save_configuration(request, visualizador_id, campo, nuevo_valor):
     visor = get_object_or_404(visualizador, pk=visualizador_id)
@@ -62,6 +64,22 @@ def delete_agente(request, agente_id):
         agente.delete()
         return True
     except agentes.DoesNotExist:
+        return False
+    
+def save_agente_cita(request, data):
+    form = FormularioAgentesCitas(data)
+    if form.is_valid():
+        form.save()
+        return True
+    else:
+        return False
+    
+def delete_agente_cita(request, agente_id):
+    try:
+        agente = agentes_citas.objects.get(id_agente_cita=agente_id)
+        agente.delete()
+        return True
+    except agentes_citas.DoesNotExist:
         return False
 
 def save_atencion(request, data):
@@ -506,6 +524,7 @@ def update_cita(request, data):
         atencion_obj = citas.objects.get(id_citas=data['id_cita'])
         atencion_obj.fecha = data['fecha']
         atencion_obj.hora = data['hora']
+        atencion_obj.estado = data['estado']
         atencion_obj.save()
         return True
     except citas.DoesNotExist:
@@ -551,3 +570,102 @@ def eliminar_ley(id_ley):
         return True
     except ley700.DoesNotExist:
         return False
+    
+def procesador_datos_crm(request):
+    dic = {
+        'success': False
+    }
+    
+    session = requests.Session()
+    fecha = date.today().strftime('%Y-%m')
+    fecha1= datetime.today().date()
+    
+    url_auth = 'https://accounts.zoho.com/oauth/v2/token'
+    client_id = '1000.N2XARH4JR2SWSS6J27LSKVE0ZS2PBP'
+    client_secret = '272f89cc64eb3f8912e416adeee0347e5b83292b39'
+    refresh_token = '1000.2d1234c7f7f7b28eb5ac87311660a1c4.1db0b19645370c4e2cfb2c761ae21609'  
+    
+    data = {
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token
+    }
+    
+    response_auth = session.post(url_auth, data=data)
+    
+    if response_auth.status_code == 200:
+        response_data = response_auth.json()
+        access_token = response_data['access_token']
+        
+        agente_cita = agentes_citas.objects.all()
+        
+        for agente in agente_cita:
+            
+            url_cita = "https://www.zohoapis.com/crm/v5/Events/search?criteria=((Creo_Evento:equals:"+agente.nombreAgente+")and(Start_DateTime:greater_equal:"+fecha+"-01T08:00:00-06:00)and(Estado:equals:Agendado)or(Estado:equals:Reagenda grados))"
+            headers = {
+                'Authorization': 'Zoho-oauthtoken '+access_token,
+            }
+            
+            response_cita = session.get(url_cita, headers=headers)
+            
+            if response_cita.status_code == 200:
+                response_data_cita = response_cita.json()
+                
+                for info in response_data_cita['data']:
+                    tiempo = info['Start_DateTime']
+                    tiempo_fecha = tiempo.split('T')
+                    tiempo_hora = tiempo_fecha[1].split('-')
+                    
+                    try:
+                        departamento_cita = departamentos.objects.filter(citasDepartamento=True)
+                        for depart_cita in departamento_cita:
+                            agente_depart = agentes.objects.filter(departamento=depart_cita.nombre)
+                            for agente_d in agente_depart:
+                                agente_normalizado = agente_d.nombreAgente
+                                if unidecode(info['Owner']['name']) in unidecode(agente_normalizado):
+                                    print(unidecode(agente_normalizado))
+                                    agente_departamento = agente_d
+                                    break
+                    except agentes.DoesNotExist:
+                        pass
+                    
+                    try:
+                        verf_cita = citas.objects.get(id_crm=info['id'])
+                        if verf_cita.fecha != tiempo_fecha[0] or verf_cita.hora != tiempo_hora[0]:
+                            fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d")
+                            if fecha1 <= fecha2:
+                                estado = "Pendiente"
+                            elif fecha1 > fecha2:
+                                estado = "Atrasado"
+                            cita_list = {
+                                'id_cita': verf_cita.pk,
+                                'fecha': tiempo_fecha[0],
+                                'hora': tiempo_hora[0],
+                                'estado': estado
+                            } 
+                            save = update_cita(request, cita_list)
+                    except citas.DoesNotExist:
+                        fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d").date()
+                        if fecha1 <= fecha2:
+                            estado = "Pendiente"
+                        elif fecha1 > fecha2:
+                            estado = "Atrasado"
+                        cita_list = {
+                            'id_crm': info['id'],
+                            'departamento': agente_departamento.departamento,
+                            'nombreAgente': agente_departamento.nombreAgente,
+                            'identificacion': '117580049',
+                            'nombreCliente': info['Who_Id']['name'],
+                            'telefono': info['Tel_fono'],
+                            'fecha': tiempo_fecha[0],
+                            'hora': tiempo_hora[0],
+                            'estado': estado
+                        }
+
+                        save = save_cita(request, cita_list)
+            else:
+                pass
+        return JsonResponse(dic, safe=False, status=200)
+    else:
+        return JsonResponse(dic, safe=False, status=400)

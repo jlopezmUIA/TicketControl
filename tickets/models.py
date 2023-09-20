@@ -109,6 +109,7 @@ class tickets(models.Model):
 
 class citas(models.Model): 
     id_citas = models.AutoField(primary_key=True)
+    id_crm = models.CharField(max_length=60)
     codigo = models.CharField(max_length=60)
     departamento = models.CharField(max_length=60)
     nombreAgente = models.CharField(max_length=70)
@@ -130,3 +131,7 @@ class ley700(models.Model):
                             null=True,
                             blank=True)
     ventanilla = models.CharField(max_length=60) 
+
+class agentes_citas(models.Model):
+    id_agente_cita = models.AutoField(primary_key=True)
+    nombreAgente = models.CharField(max_length=60)

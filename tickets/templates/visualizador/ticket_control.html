@@ -284,7 +284,21 @@
         request.send();
     }
 
+    function citas_act(){
+        var url = "/procesador-datos-crm/";
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                console.log('Correcto Proceso');
+            }
+        };
+        request.send();
+    }
+
     setInterval(actualizar_tabla, 1000);
+    setInterval(citas_act, 30000);
 </script>
 {% endblock %}
 

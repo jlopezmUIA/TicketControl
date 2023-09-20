@@ -7,17 +7,15 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.models import agentes, citas, departamentos, ley700, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
+from tickets.models import agentes, agentes_citas, citas, departamentos, ley700, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
 import threading
 from .impresion import imprimir
-from django.db.models import F
-from django.template import RequestContext
-from django.http import HttpResponseServerError
+from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm
-from tickets.savedata import delete_agente, eliminar_ley, eliminar_llamado, marcar_estado_ticket, marcar_estado_ticket_unico, marcar_estado_ticket_varios, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
+from tickets.savedata import delete_agente, delete_agente_cita, eliminar_ley, eliminar_llamado, marcar_estado_ticket, marcar_estado_ticket_unico, marcar_estado_ticket_varios, procesador_datos_crm, save_agente_cita, save_ley, save_llamado, update_cita, eliminar_cita, eliminar_atencion, eliminar_departamento, eliminar_tramite, marcar_ticket, obtener_caso, obtener_cola, obtener_departamento, obtener_primero_dato, obtener_ultimo_dato, obtener_ventanilla, save_agente, save_atencion, save_casos_agente, save_cita, save_configuration, save_departamento, save_estados_agente, save_metricas, save_ticket, save_ticketcontrol, save_tiempos_agente, save_tramite, update_agente, update_casos_agente, update_cola, update_configuration, update_departamento, update_estado, update_estados_agente, update_tiempos_agente, update_tramite
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
@@ -49,7 +47,10 @@ class Logueo(FormView):
                 return redirect('configuracion')
             elif user.username == 'recepcion':
                 return redirect('recepcion')
+            elif user.username == 'callcenter':
+                return redirect('control_citas_callcenter')
             else:
+                procesador_datos_crm(self.request)
                 return redirect('admin_side')
         else:
             # El usuario no existe o las credenciales son inválidas
@@ -186,9 +187,10 @@ def recepcion(request):
 @login_required
 def datosagente(request):
     agente = agentes.objects.all()
+    agente_cita = agentes_citas.objects.all()
     records = tiemposAgente.objects.all().order_by('-fecha')
     encuestas = metricas.objects.all().order_by('-fecha')
-    return render(request, 'administracion/datosagente.html', {'records':records, 'agentes': agente, 'encuestas': encuestas})
+    return render(request, 'administracion/datosagente.html', {'records':records, 'agente_cita': agente_cita, 'agentes': agente, 'encuestas': encuestas})
 
 @login_required
 def nuevoagente(request):
@@ -200,6 +202,15 @@ def nuevoagente(request):
         'nombreAgente': nombreagente
     }
     save = save_agente(request, data_agente)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def nuevoagentecita(request):
+    nombreagente = request.POST.get('nombre_agente_cita')
+    data_agente = {
+        'nombreAgente': nombreagente
+    }
+    save = save_agente_cita(request, data_agente)
     return redirect(request.META.get('HTTP_REFERER'))
 
 def registroAgente(request):
@@ -469,8 +480,7 @@ def numero_agente(request):
             marcar_ticket(numero.pk)
             if numero.tramite == 'Cita':
                 cita = citas.objects.get(codigo=numero.codigo, estado='Asesor no disponible')
-                cita.estado = 'Recibido de otro asesor'
-                cita.nombreAgente = agente_departamento.nombreAgente
+                cita.estado = 'Recibido de otro asesor: '+ agente_departamento.nombreAgente
                 cita.save()
             caso = True
 
@@ -1138,6 +1148,12 @@ def eliminaragente(request):
     return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
+def eliminaragentecita(request):
+    idagente = request.POST.get('id_agente_cita_modal')
+    save = delete_agente_cita(request, idagente)
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
 def modificaragente(request): 
     id_agente = request.POST.get('id_agente_modal')
     nombre_agente = request.POST.get('nombre_agente')
@@ -1161,6 +1177,12 @@ def control_citas(request):
     return render(request, 'administracion/citas.html', {'records': records, 'agentes': agente})
 
 @login_required
+def control_citas_callcenter(request):
+    records = citas.objects.all().order_by('-fecha')
+    agente = agentes.objects.all()
+    return render(request, 'administracion/citas_callcenter.html', {'records': records, 'agentes': agente})
+
+@login_required
 def nuevacita(request):
     departamento_cita = request.POST.get('departamento_cita')
     agentes_cita = request.POST.get('agente_cita')
@@ -1171,27 +1193,6 @@ def nuevacita(request):
     hora = request.POST.get('hora')
 
     departamentoSelected = departamentos.objects.get(nombre=departamento_cita)
-
-    # cita = citas.objects.filter(fecha=fecha, hora=hora, departamento=departamentoSelected.nombre)
-    # agente = agentes.objects.filter(departamento=departamentoSelected.nombre)
-    
-    # while True:
-    #     agente_aleatorio = agente.order_by('?').first()
-    #     n = 0
-    #     while True:
-    #         try:
-    #             if agente_aleatorio.nombreAgente != cita[n].nombreAgente:
-    #                 n+=1
-    #                 agente_diferente = True
-    #             else:
-    #                 agente_diferente = False
-    #                 break
-    #         except:
-    #             agente_diferente = True
-    #             break
-
-    #     if agente_diferente:
-    #         break
                 
     cita_list = {
         'departamento': departamentoSelected.nombre,
@@ -1535,13 +1536,12 @@ def crear_ticket_cita(request):
         else:
             cita.estado = 'Asesor no disponible'
             cita.codigo = codigo
-            cita.nombreAgente = 'N/A'
             cita.save()
             save_ticket(request, data)
             imprimir(codigo, departamento) 
     except:
         try:
-            cita = citas.objects.get(identificacion=identificacion, estado='Pendiente')
+            cita = citas.objects.get(Q(estado='Pendiente') | Q(estado='Atrasado'), identificacion=identificacion)
             agente = agentes.objects.get(nombreAgente=cita.nombreAgente)
             info = atencion.objects.get(agente=agente.pk)
             estado = estadosAgente.objects.filter(agente=agente.pk, fecha=fecha_actual).last()
@@ -1562,7 +1562,6 @@ def crear_ticket_cita(request):
             else:
                 cita.estado = 'Asesor no disponible'
                 cita.codigo = codigo
-                cita.nombreAgente = 'N/A'
                 cita.fecha = fecha_actual
                 cita.save()
                 save_ticket(request, data)

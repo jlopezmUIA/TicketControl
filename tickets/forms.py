@@ -1,7 +1,7 @@
 from django import forms
 
 import tickets
-from .models import agentes, atencion, citas, departamentos, ley700, llamado, metricas, estadosAgente, casosAgente, ticketControl, tiemposAgente, tramites, tickets
+from .models import agentes, agentes_citas, atencion, citas, departamentos, ley700, llamado, metricas, estadosAgente, casosAgente, ticketControl, tiemposAgente, tramites, tickets
 
 class FormularioAgente(forms.ModelForm):
     class Meta:
@@ -61,7 +61,7 @@ class FormularioTickets(forms.ModelForm):
 class FormularioCitas(forms.ModelForm):
     class Meta:
         model = citas
-        fields = ('departamento', 'identificacion', 'nombreAgente', 'nombreCliente', 'telefono', 'fecha', 'hora', 'estado')
+        fields = ('id_crm', 'departamento', 'identificacion', 'nombreAgente', 'nombreCliente', 'telefono', 'fecha', 'hora', 'estado')
         
 class FormularioLlamado(forms.ModelForm):
     class Meta:
@@ -72,3 +72,8 @@ class FormularioLey(forms.ModelForm):
     class Meta:
         model = ley700
         fields = ('departamento', 'ventanilla' )
+        
+class FormularioAgentesCitas(forms.ModelForm):
+    class Meta:
+        model = agentes_citas
+        fields = ('nombreAgente', )

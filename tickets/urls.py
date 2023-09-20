@@ -50,6 +50,7 @@ from .views import (
     modificaragente,
 
     control_citas,
+    control_citas_callcenter,
 
     actualizar_tabla,
 
@@ -82,9 +83,12 @@ from .views import (
     
     error_500,
     error_404,
+    
+    eliminaragentecita,
+    nuevoagentecita,
 )
 
-from .savedata import obtener_datos
+from .savedata import obtener_datos, procesador_datos_crm
 from django.contrib.auth.views import LogoutView
 
 # Create your models here.
@@ -141,9 +145,13 @@ urlpatterns = [
     path('obtener-todos-departamentos/', obtener_todos_departamentos, name='obtener_todos_departamentos'),
     path('eliminar-agente/', eliminaragente, name='eliminar_agente'),
     path('modificar-agente/', modificaragente, name='modificar_agente'),
+    
+    path('eliminar-agente-cita/', eliminaragentecita, name='eliminar_agente_cita'),
+    path('nuevo-agente-cita/', nuevoagentecita, name='nuevo_agente_cita'),
 
     path('obtener-datos/', obtener_datos, name='obtener_datos'),
     path('control-citas/', control_citas, name='control_citas'),
+    path('control-citas-callcenter/', control_citas_callcenter, name='control_citas_callcenter'),
 
     path('actualizar-tabla/', actualizar_tabla, name='actualizar_tabla'),
 
@@ -177,4 +185,6 @@ urlpatterns = [
     
     path('500/', error_500, name='error_500'),
     path('404/', error_404, name='error_404'),
+    
+    path('procesador-datos-crm/', procesador_datos_crm, name='procesador_datos_crm'),
 ]
