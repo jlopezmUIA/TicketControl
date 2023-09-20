@@ -50,7 +50,6 @@ class Logueo(FormView):
             elif user.username == 'callcenter':
                 return redirect('control_citas_callcenter')
             else:
-                procesador_datos_crm(self.request)
                 return redirect('admin_side')
         else:
             # El usuario no existe o las credenciales son inválidas
