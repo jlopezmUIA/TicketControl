@@ -592,79 +592,84 @@ def procesador_datos_crm(request):
         'refresh_token': refresh_token
     }
     
-    response_auth = session.post(url_auth, data=data)
+    existe_departamento_con_cita = departamentos.objects.filter(citasDepartamento=True).exists()
     
-    if response_auth.status_code == 200:
-        response_data = response_auth.json()
-        access_token = response_data['access_token']
-        
-        agente_cita = agentes_citas.objects.all()
-        
-        for agente in agente_cita:
+    if existe_departamento_con_cita:
+        response_auth = session.post(url_auth, data=data)
+    
+        if response_auth.status_code == 200:
+            response_data = response_auth.json()
+            access_token = response_data['access_token']
             
-            url_cita = "https://www.zohoapis.com/crm/v5/Events/search?criteria=((Creo_Evento:equals:"+agente.nombreAgente+")and(Start_DateTime:greater_equal:"+fecha+"-01T08:00:00-06:00)and(Estado:equals:Agendado)or(Estado:equals:Reagenda grados))"
-            headers = {
-                'Authorization': 'Zoho-oauthtoken '+access_token,
-            }
+            agente_cita = agentes_citas.objects.all()
             
-            response_cita = session.get(url_cita, headers=headers)
-            
-            if response_cita.status_code == 200:
-                response_data_cita = response_cita.json()
+            for agente in agente_cita:
                 
-                for info in response_data_cita['data']:
-                    tiempo = info['Start_DateTime']
-                    tiempo_fecha = tiempo.split('T')
-                    tiempo_hora = tiempo_fecha[1].split('-')
+                url_cita = "https://www.zohoapis.com/crm/v5/Events/search?criteria=((Creo_Evento:equals:"+agente.nombreAgente+")and(Start_DateTime:greater_equal:"+fecha+"-01T08:00:00-06:00)and(Estado:equals:Agendado)or(Estado:equals:Reagenda grados))"
+                headers = {
+                    'Authorization': 'Zoho-oauthtoken '+access_token,
+                }
+                
+                response_cita = session.get(url_cita, headers=headers)
+                
+                if response_cita.status_code == 200:
+                    response_data_cita = response_cita.json()
                     
-                    try:
-                        departamento_cita = departamentos.objects.filter(citasDepartamento=True)
-                        for depart_cita in departamento_cita:
-                            agente_depart = agentes.objects.filter(departamento=depart_cita.nombre)
-                            for agente_d in agente_depart:
-                                agente_normalizado = agente_d.nombreAgente
-                                if unidecode(info['Owner']['name']) in unidecode(agente_normalizado): 
-                                    agente_departamento = agente_d
-                                    break
-                    except agentes.DoesNotExist:
-                        pass
-                    
-                    try:
-                        verf_cita = citas.objects.get(id_crm=info['id'])
-                        if verf_cita.fecha != tiempo_fecha[0] or verf_cita.hora != tiempo_hora[0]:
-                            fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d")
+                    for info in response_data_cita['data']:
+                        tiempo = info['Start_DateTime']
+                        tiempo_fecha = tiempo.split('T')
+                        tiempo_hora = tiempo_fecha[1].split('-')
+                        
+                        try:
+                            departamento_cita = departamentos.objects.filter(citasDepartamento=True)
+                            for depart_cita in departamento_cita:
+                                agente_depart = agentes.objects.filter(departamento=depart_cita.nombre)
+                                for agente_d in agente_depart:
+                                    agente_normalizado = agente_d.nombreAgente
+                                    if unidecode(info['Owner']['name']) in unidecode(agente_normalizado): 
+                                        agente_departamento = agente_d
+                                        break
+                        except agentes.DoesNotExist:
+                            pass
+                        
+                        try:
+                            verf_cita = citas.objects.get(id_crm=info['id'])
+                            if verf_cita.fecha != tiempo_fecha[0] or verf_cita.hora != tiempo_hora[0]:
+                                fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d")
+                                if fecha1 <= fecha2:
+                                    estado = "Pendiente"
+                                elif fecha1 > fecha2:
+                                    estado = "Atrasado"
+                                cita_list = {
+                                    'id_cita': verf_cita.pk,
+                                    'fecha': tiempo_fecha[0],
+                                    'hora': tiempo_hora[0],
+                                    'estado': estado
+                                } 
+                                save = update_cita(request, cita_list)
+                        except citas.DoesNotExist:
+                            fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d").date()
                             if fecha1 <= fecha2:
                                 estado = "Pendiente"
                             elif fecha1 > fecha2:
                                 estado = "Atrasado"
                             cita_list = {
-                                'id_cita': verf_cita.pk,
+                                'id_crm': info['id'],
+                                'departamento': agente_departamento.departamento,
+                                'nombreAgente': agente_departamento.nombreAgente,
+                                'identificacion': '117580049', # Debe ser corregido, con CEDULA en API
+                                'nombreCliente': info['Who_Id']['name'],
+                                'telefono': info['Tel_fono'],
                                 'fecha': tiempo_fecha[0],
                                 'hora': tiempo_hora[0],
                                 'estado': estado
-                            } 
-                            save = update_cita(request, cita_list)
-                    except citas.DoesNotExist:
-                        fecha2  = datetime.strptime(tiempo_fecha[0], "%Y-%m-%d").date()
-                        if fecha1 <= fecha2:
-                            estado = "Pendiente"
-                        elif fecha1 > fecha2:
-                            estado = "Atrasado"
-                        cita_list = {
-                            'id_crm': info['id'],
-                            'departamento': agente_departamento.departamento,
-                            'nombreAgente': agente_departamento.nombreAgente,
-                            'identificacion': '117580049', # Debe ser corregido, con CEDULA en API
-                            'nombreCliente': info['Who_Id']['name'],
-                            'telefono': info['Tel_fono'],
-                            'fecha': tiempo_fecha[0],
-                            'hora': tiempo_hora[0],
-                            'estado': estado
-                        }
+                            }
 
-                        save = save_cita(request, cita_list)
-            else:
-                pass
-        return JsonResponse(dic, safe=False, status=200)
+                            save = save_cita(request, cita_list)
+                else:
+                    pass
+            return JsonResponse(dic, safe=False, status=200)
+        else:
+            return JsonResponse(dic, safe=False, status=400)
     else:
         return JsonResponse(dic, safe=False, status=400)
