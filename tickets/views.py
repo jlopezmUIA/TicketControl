@@ -576,7 +576,7 @@ def no_presente(request):
         save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
         del request.session['idtiempo']
 
-    request.session['cliente'] = 'N/A'
+    request.session['cliente'] = 'N/C'
     request.session.save()
 
     return JsonResponse(data, status=200, safe=False)
