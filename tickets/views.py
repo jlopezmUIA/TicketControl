@@ -363,8 +363,7 @@ def estados_reporte(request):
                     save = update_casos_agente(request, request.session.get('idcasos'), "caso")
 
         request.session['fechaactual'] = fecha_actual
-        save = update_estados_agente(
-            request, request.session.get('estadoactual'), hora_actual_str)
+        save = update_estados_agente(request, request.session.get('estadoactual'), hora_actual_str)
         if save:
             data_estados_agente = {
                 # Objeto de la instancia relacionada del modelo agentes
@@ -414,9 +413,69 @@ def numero_agente(request):
     agente_departamento  = agentes.objects.get(id_agente=request.session.get('id_agente'))
     deparData = departamentos.objects.get(nombre=agente_departamento.departamento)
 
-    nuevo =  request.session.get('cliente')
+    if deparData.tramitesDepartamento:
+        numero = obtener_primero_dato(request, deparData.nombre, cola)
+    else: 
+        numero = obtener_primero_dato(request, deparData.nombre, 'N/A')
 
+    if "000" in numero.codigo:
+        data = {'codigo': 'N/C'}
+        request.session['cliente'] = 'N/C'
+        request.session.save()
+    else:
+        data = {'codigo': numero.codigo}
+        marcar_ticket(numero.pk)
+        if numero.tramite == 'Cita':
+            cita = citas.objects.get(codigo=numero.codigo, estado='Asesor no disponible')
+            cita.estado = 'Recibido de otro asesor: '+ agente_departamento.nombreAgente
+            cita.save()
+        caso = True
+
+    if caso:
+        data_caso = {
+            'agente': request.session.get('id_agente'),
+            'codigoCaso': numero.codigo,
+            'fecha': str(fecha_actual),
+            'tiempoInicio': str(hora_actual_str),
+            'tiempoFinal': None
+        }
+        data_ticket = {
+            'codigoCaso': numero.codigo,
+            'numeroVentanilla': ventanilla,
+            'departamento': departamento,
+            'fecha': str(fecha_actual)
+        }
+
+        idtiempo = save_tiempos_agente(request, data_caso)
+        request.session['idtiempo'] = idtiempo.id_tiemposagente
+
+        request.session['cliente'] = numero.pk
+        request.session.save()
+
+        save_ticket = save_ticketcontrol(request, data_ticket)
+
+        status=200
+
+        if 'idcasos' in request.session:
+            save = update_casos_agente(
+                request, request.session.get('idcasos'), "caso")
+
+    return JsonResponse(data, safe=False, status=status)
+
+def numero_agente_cita(request):
+    data = {}
+    
+    status=302
+    estado = request.GET.get("estado")
+    fecha_actual = date.today().strftime('%Y-%m-%d')
+    hora_actual = datetime.now()
+    hora_actual_str = hora_actual.strftime('%H:%M:%S')
+    
+    agente_departamento  = agentes.objects.get(id_agente=request.session.get('id_agente'))
+    deparData = departamentos.objects.get(nombre=agente_departamento.departamento)
+    
     if deparData.citasDepartamento:
+
         try:
             cita = citas.objects.exclude(codigo='').get(
                 fecha=fecha_actual,
@@ -424,94 +483,38 @@ def numero_agente(request):
                 estado='Recibido'
             )
             if cita is not None:
-                ticketCita = tickets.objects.get(fecha=fecha_actual, codigo=cita.codigo, atendido=False, estado='N/A')
                 citaNueva = True
-                
         except ObjectDoesNotExist:
             citaNueva = False
-    else:
-        citaNueva = False
+        if citaNueva and estado == 'Disponible':
+            if cita.estado == 'Recibido' and cita.nombreAgente != 'N/A':
+                data_caso = {
+                    'agente': request.session.get('id_agente'),
+                    'codigoCaso': cita.codigo,
+                    'fecha': str(fecha_actual),
+                    'tiempoInicio': str(hora_actual_str),
+                    'tiempoFinal': None
+                }
 
-    if citaNueva:
-        if cita.estado == 'Recibido' and cita.nombreAgente != 'N/A':
-            data_caso = {
-                'agente': request.session.get('id_agente'),
-                'codigoCaso': cita.codigo,
-                'fecha': str(fecha_actual),
-                'tiempoInicio': str(hora_actual_str),
-                'tiempoFinal': None
-            }
+                idtiempo = save_tiempos_agente(request, data_caso)
+                request.session['idtiempo'] = idtiempo.id_tiemposagente
+                request.session.save()
 
-            idtiempo = save_tiempos_agente(request, data_caso)
-            request.session['idtiempo'] = idtiempo.id_tiemposagente
-            request.session.save()
+                ticket = tickets.objects.get(codigo=cita.codigo, fecha=fecha_actual)
 
-            ticket = tickets.objects.get(codigo=cita.codigo, fecha=fecha_actual)
+                request.session['cliente'] = ticket.pk
+                request.session.save()
 
-            request.session['cliente'] = ticket.pk
-            request.session.save()
+                status=200
 
-            status=200
+                data = {'codigo': cita.codigo}
+                marcar_ticket(ticket.pk)
 
-            data = {'codigo': cita.codigo}
-            marcar_ticket(ticket.pk)
-
-            cita.estado = 'Completado'
-            cita.save()
-
-            if 'idcasos' in request.session:
-                save = update_casos_agente(
-                    request, request.session.get('idcasos'), "caso")
-
-    if nuevo == 'N/D':
-
-        if deparData.tramitesDepartamento:
-            numero = obtener_primero_dato(request, deparData.nombre, cola)
-        else: 
-            numero = obtener_primero_dato(request, deparData.nombre, 'N/A')
-
-        if "000" in numero.codigo:
-            data = {'codigo': 'N/C'}
-            request.session['cliente'] = 'N/C'
-            request.session.save()
-        else:
-            data = {'codigo': numero.codigo}
-            marcar_ticket(numero.pk)
-            if numero.tramite == 'Cita':
-                cita = citas.objects.get(codigo=numero.codigo, estado='Asesor no disponible')
-                cita.estado = 'Recibido de otro asesor: '+ agente_departamento.nombreAgente
+                cita.estado = 'Completado'
                 cita.save()
-            caso = True
 
-        if caso:
-            data_caso = {
-                'agente': request.session.get('id_agente'),
-                'codigoCaso': numero.codigo,
-                'fecha': str(fecha_actual),
-                'tiempoInicio': str(hora_actual_str),
-                'tiempoFinal': None
-            }
-            data_ticket = {
-                'codigoCaso': numero.codigo,
-                'numeroVentanilla': ventanilla,
-                'departamento': departamento,
-                'fecha': str(fecha_actual)
-            }
-
-            idtiempo = save_tiempos_agente(request, data_caso)
-            request.session['idtiempo'] = idtiempo.id_tiemposagente
-
-            request.session['cliente'] = numero.pk
-            request.session.save()
-
-            save_ticket = save_ticketcontrol(request, data_ticket)
-
-            status=200
-
-            if 'idcasos' in request.session:
-                save = update_casos_agente(
-                    request, request.session.get('idcasos'), "caso")
-
+                if 'idcasos' in request.session:
+                    update_casos_agente(request, request.session.get('idcasos'), "caso")
     return JsonResponse(data, safe=False, status=status)
 
 def siguiente_ticket(request):
@@ -535,7 +538,7 @@ def terminar_ticket(request):
         save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
         del request.session['idtiempo']
 
-    request.session['cliente'] = 'N/A'
+    request.session['cliente'] = 'N/C'
     request.session.save()
 
     return JsonResponse(data, status=200, safe=False)
@@ -554,7 +557,7 @@ def terminar_ticket_varios(request):
         save = update_tiempos_agente(request, request.session.get('idtiempo'), str(hora_actual_str))
         del request.session['idtiempo']
 
-    request.session['cliente'] = 'N/A'
+    request.session['cliente'] = 'N/C'
     request.session.save()
 
     return JsonResponse(data, status=200, safe=False)

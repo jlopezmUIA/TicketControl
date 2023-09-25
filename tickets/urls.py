@@ -29,6 +29,7 @@ from .views import (
     metricas_guardado,
     digital_ticket_maker,
     digital_crear_ticket,
+    numero_agente_cita,
     
     Logueo,
     RegistroAdmin,
@@ -113,7 +114,10 @@ urlpatterns = [
     path('datos-agente/', datosagente, name='datos_agente'),
     path('registro-agente/', registroAgente, name='registro_agente'),
     path('obtener-agentes/', obtener_agentes, name='obtener_agentes'),
+    
     path('numero-agente/', numero_agente, name='numero_agente'),
+    path('numero-agente-cita/', numero_agente_cita, name='numero_agente_cita'),
+    
     path('ticket-maker/', ticket_maker, name='ticket_maker'),
     path('ticket-control/', ticketcontrol, name='ticket_control'),
     path('transferencia/', transferencia, name='transferencia'),

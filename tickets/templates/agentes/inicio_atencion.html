@@ -50,7 +50,7 @@
                         <div class="d-flex justify-content-center flex-wrap mx-auto ">
                             <div class="d-flex justify-content-between mx-auto">
                                 <button class="btnStyle btn btn-md btn-login mb-2" type="button"
-                                id="btnSiguiente" onclick="siguienteNumero()" style="display: none;">Siguiente</button>
+                                id="btnSiguiente" onclick="numeroSiguiente()" style="display: none;">Siguiente</button>
                                 <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button" id="btnTerminar" onclick="terminar()">Terminar</button>
                                 <button class="btnStyle btn btn-md btn-login mb-2" style="display: none;" type="button" id="btnTerminarVarios" onclick="terminar_varios()">Terminar Varios</button>
                             </div>
@@ -692,6 +692,32 @@
         }
     }
 
+    function numeroCita() {
+        var numero = document.getElementById("txtNumero");
+        var cliente = document.getElementById("divCliente");
+        var estadoactual = document.getElementById("status_select");
+        var estadoactualvalue = document.getElementById("status_select").value;
+        
+        var url = "/numero-agente-cita/?estado=";
+        var request = new XMLHttpRequest();
+        request.open('GET', url + encodeURIComponent(estadoactualvalue), true);
+        request.onload = function () {
+            if (request.status === 200) {
+                var data = JSON.parse(request.responseText);
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        numero.innerHTML = data[key];
+                        estadoactual.selectedIndex = 2;
+                        cliente.style.display = 'block';
+                        estados();
+                    }
+                }
+
+            }
+        };
+        request.send();
+    }
+
     function siguienteNumero(){
         var estadoactual = document.getElementById("status_select");
         if (estadoactual.value == "Disponible" || estadoactual.value == "Ocupado") {
@@ -983,7 +1009,7 @@
     }
 
     setInterval(function() {
-        numeroSiguiente();
+        numeroCita();
         actualizar_tabla();
     }, 1000);
 

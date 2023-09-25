@@ -9,30 +9,6 @@ from PIL import Image, ImageDraw, ImageFont
 from django.templatetags.static import static
 
 def imprimir(codigo, departamento):
-    # fecha_actual = date.today().strftime('%Y-%m-%d')
-    # hora_actual = datetime.now()
-    # hora_actual_str = hora_actual.strftime('%H:%M:%S')
-    # printer_ip = '192.168.8.35'
-    
-    # img_path = crear_img(codigo, departamento, fecha_actual, hora_actual_str)
-    # img_path2 = Image.open('tickets/static/img/logo3.png')
-
-    # printer = Network(printer_ip)
-    # printer.open()
-
-    # nueva_ancho = 110
-    # nueva_alto = 170 
-    # imagen = img_path2.resize((nueva_ancho, nueva_alto))
-
-    # printer.set(align='center')
-    # printer.image(imagen, impl="bitImageColumn")
-    # printer.text('\n')
-
-    # printer.set(align='center')
-    # printer.image(img_path, impl="bitImageColumn")
-    
-    # printer.cut()
-    # printer.close()
     session = requests.Session()
     url = 'http://186.96.95.26:8057/create_ticket'
     headers = {
@@ -48,7 +24,6 @@ def imprimir(codigo, departamento):
         return True
     else:
         return False
-
 
 def crear_img (codigo, departamento, fecha, hora):
 
