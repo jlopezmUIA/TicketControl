@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
+from tickets.envioCorreo import Correo
 from tickets.models import agentes, agentes_citas, citas, departamentos, ley700, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
@@ -869,7 +870,16 @@ def metricas_guardado(request):
         'estado': estado,
         'fecha': fecha_actual
     }
-
+    if estado != 'Satisfecho' and estado != 'Neutral':
+        nombre_agente = agentes.objects.get(pk=agente)
+        
+        correo_destinatario = 'jlopezm@uia.ac.cr'
+        correo_cc = 'apereirac@uia.ac.cr'
+        subject = f'Encuesta: Mala Calificación - {fecha_actual}.'
+        mensaje = f'El agente, {nombre_agente.nombreAgente}, ha recibido una mala calificación.\n\nEl código del ticket es: {codigo}\n\nEl motivo de la mala calificación es: {estado}.\n\nUn saludo cordial.\nUIA.'
+            
+        Correo.envioCorreos(correoSend=0, emailTo=correo_destinatario,emailCC=correo_cc,asunto=subject,mensaje=mensaje,archivo=None)
+        
     save_metricas(request, data)
     
     dic = {

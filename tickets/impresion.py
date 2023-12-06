@@ -9,21 +9,22 @@ from PIL import Image, ImageDraw, ImageFont
 from django.templatetags.static import static
 
 def imprimir(codigo, departamento):
-    session = requests.Session()
-    url = 'http://186.96.95.26:8057/create_ticket'
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    data = {
-        "codigo": codigo,
-        "departamento": departamento
-    }
-    response = session.post(url, data=json.dumps(data), headers=headers)
+    # session = requests.Session()
+    # url = 'http://186.96.95.26:8057/create_ticket'
+    # headers = {
+    #     'Content-Type': 'application/json'
+    # }
+    # data = {
+    #     "codigo": codigo,
+    #     "departamento": departamento
+    # }
+    # response = session.post(url, data=json.dumps(data), headers=headers)
 
-    if response.status_code == 200:
-        return True
-    else:
-        return False
+    # if response.status_code == 200:
+    #     return True
+    # else:
+    #     return False
+    return True
 
 def crear_img (codigo, departamento, fecha, hora):
 

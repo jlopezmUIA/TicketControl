@@ -247,7 +247,7 @@
                                                 <h5 id="" hidden>{{ record.pk }}</h5>
                                                 {% for agente in agentes %}
                                                 {% if agente.pk == record.agente_id %}
-                                                <h5 id="nombre_agente">{{ agente.nombreAgente }}</h5>
+                                                <h5 id="nombre_agente3">{{ agente.nombreAgente }}</h5>
                                                 <h5 id="id_agente" hidden>{{ agente.pk }}</h5>
                                                 <h5 id="departamente_agente" hidden>{{ agente.departamento }}</h5>
                                                 {% endif %}
@@ -628,7 +628,6 @@
 
         cargarDepartamentos();
 
-        console.log(tramite_select.options.length);
         for (var i = 0; i < tramite_select.options.length; i++) {
             if (tramite_select.options[i].textContent === agente_departamento) {
                 tramite_select.selectedIndex = i;
