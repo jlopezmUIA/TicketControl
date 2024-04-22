@@ -23,6 +23,24 @@
         height: 500px;
         clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
     }
+    @media (max-width: 767px) {
+        .titulo{
+            font-size: 35px !important;
+        }
+        .table-dark1 tr th h5{
+            font-size: 14px;
+        }
+        .btnStyle{
+            margin-bottom: 5px;
+        }
+        .imgFondo {
+            background: url('{% static "img/iStock4.jpg" %}') no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+        }
+    }
 </style>
 
 {% endblock background %}
@@ -65,9 +83,9 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente"
-                                                    onclick="modalModificarAgente('modificar')" class="btn">Modificar</button>
+                                                    onclick="modalModificarAgente('modificar')" class="btn mb-1">Modificar</button>
                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente"
-                                                    onclick="modalModificarAgente('eliminar')" class="btn">Eliminar</button>
+                                                    onclick="modalModificarAgente('eliminar')" class="btn mb-1">Eliminar</button>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -109,7 +127,7 @@
                                             </td>
                                             <td class="text-center align-middle">
                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#modal_nuevoagente_cita"
-                                                    onclick="modalModificarAgenteCita('eliminar')" class="btn">Eliminar</button>
+                                                    onclick="modalModificarAgenteCita('eliminar')" class="btn mb-1">Eliminar</button>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -440,12 +458,14 @@
 
     td:first-child,
     th:first-child {
-        border-radius: 50px 0 0 50px;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
     }
 
     td:last-child,
     th:last-child {
-        border-radius: 0 50px 50px 0;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
     }
 </style>
 
@@ -628,6 +648,7 @@
 
         cargarDepartamentos();
 
+        console.log(tramite_select.options.length);
         for (var i = 0; i < tramite_select.options.length; i++) {
             if (tramite_select.options[i].textContent === agente_departamento) {
                 tramite_select.selectedIndex = i;

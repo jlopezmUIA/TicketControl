@@ -22,6 +22,24 @@
         height: 500px;
         clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
     }
+    @media (max-width: 767px) {
+        .titulo{
+            font-size: 35px !important;
+        }
+        .table-dark1 tr th h5{
+            font-size: 14px;
+        }
+        .btnStyle{
+            margin-bottom: 5px;
+        }
+        .imgFondo {
+            background: url('{% static "img/iStock2.jpg" %}') no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+        }
+    }
 </style>
 
 {% endblock background %}
@@ -47,9 +65,9 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-10 col-md-12 col-lg-12 mx-auto">
-                    <div class=" table-responsive px-md-4 px-2 pt-3">
+                    <div class="px-md-4 px-2 pt-3">
+                        <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                         <div class="table-responsive-sm">
-                            <button id="export-button" type="button" class="btn btn-outline-dark mb-2" onclick="exportToExcel()">Exportar a Excel</button>
                             <table id="record-table" style="height: 100px;"
                                 class="table table-hover table-fixed-height">
                                 <thead class="table-dark1">
@@ -139,12 +157,14 @@
     }
     td:first-child,
     th:first-child {
-        border-radius: 50px 0 0 50px;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
     }
 
     td:last-child,
     th:last-child {
-        border-radius: 0 50px 50px 0;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
     }
 </style>
 

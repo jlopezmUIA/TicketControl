@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
   <div id="div3" class="col-12 col-sm-12 col-md-12 col-lg-6">
-    <img src="{% static 'img/Home (1).png' %}" class="imgf">
+    
   </div>
   <div id="div4" class="col-12 col-sm-12 col-md-12 col-lg-6">
     <div class="border-0 rounded-3 my-5 mx-auto">
@@ -57,15 +57,8 @@
   .container{
     margin: 0;
     padding: 0;
-  }
-
-  @media (min-width: 1200px){
-    .container{
-      max-width: 2048px;
-    }
-    .imgf{
-      width: 100%;
-    }
+    height: 100%;
+    max-width: 100%;
   }
   
 
@@ -75,6 +68,15 @@
     padding: 0;
     overflow-y: hidden;
     overflow-x: hidden;
+    height: 100%;
+  }
+
+  #div3{
+    background-image: url("../static/img/Home\ \(1\).png") !important;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+
   }
 
   img{
@@ -84,7 +86,9 @@
   .context {
     width: 100%;
   }
-
+  .row{
+    height: 100%;
+  }
   #div3 {
     width: 50%;
     padding: 0;
@@ -94,6 +98,7 @@
     width: 50%;
     padding-left: 100px;
     padding-right: 100px;
+    max-height: 100%;
   }
 
   .titulo {
@@ -127,6 +132,31 @@
   .btn:active {
     outline: none !important;
     box-shadow: none !important;
+  }
+  @media (max-width: 767px) {
+    #div4 {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+      height: 100%;
+      margin-bottom: 50px !important;
+    }
+    .my-5 {
+      margin-top: 0!important; 
+      margin-bottom: 3rem!important;
+  }
+  }
+  @media (min-width: 768px) and (max-width: 991px){
+    #div4 {
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+      height: 100%;
+      margin-bottom: 50px !important;
+    }
+    #div3{
+      display: none !important;
+    }
   }
 </style>
 {% endblock %}

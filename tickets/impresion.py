@@ -24,6 +24,7 @@ def imprimir(codigo, departamento):
     #     return True
     # else:
     #     return False
+    
     return True
 
 def crear_img (codigo, departamento, fecha, hora):

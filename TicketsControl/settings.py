@@ -90,6 +90,18 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'ticketcontrolpostgres',
+#         'HOST': 'ec2-18-212-105-207.compute-1.amazonaws.com',
+#         'PORT': 5432,
+#     }
+# }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -120,6 +132,10 @@ TIME_ZONE = 'America/Costa_Rica'
 USE_I18N = True
 
 USE_TZ = True
+
+LOGIN_REDIRECT_URL = '/logout/'
+
+LOGOUT_REDIRECT_URL = '/logout/'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -152,19 +168,9 @@ EMAIL_HOST = 'smtp.office365.com'
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'victor2722v@gmail.com'
-# EMAIL_HOST_PASSWORD = 'cjkdtqzidculnzwp'
 EMAIL_HOST_USER = [
     {
         'user': 'metricas_ticket@uia.ac.cr',
         'pass': 'dcttlkrjdfnsnsyp'
-    },
-    {
-        'user': 'victor2722v@gmail.com',
-        'pass': 'cjkdtqzidculnzwp'
-    },
-    {
-        'user': 'vfernandezn@uia.ac.cr',
-        'pass': 'jpjlfxtkhxqvkbjc'
     }
 ]

@@ -87,6 +87,8 @@ from .views import (
     
     eliminaragentecita,
     nuevoagentecita,
+    
+    CustomLogoutView
 )
 
 from .savedata import obtener_datos, procesador_datos_crm
@@ -97,7 +99,7 @@ urlpatterns = [
     path('', home, name='home'),
     path('login/', Logueo.as_view(), name='login'),
     path('registro-admin/', RegistroAdmin.as_view(), name='registro_admin'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
     path('admin-side/', adminside, name='admin_side'),
     path('reproductor/', reproductor, name='reproductor'),
     path('reproductor-cliente/', reproductor_cliente, name='reproductor_cliente'),

@@ -22,6 +22,24 @@
         height: 500px;
         clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
     }
+    @media (max-width: 767px) {
+        .titulo{
+            font-size: 35px !important;
+        }
+        .table-dark1 tr th h5{
+            font-size: 14px;
+        }
+        .btnStyle{
+            margin-bottom: 5px;
+        }
+        .imgFondo {
+            background: url('{% static "img/iStock4.jpg" %}') no-repeat;
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            clip-path: polygon(0 0, 100% 0, 100% 77%, 0% 100%);
+        }
+    }
 </style>
 
 {% endblock background %}
@@ -131,12 +149,14 @@
     }
     td:first-child,
     th:first-child {
-        border-radius: 50px 0 0 50px;
+        border-top-left-radius: 50px;
+        border-bottom-left-radius: 50px;
     }
 
     td:last-child,
     th:last-child {
-        border-radius: 0 50px 50px 0;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
     }
 </style>
 <script>

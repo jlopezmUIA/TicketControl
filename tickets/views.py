@@ -7,12 +7,14 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.edit import FormView
-from tickets.envioCorreo import Correo
 from tickets.models import agentes, agentes_citas, citas, departamentos, ley700, llamado, metricas, atencion, casosAgente, estadosAgente, ticketControl, tickets, tiemposAgente, tramites, visualizador
 from datetime import datetime
 from datetime import date
 from django.contrib.auth.forms import UserCreationForm
+from .envioCorreo import Correo
 import threading
+from django.views import View
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseRedirect
 from .impresion import imprimir
 from django.db.models import Q
 from django.contrib.auth.forms import AuthenticationForm
@@ -60,6 +62,14 @@ class Logueo(FormView):
         if self.request.user.is_authenticated != True:
             logout(self.request)
         return super(Logueo, self).get(*args, **kwargs)
+
+class CustomLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect('/')
+    
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
 
 class RegistroAdmin(FormView):
     template_name = 'administracion/registroadmin.html'
@@ -667,7 +677,7 @@ def actualizar_tabla(request):
             request.session['cantrecords'] = recordscant
             
             for _ in range(cantidad_sobrepasada):
-                registro = ticketControl.objects.all()[cantregistro]
+                registro = ticketControl.objects.order_by('id_ticketcontrol').last()
                 departamento = departamentos.objects.get(siglasDepartamento=registro.departamento)
                 codigo = str(registro.codigoCaso).split('-')
                 numero = int(codigo[1].lstrip("0"))
@@ -870,6 +880,9 @@ def metricas_guardado(request):
         'estado': estado,
         'fecha': fecha_actual
     }
+
+    nombre_agente = agentes.objects.get(pk=agente)
+    
     if estado != 'Satisfecho' and estado != 'Neutral':
         nombre_agente = agentes.objects.get(pk=agente)
         
